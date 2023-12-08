@@ -1,19 +1,18 @@
-import Image from 'next/image';
-import Wrapper from '../../_essentials/Wrapper';
-import Header from '../../_essentials/Header';
+import Wrapper from '../../../_essentials/Wrapper';
+import Header from '../../../_essentials/Header';
 import Content from './_components/Content';
-import Link from 'next/link';
 
-export default function Areas() {
+export default function EditArea() {
   return (
     <Wrapper>
       {/* main content */}
       <div className="col-9 content--col px-0" id="content--col">
         {/* header */}
         <Header
-          pageTitle={'Delivery Areas'}
-          leftTitle={'New Area'}
-          leftLink="/areas/new"
+          pageTitle={'Edit Area'}
+          leftTitle={'Back'}
+          leftIcon={'bi bi-arrow-up-left'}
+          leftLink="/areas"
         />
 
         {/* page content */}
