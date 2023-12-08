@@ -1,0 +1,60 @@
+/* select single */
+
+.form--select__control {
+  width: 90% !important;
+  height: var(--input-height);
+  background-color: #fff;
+  border: 1px solid var(--input-border-color) !important;
+  border-radius: var(--input-radius) !important;
+  box-shadow: none !important;
+  font-size: var(--input-font);
+  color: #000 !important;
+  font-weight: 500;
+}
+
+.form--select__control * {
+  color: #000 !important;
+}
+
+.form--select__value-container {
+  padding-left: var(--select-padding) !important;
+  padding-right: var(--select-padding) !important;
+  color: #000 !important;
+}
+
+.form--select__value-container * {
+  color: #000 !important;
+}
+
+.form--select__indicator {
+  /* color: var(--bs-theme) !important; */
+  display: none !important;
+}
+
+.form--select__indicator-separator {
+  /* background-color: #f6f6f6 !important; */
+  display: none !important;
+}
+
+.form--select__menu {
+  margin-top: 4px !important;
+  border-radius: var(--input-radius) !important;
+  width: 90% !important;
+}
+
+.form--select__option {
+  font-size: var(--input-font) !important;
+  padding-left: var(--select-padding) !important;
+  padding-right: var(--select-padding) !important;
+  color: #111 !important;
+}
+
+.form--select__option:hover {
+  color: #fff !important;
+  background-color: #111 !important;
+}
+
+.form--select__option:checked {
+  color: #fff !important;
+  background-color: #111 !important;
+}
