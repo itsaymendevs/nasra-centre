@@ -1,7 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
 
+import { toggleEditConditionModal } from '@/slices/SecModalSlice';
+import { useDispatch } from 'react-redux';
+
 export default function ContentRows() {
+  // ::dispatch
+  const dispatch = useDispatch();
+
   return (
     <div id="results--row">
       {/* titles */}
@@ -58,12 +66,12 @@ export default function ContentRows() {
               data-bs-toggle="dropdown"
               type="button"></button>
             <div className="dropdown-menu results--dropdown-menu">
-              <a
+              <Link
                 className="dropdown-item"
-                data-bs-target="#edit-modal"
-                data-bs-toggle="modal">
+                href="#"
+                onClick={() => dispatch(toggleEditConditionModal(true))}>
                 Edit Condition
-              </a>
+              </Link>
               <Link className="dropdown-item" href="/areas/conditions/1/remove">
                 Remove Condition
               </Link>

@@ -1,12 +1,16 @@
 import Link from 'next/link';
 import React from 'react';
+// --------------------------------------------------------------------------------
 
 export default function Header({
   leftLink = '/',
   leftIcon = 'bi bi-plus-lg',
   leftTitle,
+  leftHandleClick = '',
   pageTitle,
 }) {
+  // ------------------------- page --------------------------
+
   return (
     <section id="header--div" className="header--div w-100">
       {/* left button */}
@@ -15,7 +19,8 @@ export default function Header({
           leftIcon == 'bi bi-plus-lg' ? 'scalemix--3' : 'scale--3'
         } px-4`}
         role="button"
-        href={leftLink}>
+        href={leftLink}
+        onClick={leftHandleClick}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="1em"

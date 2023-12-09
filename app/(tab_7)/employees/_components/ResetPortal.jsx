@@ -1,20 +1,25 @@
 'use client';
 
 import GlobalPortal from '@/portals/GlobalPortal';
-import { toggleEditCompanyModal } from '@/slices/FirstModalSlice';
+import { toggleResetEmployeeModal } from '@/slices/FourthModalSlice';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-export default function EditPortal() {
+import Select from 'react-select';
+
+export default function ResetPortal() {
+  // ::root
+  const options = [{ value: '1', label: 'option' }];
+
   // ---------------------------------- dispatch ----------------------------------
   const dispatch = useDispatch();
 
   // ---------------------------------- states ----------------------------------
-  const { editCompanyModal } = useSelector((state) => state.FirstModalSlice);
+  const { resetEmployeeModal } = useSelector((state) => state.FourthModalSlice);
 
   // ---------------------------------- page ----------------------------------
   return (
     <>
-      {editCompanyModal && (
+      {resetEmployeeModal && (
         <GlobalPortal>
           {/* modal */}
           <div
@@ -27,58 +32,50 @@ export default function EditPortal() {
               paddingRight: '8px',
               backgroundColor: '#1111118a',
             }}
-            id="edit-modal">
+            id="reset-modal">
             <div className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
-                {/* header */}
                 <div className="modal-header modal--header">
-                  <h4 className="modal-title fw-bold">Edit Company</h4>
+                  <h4 className="modal-title fw-bold">Reset Password</h4>
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleEditCompanyModal(false))}
+                    onClick={() => dispatch(toggleResetEmployeeModal(false))}
                     aria-label="Close"></button>
                 </div>
 
-                {/* ---------------------- */}
-                {/* ---------------------- */}
-
                 {/* body */}
                 <div className="modal-body">
-                  {/* name / ar */}
                   <div className="row g-0 align-items-center">
                     <div className="col-6 mb-4">
-                      <label className="form-label form--label">Name</label>
-                      <input type="text" className="form--input" />
+                      <label className="form-label form--label">
+                        Admin Passwrod
+                      </label>
+                      <input type="password" className="form--input" />
                     </div>
                     <div className="col-6 mb-4">
-                      <label className="form-label form--label">Name Ar</label>
-                      <input type="text" className="form--input" />
+                      <label className="form-label form--label">
+                        User's New Password
+                      </label>
+                      <input type="password" className="form--input" />
                     </div>
                   </div>
                 </div>
                 {/* end body */}
 
-                {/* ---------------------- */}
-                {/* ---------------------- */}
-
                 <div className="modal-footer">
-                  {/* close */}
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleEditCompanyModal(false))}>
+                    onClick={() => dispatch(toggleResetEmployeeModal(false))}>
                     Close
                   </button>
-
-                  {/* submit */}
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
                     type="button">
                     Save
                   </button>
                 </div>
-                {/* end footer */}
               </div>
             </div>
           </div>

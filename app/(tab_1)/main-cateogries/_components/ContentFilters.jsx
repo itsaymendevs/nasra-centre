@@ -2,9 +2,15 @@
 
 import Link from 'next/link';
 import React from 'react';
+
+import { toggleSortSubCategoryModal } from '@/slices/FirstModalSlice';
+import { useDispatch } from 'react-redux';
 // ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
+  // ::root
+  const dispatch = useDispatch();
+
   // ------------------------Page-----------------------
 
   return (

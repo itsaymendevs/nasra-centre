@@ -1,13 +1,16 @@
 'use client';
 
+import { toggleSortSubCategoryModal } from '@/slices/FirstModalSlice';
 import Link from 'next/link';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import Select from 'react-select';
 // ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
   // ::root
   const options = [{ value: '1', label: 'option' }];
+  const dispatch = useDispatch();
 
   // ------------------------Page-----------------------
 
@@ -44,8 +47,9 @@ export default function ContentFilters({ totalRows }) {
             data-bs-toggle="tooltip"
             data-bss-tooltip=""
             data-bs-placement="right"
-            title="Sort Main-Categories"
-            href="/sub-categories/sort">
+            title="Sort Sub-Categories"
+            onClick={() => dispatch(toggleSortSubCategoryModal(true))}
+            href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"

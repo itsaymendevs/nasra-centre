@@ -1,6 +1,9 @@
 import React from 'react';
 import ContentFilters from './ContentFilters';
 import ContentRows from './ContentRows';
+import NewPortal from './NewPortal';
+import EditPortal from './EditPortal';
+import SortPortal from './SortPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -12,6 +15,11 @@ export default function Content() {
     <>
       <ContentFilters totalRows={1} />
       <ContentRows />
+
+      {/* portals */}
+      <NewPortal />
+      <EditPortal />
+      <SortPortal />
     </>
   );
 } // end function

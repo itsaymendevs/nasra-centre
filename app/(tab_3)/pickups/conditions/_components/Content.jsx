@@ -1,6 +1,7 @@
 import React from 'react';
 import ContentRows from './ContentRows';
 import NewForm from './NewForm';
+import EditPortal from './EditPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -12,6 +13,9 @@ export default function Content() {
     <>
       <NewForm />
       <ContentRows />
+
+      {/* portals */}
+      <EditPortal />
     </>
   );
 } // end function

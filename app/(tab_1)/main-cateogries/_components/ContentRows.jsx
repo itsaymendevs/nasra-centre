@@ -1,7 +1,14 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
+import { toggleEditMainCategoryModal } from '@/slices/FirstModalSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ContentRows() {
+  // ::dispatch
+  const dispatch = useDispatch();
+
   return (
     <div id="results--row">
       {/* titles */}
@@ -50,8 +57,7 @@ export default function ContentRows() {
           <button
             className="btn btn--raw-icon edit scale--3"
             type="button"
-            data-bs-target="#edit-modal"
-            data-bs-toggle="modal">
+            onClick={() => dispatch(toggleEditMainCategoryModal(true))}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"

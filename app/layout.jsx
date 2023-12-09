@@ -21,6 +21,8 @@ import '@/public/assets/css/react-select.css';
 // ----------------------------------------------------------------------------------------------------
 
 import Script from 'next/script';
+import { Provider } from 'react-redux';
+import StoreProvider from '@/slices/StoreProvider';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -57,10 +59,12 @@ export default function RootLayout({ children }) {
 
       <body>
         {/* content */}
-        {children}
+        <StoreProvider>
+          {children}
 
-        {/* portals */}
-        <div id="portals"></div>
+          {/* portals */}
+          <div id="portals"></div>
+        </StoreProvider>
 
         {/* --------------------------------------------------------- */}
         <Script async src="/assets/js/jquery.js" />

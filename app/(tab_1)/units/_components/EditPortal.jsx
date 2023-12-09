@@ -1,7 +1,7 @@
 'use client';
 
 import GlobalPortal from '@/portals/GlobalPortal';
-import { toggleEditCompanyModal } from '@/slices/FirstModalSlice';
+import { toggleEditUnitModal } from '@/slices/FirstModalSlice';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 export default function EditPortal() {
@@ -9,12 +9,12 @@ export default function EditPortal() {
   const dispatch = useDispatch();
 
   // ---------------------------------- states ----------------------------------
-  const { editCompanyModal } = useSelector((state) => state.FirstModalSlice);
+  const { editUnitModal } = useSelector((state) => state.FirstModalSlice);
 
   // ---------------------------------- page ----------------------------------
   return (
     <>
-      {editCompanyModal && (
+      {editUnitModal && (
         <GlobalPortal>
           {/* modal */}
           <div
@@ -32,11 +32,11 @@ export default function EditPortal() {
               <div className="modal-content">
                 {/* header */}
                 <div className="modal-header modal--header">
-                  <h4 className="modal-title fw-bold">Edit Company</h4>
+                  <h4 className="modal-title fw-bold">Edit Unit</h4>
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleEditCompanyModal(false))}
+                    onClick={() => dispatch(toggleEditUnitModal(false))}
                     aria-label="Close"></button>
                 </div>
 
@@ -45,15 +45,22 @@ export default function EditPortal() {
 
                 {/* body */}
                 <div className="modal-body">
-                  {/* name / ar */}
                   <div className="row g-0 align-items-center">
-                    <div className="col-6 mb-4">
+                    <div className="col-7 mb-4">
                       <label className="form-label form--label">Name</label>
                       <input type="text" className="form--input" />
                     </div>
-                    <div className="col-6 mb-4">
+                    <div className="col-5 mb-4">
+                      <label className="form-label form--label">Abbr</label>
+                      <input type="text" className="form--input w-100" />
+                    </div>
+                    <div className="col-7 mb-4">
                       <label className="form-label form--label">Name Ar</label>
                       <input type="text" className="form--input" />
+                    </div>
+                    <div className="col-5 mb-4">
+                      <label className="form-label form--label">Abbr</label>
+                      <input type="text" className="form--input w-100" />
                     </div>
                   </div>
                 </div>
@@ -67,7 +74,7 @@ export default function EditPortal() {
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleEditCompanyModal(false))}>
+                    onClick={() => dispatch(toggleEditUnitModal(false))}>
                     Close
                   </button>
 

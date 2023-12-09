@@ -3,11 +3,14 @@
 import Link from 'next/link';
 import React from 'react';
 import Select from 'react-select';
+import { toggleSortTypeModal } from '@/slices/FirstModalSlice';
+import { useDispatch } from 'react-redux';
 // ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
   // ::root
   const options = [{ value: '1', label: 'option' }];
+  const dispatch = useDispatch();
 
   // ------------------------Page-----------------------
 
@@ -58,7 +61,8 @@ export default function ContentFilters({ totalRows }) {
             data-bss-tooltip=""
             data-bs-placement="right"
             title="Sort Main-Categories"
-            href="/inner-types/sort">
+            onClick={() => dispatch(toggleSortTypeModal(true))}
+            href="#">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"

@@ -2,11 +2,14 @@
 
 import React from 'react';
 import Select from 'react-select';
+import { toggleSortProductModal } from '@/slices/FirstModalSlice';
+import { useDispatch } from 'react-redux';
 // ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
   // ::root
   const options = [{ value: '1', label: 'option' }];
+  const dispatch = useDispatch();
 
   // ------------------------Page-----------------------
 
@@ -91,12 +94,11 @@ export default function ContentFilters({ totalRows }) {
         <div className="col-4">
           <button
             className="btn btn--theme btn--sort scalemix--3 px-4 rounded-1"
-            data-bs-toggle="modal"
             data-bss-tooltip=""
             data-bs-placement="right"
             type="button"
-            title="Sort Products"
-            data-bs-target="#sort-modal">
+            onClick={() => dispatch(toggleSortProductModal(true))}
+            title="Sort Products">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"

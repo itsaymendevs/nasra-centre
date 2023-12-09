@@ -8,7 +8,9 @@ import EditPortal from './EditPortal';
 
 export default function Content() {
   // ------------------------States---------------------
+
   // ------------------------Functions------------------
+
   // ------------------------Page-----------------------
   return (
     <>

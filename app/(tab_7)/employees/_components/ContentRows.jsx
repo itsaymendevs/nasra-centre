@@ -1,7 +1,16 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
 
+import { toggleEditEmployeeModal } from '@/slices/FourthModalSlice';
+import { toggleResetEmployeeModal } from '@/slices/FourthModalSlice';
+import { useDispatch } from 'react-redux';
+
 export default function ContentRows() {
+  // ::root
+  const dispatch = useDispatch();
+
   return (
     <div id="results--row">
       {/* titles */}
@@ -56,19 +65,18 @@ export default function ContentRows() {
               data-bs-toggle="dropdown"
               type="button"></button>
             <div className="dropdown-menu results--dropdown-menu">
-              <a
-                className="dropdown-item"
-                data-bs-target="#reset-modal"
-                data-bs-toggle="modal">
-                Edit Employee
-              </a>
-              <a
+              <Link
                 className="dropdown-item"
                 href="#"
-                data-bs-target="#reset-modal"
-                data-bs-toggle="modal">
+                onClick={() => dispatch(toggleEditEmployeeModal(true))}>
+                Edit Employee
+              </Link>
+              <Link
+                className="dropdown-item"
+                href="#"
+                onClick={() => dispatch(toggleResetEmployeeModal(true))}>
                 Reset Password
-              </a>
+              </Link>
               <Link className="dropdown-item" href="/employees/1/toggle-status">
                 Deactivate Account
               </Link>
