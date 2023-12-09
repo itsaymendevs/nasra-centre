@@ -1,8 +1,9 @@
 import React from 'react';
-import ContentFilters from './ContentFilters';
+import StatusForm from './StatusForm';
+import PaymentForm from './PaymentForm';
+import PrintForm from './PrintForm';
+import AddressInfo from './AddressInfo';
 import ContentRows from './ContentRows';
-import NewPortal from './NewPortal';
-import EditPortal from './EditPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -12,12 +13,11 @@ export default function Content() {
   // ------------------------Page-----------------------
   return (
     <>
-      <ContentFilters totalRows={1} />
-      <ContentRows />
-
-      {/* portals */}
-      <NewPortal />
-      <EditPortal />
+      <PrintForm />
+      <StatusForm />
+      <PaymentForm />
+      <AddressInfo />
+      <ContentRows totalRows={1} />
     </>
   );
 } // end function

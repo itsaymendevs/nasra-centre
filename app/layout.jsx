@@ -56,7 +56,12 @@ export default function RootLayout({ children }) {
       {/* --------------------------------------------------------- */}
 
       <body>
+        {/* content */}
         {children}
+
+        {/* portals */}
+        <div id="portals"></div>
+
         {/* --------------------------------------------------------- */}
         <Script async src="/assets/js/jquery.js" />
         <Script async src="/assets/bootstrap/js/bootstrap.min.js" />
