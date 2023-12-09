@@ -1,7 +1,7 @@
 'use client';
 
 import GlobalPortal from '@/portals/GlobalPortal';
-import { toggleEditConditionModal } from '@/slices/ThirdModalSlice';
+import { toggleEditConditionUKModal } from '@/slices/SixthModalSlice';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
@@ -14,12 +14,14 @@ export default function EditPortal() {
   const dispatch = useDispatch();
 
   // ---------------------------------- states ----------------------------------
-  const { editConditionModal } = useSelector((state) => state.ThirdModalSlice);
+  const { editConditionUKModal } = useSelector(
+    (state) => state.SixthModalSlice
+  );
 
   // ---------------------------------- page ----------------------------------
   return (
     <>
-      {editConditionModal && (
+      {editConditionUKModal && (
         <GlobalPortal>
           {/* modal */}
           <div
@@ -40,7 +42,7 @@ export default function EditPortal() {
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleEditConditionModal(false))}
+                    onClick={() => dispatch(toggleEditConditionUKModal(false))}
                     aria-label="Close"></button>
                 </div>
 
@@ -76,7 +78,7 @@ export default function EditPortal() {
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleEditConditionModal(false))}>
+                    onClick={() => dispatch(toggleEditConditionUKModal(false))}>
                     Close
                   </button>
                   <button

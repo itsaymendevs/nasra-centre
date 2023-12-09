@@ -5,6 +5,7 @@ import PhoneForm from './PhoneForm';
 import PhoneRows from './PhoneRows';
 import GeneralForm from './GeneralForm';
 import ToggleForm from './ToggleForm';
+import EditPortal from './EditPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -20,6 +21,9 @@ export default function Content() {
       <PhoneRows />
       <TermForm />
       <TermRows />
+
+      {/* portals */}
+      <EditPortal />
     </>
   );
 } // end function

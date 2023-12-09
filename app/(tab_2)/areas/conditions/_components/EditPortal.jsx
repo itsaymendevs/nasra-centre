@@ -59,14 +59,14 @@ export default function EditPortal() {
 
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">Content</label>
-                      <input type="text" className="form--input " />
+                      <textarea className="form-control form--input form--textarea"></textarea>
                     </div>
 
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">
                         Content Ar
                       </label>
-                      <input type="text" className="form--input" />
+                      <textarea className="form-control form--input form--textarea"></textarea>
                     </div>
                   </div>
                 </div>

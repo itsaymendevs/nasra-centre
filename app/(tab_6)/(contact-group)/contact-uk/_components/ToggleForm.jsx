@@ -29,7 +29,6 @@ export default function ToggleForm() {
             <input
               type="text"
               className="form--input flag--input text-center fw-bold"
-              value="900"
             />
             <h6 className="mb-0 ms-3 me-2 fw-bold">SDG</h6>
             <img className="flag--icon" src="/assets/img/Flags/sd.png" />

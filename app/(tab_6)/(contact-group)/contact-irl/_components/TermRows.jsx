@@ -1,7 +1,15 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
 
+import { toggleEditConditionIRLModal } from '@/slices/SixthModalSlice';
+import { useDispatch } from 'react-redux';
+
 export default function TermRows() {
+  // ::dispatch
+  const dispatch = useDispatch();
+
   return (
     <div id="results--row">
       {/* titles */}
@@ -54,12 +62,12 @@ export default function TermRows() {
               data-bs-toggle="dropdown"
               type="button"></button>
             <div className="dropdown-menu results--dropdown-menu">
-              <a
+              <Link
                 className="dropdown-item"
-                data-bs-target="#edit-modal"
-                data-bs-toggle="modal">
+                href="#"
+                onClick={() => dispatch(toggleEditConditionIRLModal(true))}>
                 Edit Terms
-              </a>
+              </Link>
               <Link
                 className="dropdown-item"
                 href="/contact-irl/terms/1/remove">
