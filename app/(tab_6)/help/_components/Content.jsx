@@ -3,6 +3,7 @@ import ContentRows from './ContentRows';
 import NewForm from './NewForm';
 import MediaForm from './MediaForm';
 import AddressForm from './AddressForm';
+import EditPortal from './EditPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -16,6 +17,9 @@ export default function Content() {
       <AddressForm />
       <NewForm />
       <ContentRows />
+
+      {/* portals */}
+      <EditPortal />
     </>
   );
 } // end function

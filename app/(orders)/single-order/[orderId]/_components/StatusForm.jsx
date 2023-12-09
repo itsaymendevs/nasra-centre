@@ -1,7 +1,14 @@
+'use client';
 import Link from 'next/link';
 import React from 'react';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ToggleForm() {
+  // ::root
+  const dispatch = useDispatch();
+
+  // --------------------------------- page ---------------------------------------
   return (
     <div id="order--wrap">
       {/* hr - status changer + timing */}
@@ -340,13 +347,13 @@ export default function ToggleForm() {
 
                   {/* submit button -> toggle modal for confirm */}
                   <div className="col-3 text-end align-self-end">
-                    <button
+                    <Link
                       className="btn btn btn--outline-theme btn--outline-danger rounded-1 px-4 mb-1"
                       type="button"
-                      data-bs-target="#confirm-modal"
-                      data-bs-toggle="modal">
+                      href="#"
+                      onClick={() => dispatch(toggleConfirmModal(true))}>
                       Confirm
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>

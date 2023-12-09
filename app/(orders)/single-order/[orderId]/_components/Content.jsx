@@ -4,6 +4,7 @@ import PaymentForm from './PaymentForm';
 import PrintForm from './PrintForm';
 import AddressInfo from './AddressInfo';
 import ContentRows from './ContentRows';
+import ConfirmPortal from './ConfirmPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -18,6 +19,9 @@ export default function Content() {
       <PaymentForm />
       <AddressInfo />
       <ContentRows totalRows={1} />
+
+      {/* portals */}
+      <ConfirmPortal />
     </>
   );
 } // end function
