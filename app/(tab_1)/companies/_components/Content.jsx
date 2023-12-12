@@ -4,22 +4,34 @@ import ContentRows from './ContentRows';
 import NewPortal from './NewPortal';
 import EditPortal from './EditPortal';
 
-// ----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
 
-export default function Content() {
-  // ------------------------States---------------------
+export async function getCompanies() {
+  const response = await fetch('http://127.0.0.1:8000/api/companies', {
+    cache: 'no-store',
+    method: 'GET',
+  });
 
-  // ------------------------Functions------------------
+  return response.json();
+} // end function
+
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+
+export default async function Content() {
+  // ------------------------data---------------------
+  const companies = await getCompanies();
 
   // ------------------------Page-----------------------
   return (
     <>
-      <ContentFilters totalRows={1} />
-      <ContentRows />
+      <ContentFilters totalRows={companies.length} />
+      <ContentRows companies={companies} />
 
-      {/* portals */}
       <NewPortal />
-      <EditPortal />
+      <EditPortal companies={companies} />
     </>
   );
 } // end function

@@ -5,8 +5,10 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   sortProductModal: false,
 
+  companyFilters: { search: '' },
   newCompanyModal: false,
   editCompanyModal: false,
+  editCompanyId: null,
 
   newMainCategoryModal: false,
   editMainCategoryModal: false,
@@ -30,11 +32,15 @@ const FirstModalSlice = createSlice({
     toggleSortProductModal: (state, action) =>
       void (state.sortProductModal = action.payload),
 
+    // * done
+    updateCompanyFilters: (state, action) =>
+      void (state.companyFilters.search = action.payload),
     toggleNewCompanyModal: (state, action) =>
       void (state.newCompanyModal = action.payload),
-    toggleEditCompanyModal: (state, action) =>
-      void (state.editCompanyModal = action.payload),
-
+    toggleEditCompanyModal: (state, action) => {
+      state.editCompanyModal = action.payload.status;
+      state.editCompanyId = action.payload.id;
+    },
     toggleNewMainCategoryModal: (state, action) =>
       void (state.newMainCategoryModal = action.payload),
     toggleEditMainCategoryModal: (state, action) =>
@@ -63,16 +69,22 @@ const FirstModalSlice = createSlice({
 
 export const {
   toggleSortProductModal,
+
+  updateCompanyFilters,
   toggleNewCompanyModal,
   toggleEditCompanyModal,
+
   toggleNewMainCategoryModal,
   toggleEditMainCategoryModal,
+
   toggleNewSubCategoryModal,
   toggleEditSubCategoryModal,
   toggleSortSubCategoryModal,
+
   toggleNewTypeModal,
   toggleEditTypeModal,
   toggleSortTypeModal,
+
   toggleNewUnitModal,
   toggleEditUnitModal,
 } = FirstModalSlice.actions;
