@@ -2,22 +2,84 @@
 
 import GlobalPortal from '@/portals/GlobalPortal';
 import { toggleEditUnitModal } from '@/slices/FirstModalSlice';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-export default function EditPortal() {
-  // ---------------------------------- dispatch ----------------------------------
+import { useRouter } from 'next/navigation';
+
+export default function EditPortal({ units }) {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
 
   // ---------------------------------- states ----------------------------------
-  const { editUnitModal } = useSelector((state) => state.FirstModalSlice);
+
+  // 1: modal states
+  const { editUnitModal, editUnitId } = useSelector(
+    (state) => state.FirstModalSlice
+  );
+
+  // 2: formData state
+  const initialState = { id: '', name: '', nameAr: '', abbr: '', abbrAr: '' };
+  const [formData, setFormData] = useState(initialState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: get the item from id
+  const unit = units.find((item) => item.id == editUnitId);
+
+  // 2: set item to state
+  useEffect(() => {
+    if (unit) {
+      setFormData((state) => ({
+        ...state,
+        id: unit.id,
+        name: unit.name,
+        nameAr: unit.nameAr,
+        abbr: unit.abbr,
+        abbrAr: unit.abbrAr,
+      }));
+    } // end if
+  }, [editUnitId]);
+
+  // 3: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  }; // end function
+
+  // 4: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/units/update`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    // 4.2: hot reload + dispatch
+    setFormData(initialState);
+    router.refresh();
+    dispatch(toggleEditUnitModal({ status: false }));
+  };
 
   // ---------------------------------- page ----------------------------------
+
   return (
     <>
       {editUnitModal && (
         <GlobalPortal>
           {/* modal */}
-          <div
+          <form
+            onSubmit={handleSubmit}
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -36,7 +98,9 @@ export default function EditPortal() {
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleEditUnitModal(false))}
+                    onClick={() =>
+                      dispatch(toggleEditUnitModal({ status: false }))
+                    }
                     aria-label="Close"></button>
                 </div>
 
@@ -46,21 +110,51 @@ export default function EditPortal() {
                 {/* body */}
                 <div className="modal-body">
                   <div className="row g-0 align-items-center">
+                    <input type="hidden" name="id" value={formData.id} />
+
                     <div className="col-7 mb-4">
                       <label className="form-label form--label">Name</label>
-                      <input type="text" className="form--input" />
+                      <input
+                        name="name"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="col-5 mb-4">
                       <label className="form-label form--label">Abbr</label>
-                      <input type="text" className="form--input w-100" />
+                      <input
+                        name="abbr"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formData.abbr}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="col-7 mb-4">
                       <label className="form-label form--label">Name Ar</label>
-                      <input type="text" className="form--input" />
+                      <input
+                        name="nameAr"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formData.nameAr}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="col-5 mb-4">
                       <label className="form-label form--label">Abbr</label>
-                      <input type="text" className="form--input w-100" />
+                      <input
+                        name="abbrAr"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formData.abbrAr}
+                        onChange={handleInputChange}
+                      />
                     </div>
                   </div>
                 </div>
@@ -74,21 +168,23 @@ export default function EditPortal() {
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleEditUnitModal(false))}>
+                    onClick={() =>
+                      dispatch(toggleEditUnitModal({ status: false }))
+                    }>
                     Close
                   </button>
 
                   {/* submit */}
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
-                    type="button">
+                    type="submit">
                     Save
                   </button>
                 </div>
                 {/* end footer */}
               </div>
             </div>
-          </div>
+          </form>
           {/* end modal */}
         </GlobalPortal>
       )}

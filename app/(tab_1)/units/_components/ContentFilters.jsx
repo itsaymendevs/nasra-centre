@@ -1,10 +1,16 @@
 'use client';
 
+import { updateUnitFilters } from '@/slices/FirstModalSlice';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-// ----------------------------------------------------------------------------------------------------
+import { useDispatch, useSelector } from 'react-redux';
+
+// ---------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
+  // 1: use dispatch
+  const dispatch = useDispatch();
+  const { unitFilters } = useSelector((state) => state.FirstModalSlice);
+
   // ------------------------Page-----------------------
 
   return (
@@ -24,6 +30,8 @@ export default function ContentFilters({ totalRows }) {
             type="search"
             className="form--input"
             placeholder="Search .."
+            value={unitFilters.search}
+            onChange={(e) => dispatch(updateUnitFilters(e.target.value))}
           />
         </div>
 

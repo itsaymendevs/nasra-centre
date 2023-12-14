@@ -5,9 +5,6 @@ import Link from 'next/link';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-// ------------------------------------------------------------------
-// ------------------------------------------------------------------
-
 export default function ContentRows({ companies }) {
   // ---------------------------------- dispatch ----------------------------
   const dispatch = useDispatch();
@@ -18,9 +15,9 @@ export default function ContentRows({ companies }) {
   companies = filterCompanies.filter(
     (company) => company.name.toLowerCase().indexOf(companyFilters.search) > -1
   );
-  // -------------------------------- data ---------------------------------
 
   // ---------------------------------- page ---------------------------------
+
   return (
     <div id="results--row">
       {/* titles */}

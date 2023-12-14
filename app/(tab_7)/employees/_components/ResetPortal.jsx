@@ -2,19 +2,75 @@
 
 import GlobalPortal from '@/portals/GlobalPortal';
 import { toggleResetEmployeeModal } from '@/slices/FourthModalSlice';
-import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Select from 'react-select';
 
-export default function ResetPortal() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
+export default function ResetPortal({ employees }) {
+  // ---------------------------------- global ----------------------------------
 
-  // ---------------------------------- dispatch ----------------------------------
+  // 1: use dispatch + url
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
 
   // ---------------------------------- states ----------------------------------
-  const { resetEmployeeModal } = useSelector((state) => state.FourthModalSlice);
+
+  // 1: modal states
+  const { resetEmployeeModal, resetEmployeeId } = useSelector(
+    (state) => state.FourthModalSlice
+  );
+
+  // 2: formData state
+  const initialState = { id: '', password: '' };
+  const [formData, setFormData] = useState(initialState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: get the item from id
+  const employee = employees.find((item) => item.id == resetEmployeeId);
+
+  // 2: set item to state
+  useEffect(() => {
+    if (employee) {
+      setFormData((state) => ({
+        ...state,
+        id: employee.id,
+        adminPassword: '',
+        password: '',
+      }));
+    } // end if
+  }, [resetEmployeeId]);
+
+  // 3: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  }; // end function
+
+  // 4: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    console.log(formData);
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/employees/reset-password`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    console.log(await response.json());
+
+    // 4.2: hot reload + dispatch
+    setFormData(initialState);
+    router.refresh();
+    dispatch(toggleResetEmployeeModal({ status: false }));
+  };
 
   // ---------------------------------- page ----------------------------------
   return (
@@ -22,7 +78,8 @@ export default function ResetPortal() {
       {resetEmployeeModal && (
         <GlobalPortal>
           {/* modal */}
-          <div
+          <form
+            onSubmit={handleSubmit}
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -40,7 +97,9 @@ export default function ResetPortal() {
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleResetEmployeeModal(false))}
+                    onClick={() =>
+                      dispatch(toggleResetEmployeeModal({ status: false }))
+                    }
                     aria-label="Close"></button>
                 </div>
 
@@ -49,15 +108,29 @@ export default function ResetPortal() {
                   <div className="row g-0 align-items-center">
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">
-                        Admin Passwrod
+                        Admin Password
                       </label>
-                      <input type="password" className="form--input" />
+                      <input
+                        name="adminPassword"
+                        type="password"
+                        required
+                        className="form--input"
+                        value={formData.adminPassword}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">
                         User's New Password
                       </label>
-                      <input type="password" className="form--input" />
+                      <input
+                        name="password"
+                        type="password"
+                        required
+                        className="form--input"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                      />
                     </div>
                   </div>
                 </div>
@@ -67,18 +140,20 @@ export default function ResetPortal() {
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleResetEmployeeModal(false))}>
+                    onClick={() =>
+                      dispatch(toggleResetEmployeeModal({ status: false }))
+                    }>
                     Close
                   </button>
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
-                    type="button">
-                    Save
+                    type="submit">
+                    Reset
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
           {/* end modal */}
         </GlobalPortal>
       )}
