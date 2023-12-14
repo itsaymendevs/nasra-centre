@@ -71,11 +71,12 @@ export default function RootLayout({ children }) {
         <Script async src="/assets/bootstrap/js/bootstrap.min.js" />
         <Script async src="/assets/js/aos.min.js" />
         <Script async src="/assets/js/bs-init.js" />
-        <Script
+        {/* <Script
           async
+          rel="preload prefetch"
           src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"
         />
-        <Script async src="/assets/js/init-sort.js" />
+        <Script async src="/assets/js/init-sort.js" /> */}
         <Script async src="/assets/js/init.js" />
         {/* --------------------------------------------------------- */}
       </body>

@@ -15,9 +15,12 @@
     "react": "^18",
     "react-dom": "^18",
     "react-redux": "^9.0.2",
-    "react-select": "^5.8.0"
+    "react-select": "^5.8.0",
+    "react-sortablejs": "^6.1.4",
+    "sortablejs": "^1.15.1"
   },
   "devDependencies": {
+    "@types/sortablejs": "^1.15.7",
     "eslint": "^8",
     "eslint-config-next": "14.0.3"
   }

@@ -4,17 +4,68 @@ import GlobalPortal from '@/portals/GlobalPortal';
 import { toggleNewSubCategoryModal } from '@/slices/FirstModalSlice';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
-export default function NewPortal() {
+export default function NewPortal({ mainCategories }) {
   // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [];
+  mainCategories.map((mainCategory) =>
+    options.push({ value: mainCategory.id, label: mainCategory.name })
+  );
 
-  // ---------------------------------- dispatch ----------------------------------
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
 
   // ---------------------------------- states ----------------------------------
+
+  // 1: modal states
   const { newSubCategoryModal } = useSelector((state) => state.FirstModalSlice);
+
+  // 2: formData state
+  const initialState = { id: '', name: '', nameAr: '', mainCategoryId: '' };
+
+  // 2.1: select states
+  const mainCategorySelectedOption = null;
+
+  // initiate
+  const [formData, setFormData] = useState(initialState);
+
+  const [mainCategorySelectedOptionState, setMainCategorySelectedOptionState] =
+    useState(mainCategorySelectedOption);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  }; // end function
+
+  // 2: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/sub-categories/store`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    // 4.2: hot reload + dispatch
+    setFormData(initialState);
+    router.refresh();
+    dispatch(toggleNewSubCategoryModal(false));
+  };
 
   // ---------------------------------- page ----------------------------------
   return (
@@ -22,7 +73,8 @@ export default function NewPortal() {
       {newSubCategoryModal && (
         <GlobalPortal>
           {/* modal */}
-          <div
+          <form
+            onSubmit={handleSubmit}
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -53,9 +105,18 @@ export default function NewPortal() {
                       <Select
                         className="form--select-container"
                         classNamePrefix="form--select"
-                        instanceId="mainCategory"
+                        instanceId="mainCategoryId"
+                        name="mainCategoryId"
+                        required
+                        value={mainCategorySelectedOptionState}
                         options={options}
-                        onChange={''}
+                        onChange={(selectedOption) => {
+                          setMainCategorySelectedOptionState(selectedOption);
+                          setFormData((state) => ({
+                            ...state,
+                            mainCategoryId: selectedOption?.value,
+                          }));
+                        }}
                         placeholder={''}
                         isClearable
                       />
@@ -63,11 +124,25 @@ export default function NewPortal() {
                     <div className="col-6 mb-4"></div>
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">Name</label>
-                      <input type="text" className="form--input" />
+                      <input
+                        name="name"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
                     </div>
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">Name Ar</label>
-                      <input type="text" className="form--input" />
+                      <input
+                        name="nameAr"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formData.nameAr}
+                        onChange={handleInputChange}
+                      />
                     </div>
                   </div>
                 </div>
@@ -81,13 +156,13 @@ export default function NewPortal() {
                   </button>
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
-                    type="button">
+                    type="submit">
                     Save
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
           {/* end modal */}
         </GlobalPortal>
       )}

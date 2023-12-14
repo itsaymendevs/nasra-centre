@@ -2,21 +2,19 @@
 
 import Link from 'next/link';
 import React from 'react';
-
-import { toggleEditSubCategoryModal } from '@/slices/FirstModalSlice';
+import { toggleEditMainCategoryModal } from '@/slices/FirstModalSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function ContentRows({ subCategories }) {
+export default function ContentRows({ mainCategories }) {
   // ---------------------------------- dispatch ----------------------------
   const dispatch = useDispatch();
-  const { subCategoryFilters } = useSelector((state) => state.FirstModalSlice);
-  const filterSubCategories = subCategories;
+  const { mainCategoryFilters } = useSelector((state) => state.FirstModalSlice);
+  const filterMainCategories = mainCategories;
 
-  // * ::filter subCategories
-  subCategories = filterSubCategories.filter((subCategory) =>
-    subCategoryFilters.mainCategoryId
-      ? subCategory.mainCategoryId == subCategoryFilters.mainCategoryId
-      : true
+  // * ::filter mainCategories
+  mainCategories = filterMainCategories.filter(
+    (mainCategory) =>
+      mainCategory.name.toLowerCase().indexOf(mainCategoryFilters.search) > -1
   );
 
   // -------------------------------- data ---------------------------------
@@ -49,23 +47,23 @@ export default function ContentRows({ subCategories }) {
       {/* ------------------------ */}
 
       {/* content rows */}
-      {subCategories.map((subCategory) => (
+      {mainCategories.map((mainCategory) => (
         <div
           className="row g-0 align-items-center results--item"
-          key={subCategory.id}>
+          key={mainCategory.id}>
           <div className="col-2">
             <label className="col-form-label form--label row--label">
-              {subCategory.serial}
+              {mainCategory.serial}
             </label>
           </div>
           <div className="col-4">
             <label className="col-form-label form--label row--label">
-              {subCategory.name}
+              {mainCategory.name}
             </label>
           </div>
           <div className="col-5">
             <label className="col-form-label form--label row--label">
-              {subCategory.nameAr}
+              {mainCategory.nameAr}
             </label>
           </div>
           <div className="col-1">
@@ -74,9 +72,9 @@ export default function ContentRows({ subCategories }) {
               type="button"
               onClick={() =>
                 dispatch(
-                  toggleEditSubCategoryModal({
+                  toggleEditMainCategoryModal({
                     status: true,
-                    id: subCategory.id,
+                    id: mainCategory.id,
                   })
                 )
               }>

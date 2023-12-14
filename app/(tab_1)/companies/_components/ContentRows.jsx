@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  toggleEditCompanyModal,
-  toggleNewCompanyModal,
-} from '@/slices/FirstModalSlice';
+import { toggleEditCompanyModal } from '@/slices/FirstModalSlice';
 import Link from 'next/link';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';

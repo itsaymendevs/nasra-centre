@@ -1,31 +1,63 @@
 'use client';
 
 import GlobalPortal from '@/portals/GlobalPortal';
-import { toggleNewCompanyModal } from '@/slices/FirstModalSlice';
-import React, { useState } from 'react';
+import { toggleEditMainCategoryModal } from '@/slices/FirstModalSlice';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 
-export default function NewPortal() {
+export default function EditPortal({ mainCategories }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
   const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
+  const imageURL = 'http://127.0.0.1:8000/storage/mainCategories/megalobox.jpg';
 
   // ---------------------------------- states ----------------------------------
 
   // 1: modal states
-  const { newCompanyModal } = useSelector((state) => state.FirstModalSlice);
+  const { editMainCategoryModal, editMainCategoryId } = useSelector(
+    (state) => state.FirstModalSlice
+  );
 
   // 2: formData state
-  const initialState = { id: '', name: '', nameAr: '' };
+  const initialState = {
+    id: '',
+    name: '',
+    nameAr: '',
+    image: '',
+  };
+
+  const uploadInitialState = {
+    firstImage: '',
+  };
+
   const [formData, setFormData] = useState(initialState);
+  const [uploadData, setUploadData] = useState(uploadInitialState);
 
   // ---------------------------------- functions ----------------------------------
 
-  // 1: handle input change
+  // 1: get the item from id
+  const mainCategory = mainCategories.find(
+    (item) => item.id == editMainCategoryId
+  );
+
+  // 2: set item to state
+  useEffect(() => {
+    if (mainCategory) {
+      setFormData((state) => ({
+        ...state,
+        id: mainCategory.id,
+        name: mainCategory.name,
+        nameAr: mainCategory.nameAr,
+        image: imageURL + mainCategory.image,
+      }));
+    } // end if
+  }, [editMainCategoryId]);
+
+  // 3: handle input change
   const handleInputChange = (event) => {
     setFormData((state) => ({
       ...state,
@@ -33,13 +65,21 @@ export default function NewPortal() {
     }));
   }; // end function
 
-  // 2: handle submit
+  // 3.1: handle image change
+  const handleImageChange = (event) => {
+    setUploadData((state) => ({
+      ...state,
+      firstImage: URL.createObjectURL(event.target.files[0]),
+    }));
+  }; // end function
+
+  // 4: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // 4.1: insert new item
-    const response = await fetch(`${url}/api/companies/store`, {
-      method: 'POST',
+    const response = await fetch(`${url}/api/main-categories/update`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -48,14 +88,15 @@ export default function NewPortal() {
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);
+    setUploadData(uploadInitialState);
     router.refresh();
-    dispatch(toggleNewCompanyModal(false));
+    dispatch(toggleEditMainCategoryModal({ status: false }));
   };
 
   // ---------------------------------- page ----------------------------------
   return (
     <>
-      {newCompanyModal && (
+      {editMainCategoryModal && (
         <GlobalPortal>
           {/* modal */}
           <form
@@ -69,38 +110,60 @@ export default function NewPortal() {
               paddingRight: '8px',
               backgroundColor: '#1111118a',
             }}
-            id="add-modal">
+            id="edit-modal">
             <div className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
-                {/* header */}
                 <div className="modal-header modal--header">
-                  <h4 className="modal-title fw-bold">New Company</h4>
+                  <h4 className="modal-title fw-bold">Edit Main-Category</h4>
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleNewCompanyModal(false))}
+                    onClick={() =>
+                      dispatch(toggleEditMainCategoryModal({ status: false }))
+                    }
                     aria-label="Close"></button>
                 </div>
 
-                {/* ---------------------- */}
-                {/* ---------------------- */}
-
-                {/* body */}
                 <div className="modal-body">
-                  {/* name / ar */}
-                  <div className="row g-0 align-items-center">
+                  <div className="row g-0 align-items-end">
                     <div className="col-6 mb-4">
+                      <label
+                        className="form-label form--label"
+                        htmlFor="image--input">
+                        Cover Picture
+                      </label>
+                      <label className="img--holder" htmlFor="image--input">
+                        <img
+                          src={
+                            uploadData.firstImage
+                              ? uploadData.firstImage
+                              : '/assets/img/Placeholder/image.png'
+                          }
+                          loading="lazy"
+                          id="image--input-holder"
+                        />
+                        <input
+                          type="file"
+                          name="image"
+                          id="image--input"
+                          accept="image/*"
+                          className="d-none"
+                          onChange={handleImageChange}
+                        />
+                      </label>
+                    </div>
+                    <div className="col-6 mb-4">
+                      <input type="hidden" name="id" value={formData.id} />
+
                       <label className="form-label form--label">Name</label>
                       <input
                         name="name"
                         type="text"
                         required
-                        className="form--input"
+                        className="form--input mb-4"
                         value={formData.name}
                         onChange={handleInputChange}
                       />
-                    </div>
-                    <div className="col-6 mb-4">
                       <label className="form-label form--label">Name Ar</label>
                       <input
                         name="nameAr"
@@ -113,28 +176,22 @@ export default function NewPortal() {
                     </div>
                   </div>
                 </div>
-                {/* end body */}
-
-                {/* ---------------------- */}
-                {/* ---------------------- */}
 
                 <div className="modal-footer">
-                  {/* close */}
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleNewCompanyModal(false))}>
+                    onClick={() =>
+                      dispatch(toggleEditMainCategoryModal({ status: false }))
+                    }>
                     Close
                   </button>
-
-                  {/* submit */}
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
                     type="submit">
                     Save
                   </button>
                 </div>
-                {/* end footer */}
               </div>
             </div>
           </form>

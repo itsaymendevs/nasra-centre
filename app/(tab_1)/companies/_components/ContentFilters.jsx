@@ -7,8 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
-  // ---------------------------------- global ----------------------------------
-
   // 1: use dispatch
   const dispatch = useDispatch();
   const { companyFilters } = useSelector((state) => state.FirstModalSlice);

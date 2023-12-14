@@ -3,13 +3,15 @@
 import Link from 'next/link';
 import React from 'react';
 
-import { toggleSortSubCategoryModal } from '@/slices/FirstModalSlice';
-import { useDispatch } from 'react-redux';
+import { updateMainCategoryFilters } from '@/slices/FirstModalSlice';
+import { useDispatch, useSelector } from 'react-redux';
+
 // ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({ totalRows }) {
-  // ::root
+  // 1: use dispatch
   const dispatch = useDispatch();
+  const { mainCategoryFilters } = useSelector((state) => state.FirstModalSlice);
 
   // ------------------------Page-----------------------
 
@@ -30,6 +32,10 @@ export default function ContentFilters({ totalRows }) {
             type="search"
             className="form--input"
             placeholder="Search .."
+            value={mainCategoryFilters.search}
+            onChange={(e) =>
+              dispatch(updateMainCategoryFilters(e.target.value))
+            }
           />
         </div>
 

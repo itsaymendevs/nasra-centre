@@ -2,27 +2,72 @@
 
 import GlobalPortal from '@/portals/GlobalPortal';
 import { toggleSortTypeModal } from '@/slices/FirstModalSlice';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
-export default function SortPortal() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
+export default function SortPortal({ mainCategories, subCategories }) {
+  // ---------------------------------- global ----------------------------------
 
-  // ---------------------------------- dispatch ----------------------------------
+  // 1: use dispatch + url
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
 
   // ---------------------------------- states ----------------------------------
+
+  // 1: modal states
   const { sortTypeModal } = useSelector((state) => state.FirstModalSlice);
 
+  // 2: formData state
+  const initialState = {
+    mainCategoryId: null,
+    subCategoryId: null,
+  };
+
+  // initiate
+  const [formData, setFormData] = useState(initialState);
+
+  // 2.1: select states
+  const options = [];
+  const optionsTwo = [];
+
+  mainCategories.map((mainCategory) =>
+    options.push({ value: mainCategory.id, label: mainCategory.name })
+  );
+
+  subCategories.map((subCategory) => {
+    // 2.1: if there is mainCategory
+    formData.mainCategoryId &&
+      (formData.mainCategoryId
+        ? subCategory.mainCategoryId == formData.mainCategoryId &&
+          optionsTwo.push({ value: subCategory.id, label: subCategory.name })
+        : optionsTwo.push({ value: subCategory.id, label: subCategory.name }));
+  });
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 2: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // 4.2: hot reload + dispatch
+    dispatch(toggleSortTypeModal(false));
+    router.push(
+      `/inner-types/${formData.mainCategoryId}/${formData.subCategoryId}/sort`
+    );
+  };
+
   // ---------------------------------- page ----------------------------------
+
   return (
     <>
       {sortTypeModal && (
         <GlobalPortal>
           {/* modal */}
-          <div
+          <form
+            onSubmit={handleSubmit}
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -40,7 +85,10 @@ export default function SortPortal() {
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleSortTypeModal(false))}
+                    onClick={() => {
+                      dispatch(toggleSortTypeModal(false));
+                      setFormData(initialState);
+                    }}
                     aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
@@ -53,8 +101,15 @@ export default function SortPortal() {
                         className="form--select-container"
                         classNamePrefix="form--select"
                         instanceId="mainCategory"
+                        required
                         options={options}
-                        onChange={''}
+                        onChange={(selectedOption) =>
+                          setFormData((state) => ({
+                            ...state,
+                            mainCategoryId: selectedOption?.value,
+                            subCategoryId: null,
+                          }))
+                        }
                         placeholder={''}
                         isClearable
                       />
@@ -67,8 +122,22 @@ export default function SortPortal() {
                         className="form--select-container"
                         classNamePrefix="form--select"
                         instanceId="subCategory"
-                        options={options}
-                        onChange={''}
+                        required
+                        options={optionsTwo}
+                        value={
+                          optionsTwo.length > 0 && formData?.subCategoryId
+                            ? optionsTwo.find(
+                                (option) =>
+                                  option.value == formData?.subCategoryId
+                              )
+                            : ''
+                        }
+                        onChange={(selectedOption) =>
+                          setFormData((state) => ({
+                            ...state,
+                            subCategoryId: selectedOption?.value,
+                          }))
+                        }
                         placeholder={''}
                         isClearable
                       />
@@ -79,18 +148,21 @@ export default function SortPortal() {
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleSortTypeModal(false))}>
+                    onClick={() => {
+                      dispatch(toggleSortTypeModal(false));
+                      setFormData(initialState);
+                    }}>
                     Close
                   </button>
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
-                    type="button">
+                    type="submit">
                     Sort
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
           {/* end modal */}
         </GlobalPortal>
       )}

@@ -1,16 +1,25 @@
 'use client';
 
-import { toggleSortSubCategoryModal } from '@/slices/FirstModalSlice';
+import {
+  toggleSortSubCategoryModal,
+  updateSubCategoryFilters,
+} from '@/slices/FirstModalSlice';
 import Link from 'next/link';
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 // ----------------------------------------------------------------------------------------------------
 
-export default function ContentFilters({ totalRows }) {
+export default function ContentFilters({ totalRows, mainCategories }) {
   // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [];
+  mainCategories.map((mainCategory) =>
+    options.push({ value: mainCategory.id, label: mainCategory.name })
+  );
+
+  // 1: use dispatch
   const dispatch = useDispatch();
+  const { subCategoryFilters } = useSelector((state) => state.FirstModalSlice);
 
   // ------------------------Page-----------------------
 
@@ -27,7 +36,13 @@ export default function ContentFilters({ totalRows }) {
             classNamePrefix="form--select"
             instanceId="mainCategory"
             options={options}
-            onChange={''}
+            onChange={(selectedOption) =>
+              dispatch(
+                updateSubCategoryFilters({
+                  mainCategoryId: selectedOption?.value,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />

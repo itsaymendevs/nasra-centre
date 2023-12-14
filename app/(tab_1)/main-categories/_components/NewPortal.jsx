@@ -1,13 +1,12 @@
 'use client';
 
 import GlobalPortal from '@/portals/GlobalPortal';
-import { toggleNewTypeModal } from '@/slices/FirstModalSlice';
+import { toggleNewMainCategoryModal } from '@/slices/FirstModalSlice';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import Select from 'react-select';
 
-export default function NewPortal({ mainCategories, subCategories }) {
+export default function NewPortal() {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
@@ -18,36 +17,18 @@ export default function NewPortal({ mainCategories, subCategories }) {
   // ---------------------------------- states ----------------------------------
 
   // 1: modal states
-  const { newTypeModal } = useSelector((state) => state.FirstModalSlice);
-
-  // 2: formData state
-  const initialState = {
-    id: '',
-    name: '',
-    nameAr: '',
-    mainCategoryId: null,
-    subCategoryId: null,
-  };
-
-  // initiate
-  const [formData, setFormData] = useState(initialState);
-
-  // 2.1: select states
-  const options = [];
-  const optionsTwo = [];
-
-  mainCategories.map((mainCategory) =>
-    options.push({ value: mainCategory.id, label: mainCategory.name })
+  const { newMainCategoryModal } = useSelector(
+    (state) => state.FirstModalSlice
   );
 
-  subCategories.map((subCategory) => {
-    // 2.1: if there is mainCategory
-    formData.mainCategoryId &&
-      (formData.mainCategoryId
-        ? subCategory.mainCategoryId == formData.mainCategoryId &&
-          optionsTwo.push({ value: subCategory.id, label: subCategory.name })
-        : optionsTwo.push({ value: subCategory.id, label: subCategory.name }));
-  });
+  // 2: formData state
+  const initialState = { id: '', name: '', nameAr: '', image: '' };
+  const uploadInitialState = {
+    firstImage: '',
+  };
+
+  const [formData, setFormData] = useState(initialState);
+  const [uploadData, setUploadData] = useState(uploadInitialState);
 
   // ---------------------------------- functions ----------------------------------
 
@@ -59,12 +40,20 @@ export default function NewPortal({ mainCategories, subCategories }) {
     }));
   }; // end function
 
+  // 3.1: handle image change
+  const handleImageChange = (event) => {
+    setUploadData((state) => ({
+      ...state,
+      firstImage: URL.createObjectURL(event.target.files[0]),
+    }));
+  }; // end function
+
   // 2: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // 4.1: insert new item
-    const response = await fetch(`${url}/api/inner-types/store`, {
+    const response = await fetch(`${url}/api/main-categories/store`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -74,14 +63,15 @@ export default function NewPortal({ mainCategories, subCategories }) {
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);
+    setUploadData(uploadInitialState);
     router.refresh();
-    dispatch(toggleNewTypeModal(false));
+    dispatch(toggleNewMainCategoryModal(false));
   };
 
   // ---------------------------------- page ----------------------------------
   return (
     <>
-      {newTypeModal && (
+      {newMainCategoryModal && (
         <GlobalPortal>
           {/* modal */}
           <form
@@ -99,66 +89,40 @@ export default function NewPortal({ mainCategories, subCategories }) {
             <div className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
                 <div className="modal-header modal--header">
-                  <h4 className="modal-title fw-bold">New Type</h4>
+                  <h4 className="modal-title fw-bold">New Main-Category</h4>
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => {
-                      dispatch(toggleNewTypeModal(false));
-                      setFormData(initialState);
-                    }}
+                    onClick={() => dispatch(toggleNewMainCategoryModal(false))}
                     aria-label="Close"></button>
                 </div>
+
                 <div className="modal-body">
-                  <div className="row g-0 align-items-center">
+                  <div className="row g-0 align-items-end">
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">
-                        Main Category
+                        Cover Picture
                       </label>
-                      <Select
-                        className="form--select-container"
-                        classNamePrefix="form--select"
-                        instanceId="mainCategory"
-                        required
-                        options={options}
-                        onChange={(selectedOption) =>
-                          setFormData((state) => ({
-                            ...state,
-                            mainCategoryId: selectedOption?.value,
-                            subCategoryId: null,
-                          }))
-                        }
-                        placeholder={''}
-                        isClearable
-                      />
-                    </div>
-                    <div className="col-6 mb-4">
-                      <label className="form-label form--label">
-                        Sub Category
+                      <label className="img--holder" htmlFor="image--input">
+                        <img
+                          src={
+                            uploadData.firstImage
+                              ? uploadData.firstImage
+                              : '/assets/img/Placeholder/image.png'
+                          }
+                          loading="lazy"
+                          id="image--input-holder"
+                        />
+                        <input
+                          type="file"
+                          required
+                          name="image"
+                          id="image--input"
+                          accept="image/*"
+                          className="d-none"
+                          onChange={handleImageChange}
+                        />
                       </label>
-                      <Select
-                        className="form--select-container"
-                        classNamePrefix="form--select"
-                        instanceId="subCategory"
-                        required
-                        options={optionsTwo}
-                        value={
-                          optionsTwo.length > 0 && formData?.subCategoryId
-                            ? optionsTwo.find(
-                                (option) =>
-                                  option.value == formData?.subCategoryId
-                              )
-                            : ''
-                        }
-                        onChange={(selectedOption) =>
-                          setFormData((state) => ({
-                            ...state,
-                            subCategoryId: selectedOption?.value,
-                          }))
-                        }
-                        placeholder={''}
-                        isClearable
-                      />
                     </div>
                     <div className="col-6 mb-4">
                       <label className="form-label form--label">Name</label>
@@ -166,12 +130,10 @@ export default function NewPortal({ mainCategories, subCategories }) {
                         name="name"
                         type="text"
                         required
-                        className="form--input"
+                        className="form--input mb-4"
                         value={formData.name}
                         onChange={handleInputChange}
                       />
-                    </div>
-                    <div className="col-6 mb-4">
                       <label className="form-label form--label">Name Ar</label>
                       <input
                         name="nameAr"
@@ -184,14 +146,12 @@ export default function NewPortal({ mainCategories, subCategories }) {
                     </div>
                   </div>
                 </div>
+
                 <div className="modal-footer">
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => {
-                      dispatch(toggleNewTypeModal(false));
-                      setFormData(initialState);
-                    }}>
+                    onClick={() => dispatch(toggleNewMainCategoryModal(false))}>
                     Close
                   </button>
                   <button

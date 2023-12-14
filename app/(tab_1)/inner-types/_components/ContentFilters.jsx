@@ -1,16 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import React, { useRef } from 'react';
 import Select from 'react-select';
-import { toggleSortTypeModal } from '@/slices/FirstModalSlice';
-import { useDispatch } from 'react-redux';
+import {
+  toggleSortTypeModal,
+  updateTypeFilters,
+} from '@/slices/FirstModalSlice';
+import { useDispatch, useSelector } from 'react-redux';
 // ----------------------------------------------------------------------------------------------------
 
-export default function ContentFilters({ totalRows }) {
+export default function ContentFilters({
+  totalRows,
+  mainCategories,
+  subCategories,
+}) {
   // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [];
+  const optionsTwo = [];
+  const subCategoryRef = useRef();
+
+  // 1: use dispatch
   const dispatch = useDispatch();
+  const { typeFilters } = useSelector((state) => state.FirstModalSlice);
+
+  // 2: prepare filters
+  mainCategories.map((mainCategory) =>
+    options.push({ value: mainCategory.id, label: mainCategory.name })
+  );
+
+  subCategories.map((subCategory) => {
+    // 2.1: if there is mainCategory
+    typeFilters.mainCategoryId &&
+      (typeFilters.mainCategoryId
+        ? subCategory.mainCategoryId == typeFilters.mainCategoryId &&
+          optionsTwo.push({ value: subCategory.id, label: subCategory.name })
+        : optionsTwo.push({ value: subCategory.id, label: subCategory.name }));
+  });
 
   // ------------------------Page-----------------------
 
@@ -27,7 +53,13 @@ export default function ContentFilters({ totalRows }) {
             classNamePrefix="form--select"
             instanceId="mainCategory"
             options={options}
-            onChange={''}
+            onChange={(selectedOption) =>
+              dispatch(
+                updateTypeFilters({
+                  mainCategoryId: selectedOption?.value,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />
@@ -39,8 +71,22 @@ export default function ContentFilters({ totalRows }) {
             className="form--select-container"
             classNamePrefix="form--select"
             instanceId="subCategory"
-            options={options}
-            onChange={''}
+            options={optionsTwo}
+            value={
+              optionsTwo.length > 0 && typeFilters.subCategoryId
+                ? optionsTwo.find(
+                    (option) => option.value == typeFilters?.subCategoryId
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              dispatch(
+                updateTypeFilters({
+                  subCategoryId: selectedOption?.value,
+                  mainCategoryId: typeFilters?.mainCategoryId,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />

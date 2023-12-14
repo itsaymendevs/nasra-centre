@@ -5,21 +5,52 @@ import NewPortal from './NewPortal';
 import EditPortal from './EditPortal';
 import SortPortal from './SortPortal';
 
-// ----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------
 
-export default function Content() {
-  // ------------------------States---------------------
-  // ------------------------Functions------------------
+// 1: fetch data
+export async function getSubCategories() {
+  const response = await fetch('http://127.0.0.1:8000/api/sub-categories', {
+    cache: 'no-store',
+    method: 'GET',
+  });
+
+  return response.json();
+} // end function
+
+export async function getMainCategories() {
+  const response = await fetch('http://127.0.0.1:8000/api/main-categories', {
+    cache: 'no-store',
+    method: 'GET',
+  });
+
+  return response.json();
+} // end function
+
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+
+export default async function Content() {
+  /// ------------------------data---------------------
+  const mainCategories = await getMainCategories();
+  const subCategories = await getSubCategories();
+
   // ------------------------Page-----------------------
   return (
     <>
-      <ContentFilters totalRows={1} />
-      <ContentRows />
+      <ContentFilters
+        totalRows={subCategories.length}
+        mainCategories={mainCategories}
+      />
+      <ContentRows subCategories={subCategories} />
 
       {/* portals */}
-      <NewPortal />
-      <EditPortal />
-      <SortPortal />
+      <NewPortal mainCategories={mainCategories} />
+      <EditPortal
+        mainCategories={mainCategories}
+        subCategories={subCategories}
+      />
+      <SortPortal mainCategories={mainCategories} />
     </>
   );
 } // end function

@@ -2,29 +2,58 @@
 
 import GlobalPortal from '@/portals/GlobalPortal';
 import { toggleSortSubCategoryModal } from '@/slices/FirstModalSlice';
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
+import { useRouter } from 'next/navigation';
 
-export default function SortPortal() {
+export default function SortPortal({ mainCategories }) {
   // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [];
+  mainCategories.map((mainCategory) =>
+    options.push({ value: mainCategory.id, label: mainCategory.name })
+  );
 
-  // ---------------------------------- dispatch ----------------------------------
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
 
   // ---------------------------------- states ----------------------------------
+
+  // 2: modal states
   const { sortSubCategoryModal } = useSelector(
     (state) => state.FirstModalSlice
   );
 
+  // 2.1: select states
+  const mainCategorySelectedOption = null;
+  const [mainCategorySelectedOptionState, setMainCategorySelectedOptionState] =
+    useState(mainCategorySelectedOption);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 2: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // close modal
+    dispatch(toggleSortSubCategoryModal(false));
+
+    router.push(
+      `/sub-categories/${mainCategorySelectedOptionState.value}/sort`
+    );
+  };
   // ---------------------------------- page ----------------------------------
   return (
     <>
       {sortSubCategoryModal && (
         <GlobalPortal>
           {/* modal */}
-          <div
+          <form
+            onSubmit={handleSubmit}
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -54,9 +83,14 @@ export default function SortPortal() {
                       <Select
                         className="form--select-container"
                         classNamePrefix="form--select"
-                        instanceId="mainCategory"
+                        instanceId="mainCategoryId"
+                        name="mainCategoryId"
+                        required
+                        value={mainCategorySelectedOptionState}
                         options={options}
-                        onChange={''}
+                        onChange={(selectedOption) => {
+                          setMainCategorySelectedOptionState(selectedOption);
+                        }}
                         placeholder={''}
                         isClearable
                       />
@@ -72,13 +106,13 @@ export default function SortPortal() {
                   </button>
                   <button
                     className="btn btn--theme btn--sm px-5 rounded-1"
-                    type="button">
+                    type="submit">
                     Sort
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
           {/* end modal */}
         </GlobalPortal>
       )}
