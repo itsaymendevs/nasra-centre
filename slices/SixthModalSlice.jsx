@@ -4,33 +4,31 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   editParagraphModal: false,
-  editConditionSDModal: false,
-  editConditionUKModal: false,
-  editConditionIRLModal: false,
+  editParagraphId: null,
+
+  editConditionModal: false,
+  editConditionId: null,
 };
 
 const SixthModalSlice = createSlice({
   name: 'SixthModalSlice',
   initialState,
   reducers: {
-    toggleEditParagraphModal: (state, action) =>
-      void (state.editParagraphModal = action.payload),
+    toggleEditParagraphModal: (state, action) => {
+      state.editParagraphModal = action.payload.status;
+      state.editParagraphId = action.payload.id;
+    },
 
-    toggleEditConditionSDModal: (state, action) =>
-      void (state.editConditionSDModal = action.payload),
-
-    toggleEditConditionUKModal: (state, action) =>
-      void (state.editConditionUKModal = action.payload),
-
-    toggleEditConditionIRLModal: (state, action) =>
-      void (state.editConditionIRLModal = action.payload),
+    toggleEditConditionModal: (state, action) => {
+      state.editConditionModal = action.payload.status;
+      state.editConditionId = action.payload.id;
+    },
   },
 });
 
 export const {
   toggleEditParagraphModal,
-  toggleEditConditionSDModal,
-  toggleEditConditionUKModal,
-  toggleEditConditionIRLModal,
+
+  toggleEditConditionModal,
 } = SixthModalSlice.actions;
 export default SixthModalSlice.reducer;

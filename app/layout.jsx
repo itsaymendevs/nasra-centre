@@ -23,6 +23,7 @@ import '@/public/assets/css/react-select.css';
 import Script from 'next/script';
 import { Provider } from 'react-redux';
 import StoreProvider from '@/slices/StoreProvider';
+import { CookiesProvider } from 'next-client-cookies/server';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -60,7 +61,7 @@ export default function RootLayout({ children }) {
       <body>
         {/* content */}
         <StoreProvider>
-          {children}
+          <CookiesProvider>{children}</CookiesProvider>
 
           {/* portals */}
           <div id="portals"></div>

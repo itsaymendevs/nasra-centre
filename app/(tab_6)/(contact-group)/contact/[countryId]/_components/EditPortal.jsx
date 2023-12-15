@@ -1,13 +1,13 @@
 'use client';
 
 import GlobalPortal from '@/portals/GlobalPortal';
-import { toggleNewMainCategoryModal } from '@/slices/FirstModalSlice';
-import React, { useState } from 'react';
+import { toggleEditConditionModal } from '@/slices/SixthModalSlice';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 
-export default function NewPortal() {
+export default function EditPortal({ country, terms }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
@@ -20,22 +20,40 @@ export default function NewPortal() {
   // ---------------------------------- states ----------------------------------
 
   // 1: modal states
-  const { newMainCategoryModal } = useSelector(
-    (state) => state.FirstModalSlice
+  const { editConditionModal, editConditionId } = useSelector(
+    (state) => state.SixthModalSlice
   );
 
   // 2: formData state
-  const initialState = { id: '', name: '', nameAr: '', image: '' };
-  const uploadInitialState = {
-    firstImage: '',
+  const initialState = {
+    id: '',
+    title: '',
+    titleAr: '',
+    content: '',
+    contentAr: '',
   };
-
   const [formData, setFormData] = useState(initialState);
-  const [uploadData, setUploadData] = useState(uploadInitialState);
 
   // ---------------------------------- functions ----------------------------------
 
-  // 1: handle input change
+  // 1: get the item from id
+  const term = terms.find((item) => item.id == editConditionId);
+
+  // 2: set item to state
+  useEffect(() => {
+    if (term) {
+      setFormData((state) => ({
+        ...state,
+        id: term.id,
+        title: term.title,
+        titleAr: term.titleAr,
+        content: term.content,
+        contentAr: term.contentAr,
+      }));
+    } // end if
+  }, [editConditionId]);
+
+  // 3: handle input change
   const handleInputChange = (event) => {
     setFormData((state) => ({
       ...state,
@@ -43,39 +61,34 @@ export default function NewPortal() {
     }));
   }; // end function
 
-  // 3.1: handle image change
-  const handleImageChange = (event) => {
-    setUploadData((state) => ({
-      ...state,
-      firstImage: URL.createObjectURL(event.target.files[0]),
-    }));
-  }; // end function
-
-  // 2: handle submit
+  // 4: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // 4.1: insert new item
-    const response = await fetch(`${url}/api/main-categories/store`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      `${url}/api/contact/${country.id}/terms/update`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);
-    setUploadData(uploadInitialState);
     router.refresh();
-    dispatch(toggleNewMainCategoryModal(false));
+    dispatch(toggleEditConditionModal({ status: false }));
   };
 
   // ---------------------------------- page ----------------------------------
+
   return (
     <>
-      {newMainCategoryModal && (
+      {editConditionModal && (
         <GlobalPortal>
           {/* modal */}
           <form
@@ -89,73 +102,79 @@ export default function NewPortal() {
               paddingRight: '8px',
               backgroundColor: '#1111118a',
             }}
-            id="add-modal">
+            id="edit-modal">
             <div className="modal-dialog modal-lg" role="document">
               <div className="modal-content">
                 <div className="modal-header modal--header">
-                  <h4 className="modal-title fw-bold">New Main-Category</h4>
+                  <h4 className="modal-title fw-bold">Edit Condition</h4>
                   <button
                     type="button"
                     className="btn-close"
-                    onClick={() => dispatch(toggleNewMainCategoryModal(false))}
+                    onClick={() =>
+                      dispatch(toggleEditConditionModal({ status: false }))
+                    }
                     aria-label="Close"></button>
                 </div>
 
+                {/* body */}
                 <div className="modal-body">
                   <div className="row g-0 align-items-end">
                     <div className="col-6 mb-4">
-                      <label className="form-label form--label">
-                        Cover Picture
-                      </label>
-                      <label className="img--holder" htmlFor="image--input">
-                        <img
-                          src={
-                            uploadData.firstImage
-                              ? uploadData.firstImage
-                              : '/assets/img/Placeholder/image.png'
-                          }
-                          loading="lazy"
-                          id="image--input-holder"
-                        />
-                        <input
-                          type="file"
-                          required
-                          name="image"
-                          id="image--input"
-                          accept="image/*"
-                          className="d-none"
-                          onChange={handleImageChange}
-                        />
-                      </label>
-                    </div>
-                    <div className="col-6 mb-4">
-                      <label className="form-label form--label">Name</label>
+                      <label className="form-label form--label">Title</label>
                       <input
-                        name="name"
-                        type="text"
-                        required
-                        className="form--input mb-4"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                      />
-                      <label className="form-label form--label">Name Ar</label>
-                      <input
-                        name="nameAr"
-                        type="text"
-                        required
+                        name="title"
                         className="form--input"
-                        value={formData.nameAr}
+                        type="text"
+                        required
+                        value={formData.title}
                         onChange={handleInputChange}
                       />
+                    </div>
+
+                    <div className="col-6 mb-4">
+                      <label className="form-label form--label">Title Ar</label>
+                      <input
+                        name="titleAr"
+                        className="form--input"
+                        type="text"
+                        required
+                        value={formData.titleAr}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+
+                    <div className="col-6 mb-4">
+                      <label className="form-label form--label">Content</label>
+                      <textarea
+                        name="content"
+                        className="form-control form--input form--textarea"
+                        required
+                        value={formData.content}
+                        onChange={handleInputChange}></textarea>
+                    </div>
+
+                    <div className="col-6 mb-4">
+                      <label className="form-label form--label">
+                        Content Ar
+                      </label>
+                      <textarea
+                        name="contentAr"
+                        className="form-control form--input form--textarea"
+                        required
+                        value={formData.contentAr}
+                        onChange={handleInputChange}></textarea>
                     </div>
                   </div>
                 </div>
+                {/* end body */}
 
                 <div className="modal-footer">
                   <button
                     className="btn border-0 rounded-1"
                     type="button"
-                    onClick={() => dispatch(toggleNewMainCategoryModal(false))}>
+                    onClick={() =>
+                      dispatch(toggleEditConditionModal({ status: false }))
+                    }>
                     Close
                   </button>
                   <button

@@ -3,12 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import Sortable, { MultiDrag } from 'sortablejs';
+import { useCookies } from 'next-client-cookies';
 
 export default function ContentItems({ subCategories, mainCategoryId }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
   const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
 
   // ---------------------------------- States ----------------------------------
 
@@ -40,6 +43,7 @@ export default function ContentItems({ subCategories, mainCategoryId }) {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: token,
         },
         body: JSON.stringify({ sortedItems: sortedItems }),
       }

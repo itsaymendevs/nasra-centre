@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 
-export default function NewForm() {
+export default function TermForm({ country }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
-  const url = 'http://127.0.0.1:8000';
   const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -38,14 +38,17 @@ export default function NewForm() {
     event.preventDefault();
 
     // 4.1: insert new item
-    const response = await fetch(`${url}/api/help/about/store`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await fetch(
+      `${url}/api/contact/${country.id}/terms/store`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify(formData),
+      }
+    );
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);
@@ -55,19 +58,20 @@ export default function NewForm() {
   // ---------------------------------- page ----------------------------------
 
   return (
-    <form className="mb-5" onSubmit={handleSubmit}>
+    <form className="form--page mb-5" onSubmit={handleSubmit}>
       <div className="row g-0">
-        {/* title */}
         <div className="col-12 mb-3 mt-5">
           <div className="d-flex align-items-center justify-content-between mt-5">
-            <label className="form-label hr--label">About Nasra</label>
+            <label
+              className="form-label hr--label"
+              style={{ minWidth: '145px' }}>
+              Terms &amp; Conditions
+            </label>
             <hr className="w-100 my-0" />
           </div>
         </div>
-
-        {/* title / ar */}
         <div className="col-6 mb-4">
-          <label className="form-label form--label">Paragraph Title</label>
+          <label className="form-label form--label">Title</label>
           <input
             name="title"
             className="form-control form--input"
@@ -78,7 +82,7 @@ export default function NewForm() {
           />
         </div>
         <div className="col-6 mb-4">
-          <label className="form-label form--label">Paragraph Title Ar</label>
+          <label className="form-label form--label">Title Ar</label>
           <input
             name="titleAr"
             className="form-control form--input"
@@ -88,28 +92,24 @@ export default function NewForm() {
             onChange={handleInputChange}
           />
         </div>
-
-        {/* content / ar */}
         <div className="col-6 mb-4">
-          <label className="form-label form--label">Paragraph Content</label>
+          <label className="form-label form--label">Content</label>
           <textarea
             name="content"
             className="form-control form--input form--textarea"
-            required
             value={formData.content}
+            required
             onChange={handleInputChange}></textarea>
         </div>
         <div className="col-6 mb-4">
-          <label className="form-label form--label">Paragraph Content Ar</label>
+          <label className="form-label form--label">Content Ar</label>
           <textarea
             name="contentAr"
             className="form-control form--input form--textarea"
-            required
             value={formData.contentAr}
+            required
             onChange={handleInputChange}></textarea>
         </div>
-
-        {/* submit */}
         <div className="col-12 text-center form--footer">
           <button
             className="btn btn--theme btn--submit rounded-1"

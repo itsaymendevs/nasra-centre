@@ -2,19 +2,21 @@
 
 import Link from 'next/link';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleEditParagraphModal } from '@/slices/SixthModalSlice';
+import { useDispatch } from 'react-redux';
+import { toggleEditConditionModal } from '@/slices/SixthModalSlice';
 
-export default function ContentRows({ aboutParagraphs }) {
+export default function TermRows({ terms }) {
   // ---------------------------------- dispatch ----------------------------
   const dispatch = useDispatch();
+
+  // ---------------------------------- page ----------------------------
 
   return (
     <div id="results--row">
       {/* titles */}
       <div
         className="row g-0 align-items-center results--header mb-2"
-        id="results--header">
+        id="results--header-1">
         <div className="col-2">
           <label className="col-form-label form--label row--label">
             Serial
@@ -39,7 +41,7 @@ export default function ContentRows({ aboutParagraphs }) {
       {/* content rows */}
 
       {/* item */}
-      {aboutParagraphs.map((item) => (
+      {terms.map((item) => (
         <div className="row g-0 align-items-center results--item" key={item.id}>
           <div className="col-2">
             <label className="col-form-label form--label row--label">
@@ -69,13 +71,13 @@ export default function ContentRows({ aboutParagraphs }) {
                   href="#"
                   onClick={() =>
                     dispatch(
-                      toggleEditParagraphModal({ status: true, id: item.id })
+                      toggleEditConditionModal({ status: true, id: item.id })
                     )
                   }>
-                  Edit Paragraph
+                  Edit Terms
                 </Link>
                 <Link className="dropdown-item" href="#">
-                  Remove Paragraph
+                  Remove Terms
                 </Link>
               </div>
             </div>

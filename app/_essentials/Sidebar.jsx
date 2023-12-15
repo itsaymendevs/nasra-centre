@@ -201,13 +201,13 @@ export default function SideBar() {
                 <Link className="dropdown-item" href="/help">
                   Help Page
                 </Link>
-                <Link className="dropdown-item" href="/contact">
+                <Link className="dropdown-item" href="/contact/1">
                   Contact - SD
                 </Link>
-                <Link className="dropdown-item" href="/contact-uk">
+                <Link className="dropdown-item" href="/contact/2">
                   Contact - UK
                 </Link>
-                <Link className="dropdown-item" href="/contact-irl">
+                <Link className="dropdown-item" href="/contact/3">
                   Contact - IRL
                 </Link>
 

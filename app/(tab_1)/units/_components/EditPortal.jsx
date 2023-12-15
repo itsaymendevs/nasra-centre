@@ -5,6 +5,7 @@ import { toggleEditUnitModal } from '@/slices/FirstModalSlice';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
+import { useCookies } from 'next-client-cookies';
 
 export default function EditPortal({ units }) {
   // ---------------------------------- global ----------------------------------
@@ -13,6 +14,8 @@ export default function EditPortal({ units }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
 
   // ---------------------------------- states ----------------------------------
 
@@ -61,6 +64,7 @@ export default function EditPortal({ units }) {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token,
       },
       body: JSON.stringify(formData),
     });

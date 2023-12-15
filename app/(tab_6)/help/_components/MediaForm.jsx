@@ -1,17 +1,63 @@
 'use client';
 
-import React from 'react';
-import Select from 'react-select';
-// ----------------------------------------------------------------------------------------------------
+import React, { useState } from 'react';
+import { useCookies } from 'next-client-cookies';
 
-export default function MediaForm() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
+export default function MediaForm({ media }) {
+  // ---------------------------------- global ----------------------------------
 
-  // ------------------------Page-----------------------
+  // 1: use dispatch + url
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+
+  // ---------------------------------- states ----------------------------------
+  // 1: formData state
+  const initialState = {
+    websiteURL: media.websiteURL || '',
+    facebookID: media.facebookID || '',
+    facebookURL: media.facebookURL || '',
+    linkedinID: media.linkedinID || '',
+    linkedinURL: media.linkedinURL || '',
+    twitterID: media.twitterID || '',
+    twitterURL: media.twitterURL || '',
+    instagramID: media.instagramID || '',
+    instagramURL: media.instagramURL || '',
+    videoTitle: media.videoTitle || '',
+    videoTitleAr: media.videoTitleAr || '',
+    videoURL: media.videoURL || '',
+  };
+  const [formData, setFormData] = useState(initialState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  }; // end function
+
+  // 2: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/help/media/update`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify(formData),
+    });
+  };
+
+  // ---------------------------------- page ----------------------------------
 
   return (
-    <form className="form--page">
+    <form className="form--page" onSubmit={handleSubmit}>
       <div className="row g-0">
         {/* title */}
         <div className="col-12 mb-3">
@@ -24,7 +70,13 @@ export default function MediaForm() {
         {/* website url */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Website URL</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="websiteURL"
+            type="text"
+            className="form--input"
+            value={formData.websiteURL}
+            onChange={handleInputChange}
+          />
         </div>
 
         <div className="col-3 mb-4"></div>
@@ -33,41 +85,89 @@ export default function MediaForm() {
         <div className="col-3 mb-4"></div>
         <div className="col-6 mb-4">
           <label className="form-label form--label">Facebook Profile ID</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="facebookID"
+            type="text"
+            className="form--input"
+            value={formData.facebookID}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="col-6 mb-4">
           <label className="form-label form--label">Facebook URL</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="facebookURL"
+            type="text"
+            className="form--input"
+            value={formData.facebookURL}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* linkedIn */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">LinkedIn Profile ID</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="linkedinID"
+            type="text"
+            className="form--input"
+            value={formData.linkedinID}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="col-6 mb-4">
           <label className="form-label form--label">LinkedIn URL</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="linkedinURL"
+            type="text"
+            className="form--input"
+            value={formData.linkedinURL}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* twitter */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Twitter Profile ID</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="twitterID"
+            type="text"
+            className="form--input"
+            value={formData.twitterID}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="col-6 mb-4">
           <label className="form-label form--label">Twitter URL</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="twitterURL"
+            type="text"
+            className="form--input"
+            value={formData.twitterURL}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* insta */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Instagram Profile ID</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="instagramID"
+            type="text"
+            className="form--input"
+            value={formData.instagramID}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="col-6 mb-4">
           <label className="form-label form--label">Instagram&nbsp; URL</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="instagramURL"
+            type="text"
+            className="form--input"
+            value={formData.instagramURL}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* video title / ar */}
@@ -78,26 +178,44 @@ export default function MediaForm() {
           <label className="form-label form--label">
             Application Video Title
           </label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="videoTitle"
+            type="text"
+            className="form--input"
+            value={formData.videoTitle}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="col-6 mb-4">
           <label className="form-label form--label">
             Application Video Title Ar
           </label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="videoTitleAr"
+            type="text"
+            className="form--input"
+            value={formData.videoTitleAr}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* youtube url */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Youtube Video URL</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="videoURL"
+            type="text"
+            className="form--input"
+            value={formData.videoURL}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* submit */}
         <div className="col-12 text-center form--footer">
           <button
             className="btn btn--theme btn--submit rounded-1"
-            type="button">
+            type="submit">
             Save Information
           </button>
         </div>

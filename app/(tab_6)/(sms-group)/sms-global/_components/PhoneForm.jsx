@@ -1,14 +1,56 @@
 'use client';
 
-import React from 'react';
-import Select from 'react-select';
-// ----------------------------------------------------------------------------------------------------
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useCookies } from 'next-client-cookies';
 
-export default function PhoneForm() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
+export default function PhoneForm({ phoneMessageCustomer }) {
+  // ---------------------------------- global ----------------------------------
 
-  // ------------------------Page-----------------------
+  // 1: use dispatch + url
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+
+  // ---------------------------------- states ----------------------------------
+
+  // 1: formData state
+  const initialState = {
+    id: phoneMessageCustomer.id,
+    content: phoneMessageCustomer.content,
+    contentAr: phoneMessageCustomer.contentAr,
+    isActive: phoneMessageCustomer.isActive,
+  };
+  const [formData, setFormData] = useState(initialState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  }; // end function
+
+  // 2: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/messages-global/update`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify(formData),
+    });
+  };
+
+  // ---------------------------------- functions ----------------------------------
 
   return (
     <div className="accordion mb-5" role="tablist" id="results--sms-phone">
@@ -32,7 +74,7 @@ export default function PhoneForm() {
           role="tabpanel"
           data-bs-parent="#results--sms-phone">
           <div className="accordion-body">
-            <div className="row g-0">
+            <form className="row g-0" onSubmit={handleSubmit}>
               {/* shortcuts */}
               <div className="col-12 text-center mb-4">
                 <label className="form-label form--label text-theme fs-12 mb-1">
@@ -46,30 +88,43 @@ export default function PhoneForm() {
               {/* message */}
               <div className="col-6 mb-4">
                 <label className="form-label form--label with-counter">
-                  Message<small className="tag--optional">0/140</small>
+                  Message
+                  <small className="tag--optional">
+                    {formData.content?.length || 0}/140
+                  </small>
                 </label>
-                <textarea className="form--input form--textarea"></textarea>
+                <textarea
+                  name="content"
+                  className="form--input form--textarea"
+                  value={formData.content}
+                  onChange={handleInputChange}></textarea>
               </div>
 
               {/* message ar */}
               <div className="col-6 mb-4">
                 <label className="form-label form--label with-counter">
-                  Message Ar<small className="tag--optional">0/140</small>
+                  Message Ar
+                  <small className="tag--optional">
+                    {formData.contentAr?.length || 0}/140
+                  </small>
                 </label>
-                <textarea className="form--input form--textarea"></textarea>
+                <textarea
+                  name="contentAr"
+                  className="form--input form--textarea"
+                  value={formData.contentAr}
+                  onChange={handleInputChange}></textarea>
               </div>
 
               {/* submit */}
               <div className="col-12 text-center mb-2">
-                <a
+                <button
                   className="btn btn--theme btn--sm fs-12 rounded-1 px-5"
-                  role="button"
-                  href="#">
+                  type="submit">
                   Save
-                </a>
+                </button>
               </div>
               {/* end submit */}
-            </div>
+            </form>
           </div>
         </div>
         {/* end collapse */}

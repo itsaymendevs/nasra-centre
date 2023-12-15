@@ -2,26 +2,59 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCookies } from 'next-client-cookies';
 
 // ----------------------------------------------------------------------------------------------------
 
 export default function LoginForm() {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
+  const cookies = useCookies();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
+
   // ------------------------States---------------------
 
-  const [inputs, setInputs] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     password: '',
+    isIncorrect: false,
   });
 
   // ------------------------Functions-------------------
 
   // 1: handle input change
   const handleInputs = (e) => {
-    setInputs((state) => ({ ...state, [e.target.name]: e.target.value }));
+    setFormData((state) => ({ ...state, [e.target.name]: e.target.value }));
   };
 
   // 2: handle submit
-  const handleSubmit = (e) => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // 1: check info
+    const response = await fetch(`${url}/api/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+
+    const data = await response.json();
+
+    // 2.2: check if there is token / or incorrect
+    if (data?.token) {
+      // set cookies + change state + redirect
+      setFormData((state) => ({ ...state, isIncorrect: false }));
+      cookies.set('token', data.token);
+      router.push('/products');
+    } else {
+      setFormData((state) => ({ ...state, isIncorrect: true }));
+    } // end if
+  };
 
   // ------------------------Page------------------------
 
@@ -64,7 +97,8 @@ export default function LoginForm() {
           type="text"
           className="form--input mb-4"
           name="name"
-          value={inputs.name}
+          required
+          value={formData.name}
           onChange={handleInputs}
         />
 
@@ -74,35 +108,36 @@ export default function LoginForm() {
           type="password"
           className="form--input"
           name="password"
-          value={inputs.password}
+          required
+          value={formData.password}
           onChange={handleInputs}
         />
 
         {/* error handling */}
-        <p
-          className="mt-3 fs-12 text-danger d-flex align-baseline justify-content-center d-none"
-          style={{ width: '90%' }}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="1em"
-            height="1em"
-            fill="currentColor"
-            viewBox="0 0 16 16"
-            className="bi bi-exclamation-circle-fill error--icon me-2">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path>
-          </svg>
-          Incorrect Username or Password
-        </p>
+        {formData.isIncorrect && (
+          <p
+            className="mt-3 fs-12 text-danger d-flex align-baseline justify-content-center"
+            style={{ width: '90%' }}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="1em"
+              height="1em"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+              className="bi bi-exclamation-circle-fill error--icon me-2">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"></path>
+            </svg>
+            Incorrect Username or Password
+          </p>
+        )}
 
         {/* submit button */}
         <div className="text-center d-block mt-4" style={{ width: '90%' }}>
-          <Link href="/products">
-            <button
-              className="btn btn--theme btn--submit btn--sm rounded-1"
-              type="button">
-              Log in
-            </button>
-          </Link>
+          <button
+            className="btn btn--theme btn--submit btn--sm rounded-1"
+            type="submit">
+            Log in
+          </button>
         </div>
       </div>
       {/* end col */}

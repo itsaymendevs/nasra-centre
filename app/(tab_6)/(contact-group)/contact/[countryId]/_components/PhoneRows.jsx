@@ -1,14 +1,7 @@
-'use client';
-
 import Link from 'next/link';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { toggleEditParagraphModal } from '@/slices/SixthModalSlice';
 
-export default function ContentRows({ aboutParagraphs }) {
-  // ---------------------------------- dispatch ----------------------------
-  const dispatch = useDispatch();
-
+export default function PhoneRows({ phones }) {
   return (
     <div id="results--row">
       {/* titles */}
@@ -20,13 +13,8 @@ export default function ContentRows({ aboutParagraphs }) {
             Serial
           </label>
         </div>
-        <div className="col-4">
-          <label className="col-form-label form--label row--label">Title</label>
-        </div>
-        <div className="col-5">
-          <label className="col-form-label form--label row--label">
-            Content
-          </label>
+        <div className="col-9">
+          <label className="col-form-label form--label row--label">Phone</label>
         </div>
         <div className="col-1">
           <label className="col-form-label form--label row--label"></label>
@@ -39,21 +27,16 @@ export default function ContentRows({ aboutParagraphs }) {
       {/* content rows */}
 
       {/* item */}
-      {aboutParagraphs.map((item) => (
+      {phones.map((item) => (
         <div className="row g-0 align-items-center results--item" key={item.id}>
           <div className="col-2">
             <label className="col-form-label form--label row--label">
               {item.serial}
             </label>
           </div>
-          <div className="col-4">
+          <div className="col-9">
             <label className="col-form-label form--label row--label">
-              {item.title}
-            </label>
-          </div>
-          <div className="col-5">
-            <label className="col-form-label form--label row--label">
-              {item.content}
+              {item.phone}
             </label>
           </div>
           <div className="col-1">
@@ -64,18 +47,8 @@ export default function ContentRows({ aboutParagraphs }) {
                 data-bs-toggle="dropdown"
                 type="button"></button>
               <div className="dropdown-menu results--dropdown-menu">
-                <Link
-                  className="dropdown-item"
-                  href="#"
-                  onClick={() =>
-                    dispatch(
-                      toggleEditParagraphModal({ status: true, id: item.id })
-                    )
-                  }>
-                  Edit Paragraph
-                </Link>
                 <Link className="dropdown-item" href="#">
-                  Remove Paragraph
+                  Remove Phone
                 </Link>
               </div>
             </div>

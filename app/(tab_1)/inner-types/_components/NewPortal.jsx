@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
+import { useCookies } from 'next-client-cookies';
 
 export default function NewPortal({ mainCategories, subCategories }) {
   // ---------------------------------- global ----------------------------------
@@ -14,6 +15,8 @@ export default function NewPortal({ mainCategories, subCategories }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
 
   // ---------------------------------- states ----------------------------------
 
@@ -68,6 +71,7 @@ export default function NewPortal({ mainCategories, subCategories }) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token,
       },
       body: JSON.stringify(formData),
     });
