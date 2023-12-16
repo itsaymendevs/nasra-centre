@@ -7,6 +7,7 @@ import ThirdModalSlice from './ThirdModalSlice';
 import FourthModalSlice from './FourthModalSlice';
 import ConfirmModalSlice from './ConfirmModalSlice';
 import SixthModalSlice from './SixthModalSlice';
+import LoadingSlice from './LoadingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,5 +17,6 @@ export const store = configureStore({
     FourthModalSlice,
     SixthModalSlice,
     ConfirmModalSlice,
+    LoadingSlice,
   },
 });

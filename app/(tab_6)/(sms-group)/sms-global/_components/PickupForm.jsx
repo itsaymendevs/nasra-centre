@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
+import { useDispatch } from 'react-redux';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function PickupForm({
   pickupMessagesCustomer,
@@ -11,6 +13,7 @@ export default function PickupForm({
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
@@ -182,6 +185,7 @@ export default function PickupForm({
     } // end if
 
     // 3.2: update message
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/messages-global/update`, {
       method: 'PATCH',
       headers: {
@@ -190,11 +194,15 @@ export default function PickupForm({
       },
       body: JSON.stringify(formData),
     });
+    dispatch(IsNotLoading());
   };
 
   // 4: handle toggle submit
   useEffect(() => {
     const updateToggle = async () => {
+      // start: toggle loading
+      dispatch(IsLoading());
+
       await Promise.all([
         fetch(`${url}/api/messages-global/toggle-active`, {
           method: 'PATCH',
@@ -237,6 +245,9 @@ export default function PickupForm({
           body: JSON.stringify(formDataFourthRec),
         }),
       ]);
+
+      // end: toggle loading
+      dispatch(IsNotLoading());
     };
 
     // 4.2: recall function
