@@ -65,9 +65,9 @@ export default function LoginForm() {
       {/* heading */}
       <div className="col-12 mb-5">
         <h1
-          className="display-5 text-center font--cour mb-0"
           data-aos="fade-down"
           data-aos-duration="600"
+          className="display-5 text-center font--cour mb-0"
           data-aos-delay="150">
           Nasra Centre - Login
         </h1>

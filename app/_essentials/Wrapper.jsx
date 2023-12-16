@@ -1,9 +1,15 @@
 import React from 'react';
 import SideBar from './Sidebar';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 // ----------------------------------------------------------------------------------------------------
 
 export default function Wrapper({ children }) {
+  // -----------------------cookies-------------------
+  const cookie = cookies()?.get('token');
+  !cookie ? redirect('/') : null;
+
   return (
     <section
       data-aos="zoom-out"
