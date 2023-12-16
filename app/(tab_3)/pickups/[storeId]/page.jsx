@@ -2,7 +2,7 @@ import Wrapper from '../../../_essentials/Wrapper';
 import Header from '../../../_essentials/Header';
 import Content from './_components/Content';
 
-export default function EditPickup() {
+export default function EditPickup({ params }) {
   return (
     <Wrapper>
       {/* main content */}
@@ -20,9 +20,8 @@ export default function EditPickup() {
           {/* -------------------------------------- */}
           {/* -------------------------------------- */}
           {/* -------------------------------------- */}
-
           {/* filters / rows */}
-          <Content />
+          <Content storeId={params.storeId} />
         </section>
       </div>
       {/* end main content */}

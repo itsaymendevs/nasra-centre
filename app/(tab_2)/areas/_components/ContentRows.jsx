@@ -1,7 +1,39 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
+import { useCookies } from 'next-client-cookies';
+import { useRouter } from 'next/navigation';
 
-export default function ContentRows() {
+export default function ContentRows({ areas }) {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+
+  // ---------------------------------- function ---------------------------------
+
+  const handleToggleStatus = async (event, id) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/delivery/${id}/toggle-active`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  }; // end handle
+
+  // ---------------------------------- page ---------------------------------
+
   return (
     <div id="results--row">
       {/* titles */}
@@ -38,46 +70,53 @@ export default function ContentRows() {
       {/* content rows */}
 
       {/* item */}
-      <div className="row g-0 align-items-center results--item">
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">
-            DA-001
-          </label>
-        </div>
-        <div className="col-3">
-          <label className="col-form-label form--label row--label">
-            Khartoum - Mashtal
-          </label>
-        </div>
-        <div className="col-3">
-          <label className="col-form-label form--label row--label">
-            الخرطوم - المشتل
-          </label>
-        </div>
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">35</label>
-        </div>
-        <div className="col-1">
-          <label className="col-form-label form--label row--label">250</label>
-        </div>
-        <div className="col-1">
-          <div className="dropstart d-flex justify-content-center">
-            <button
-              className="btn dropdown-toggle results--dropdown"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              type="button"></button>
-            <div className="dropdown-menu results--dropdown-menu">
-              <Link className="dropdown-item" href="/areas/1">
-                Edit Area
-              </Link>
-              <Link className="dropdown-item" href="/areas/1/toggle-status">
-                Disable Area
-              </Link>
+      {areas.map((item) => (
+        <div className="row g-0 align-items-center results--item" key={item.id}>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">
+              {item.serial}
+            </label>
+          </div>
+          <div className="col-3">
+            <label className="col-form-label form--label row--label">
+              {item.name}
+            </label>
+          </div>
+          <div className="col-3">
+            <label className="col-form-label form--label row--label">
+              {item.nameAr}
+            </label>
+          </div>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">-</label>
+          </div>
+          <div className="col-1">
+            <label className="col-form-label form--label row--label">
+              {item.price}
+            </label>
+          </div>
+          <div className="col-1">
+            <div className="dropstart d-flex justify-content-center">
+              <button
+                className="btn dropdown-toggle results--dropdown"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                type="button"></button>
+              <div className="dropdown-menu results--dropdown-menu">
+                <Link className="dropdown-item" href={`/areas/${item.id}`}>
+                  Edit Area
+                </Link>
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={(event) => handleToggleStatus(event, item.id)}>
+                  {item.isActive ? 'Disable' : 'Enable'} Area
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ))}
       {/* end item */}
     </div>
   ); // end return

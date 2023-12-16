@@ -1,7 +1,39 @@
+'use client';
+
 import Link from 'next/link';
 import React from 'react';
+import { useCookies } from 'next-client-cookies';
+import { useRouter } from 'next/navigation';
 
-export default function ContentRows() {
+export default function ContentRows({ pickups }) {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+
+  // ---------------------------------- function ---------------------------------
+
+  const handleToggleStatus = async (event, id) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/pickup/${id}/toggle-active`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  }; // end handle
+
+  // ---------------------------------- page ---------------------------------
+
   return (
     <div id="results--row">
       {/* titles */}
@@ -32,41 +64,48 @@ export default function ContentRows() {
       {/* content rows */}
 
       {/* item */}
-      <div className="row g-0 align-items-center results--item">
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">
-            PS-001
-          </label>
-        </div>
-        <div className="col-4">
-          <label className="col-form-label form--label row--label">
-            Nasra Centre Omdurman
-          </label>
-        </div>
-        <div className="col-5">
-          <label className="col-form-label form--label row--label">
-            Osman Zubair St. - Near Nile Store
-          </label>
-        </div>
+      {pickups.map((pickup) => (
+        <div
+          className="row g-0 align-items-center results--item"
+          key={pickup.id}>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">
+              {pickup.serial}
+            </label>
+          </div>
+          <div className="col-4">
+            <label className="col-form-label form--label row--label">
+              {pickup.title}
+            </label>
+          </div>
+          <div className="col-5">
+            <label className="col-form-label form--label row--label">
+              {pickup.desc}
+            </label>
+          </div>
 
-        <div className="col-1">
-          <div className="dropstart d-flex justify-content-center">
-            <button
-              className="btn dropdown-toggle results--dropdown"
-              aria-expanded="false"
-              data-bs-toggle="dropdown"
-              type="button"></button>
-            <div className="dropdown-menu results--dropdown-menu">
-              <Link className="dropdown-item" href="/pickups/1">
-                Edit Store
-              </Link>
-              <Link className="dropdown-item" href="/pickups/1/toggle-status">
-                Disable Store
-              </Link>
+          <div className="col-1">
+            <div className="dropstart d-flex justify-content-center">
+              <button
+                className="btn dropdown-toggle results--dropdown"
+                aria-expanded="false"
+                data-bs-toggle="dropdown"
+                type="button"></button>
+              <div className="dropdown-menu results--dropdown-menu">
+                <Link className="dropdown-item" href={`/pickups/${pickup.id}`}>
+                  Edit Store
+                </Link>
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={(event) => handleToggleStatus(event, pickup.id)}>
+                  {pickup.isActive ? 'Disable' : 'Enable'} Store
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ))}
       {/* end item */}
     </div>
   ); // end return

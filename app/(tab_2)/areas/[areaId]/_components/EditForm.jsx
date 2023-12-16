@@ -1,28 +1,115 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCookies } from 'next-client-cookies';
 import Select from 'react-select';
-// ----------------------------------------------------------------------------------------------------
 
-export default function EditForm() {
+export default function EditForm({ area, states, districts, deliveryTimes }) {
   // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [];
+  const optionsTwo = [];
+  const optionsThree = [];
 
-  // ------------------------Page-----------------------
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url / cookies
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+
+  // ---------------------------------- states ----------------------------------
+
+  // 1: formData state
+  const initialState = {
+    name: area.name,
+    nameAr: area.nameAr,
+    stateId: area.stateId || null,
+    districtId: area.districtId || null,
+    deliveryTimeId: area.deliveryTimeId || null,
+    price: area.price,
+    isActive: area.isActive == 1 ? false : true, //reversed,
+  };
+  const [formData, setFormData] = useState(initialState);
+
+  // ---------------------------------- states ----------------------------------
+
+  states.map((state) => options.push({ value: state.id, label: state.name }));
+
+  districts.map((district) => {
+    // 2.1: if there is mainCategory
+    formData.stateId &&
+      (formData.stateId
+        ? district.stateId == formData.stateId &&
+          optionsTwo.push({ value: district.id, label: district.name })
+        : optionsTwo.push({ value: district.id, label: district.name }));
+  });
+
+  deliveryTimes.map((deliveryTime) =>
+    optionsThree.push({ value: deliveryTime.id, label: deliveryTime.title })
+  );
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]:
+        event.target.type == 'checkbox'
+          ? event.target.checked
+          : event.target.value,
+    }));
+  }; // end function
+
+  // 2: handle submit
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // 4.1: insert new item
+    const response = await fetch(`${url}/api/delivery/${area.id}/update`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  };
+
+  // ---------------------------------- page ----------------------------------
 
   return (
-    <form className="form--page mb-5">
+    <form className="form--page mb-5" onSubmit={handleSubmit}>
       <div className="row g-0">
         {/* name */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Name</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="name"
+            type="text"
+            required
+            className="form-control form--input"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* name ar */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Name Ar</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="nameAr"
+            type="text"
+            required
+            className="form-control form--input"
+            value={formData.nameAr}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* state */}
@@ -33,7 +120,19 @@ export default function EditForm() {
             classNamePrefix="form--select"
             instanceId="state"
             options={options}
-            onChange={''}
+            required
+            value={
+              formData.stateId
+                ? options.find((option) => option.value == formData?.stateId)
+                : ''
+            }
+            onChange={(selectedOption) =>
+              setFormData((state) => ({
+                ...state,
+                stateId: selectedOption?.value,
+                districtId: null,
+              }))
+            }
             placeholder={''}
             isClearable
           />
@@ -41,13 +140,25 @@ export default function EditForm() {
 
         {/* country */}
         <div className="col-6 mb-4">
-          <label className="form-label form--label">County</label>
+          <label className="form-label form--label">District</label>
           <Select
             className="form--select-container"
             classNamePrefix="form--select"
             instanceId="county"
-            options={options}
-            onChange={''}
+            options={optionsTwo}
+            value={
+              optionsTwo.length > 0 && formData.districtId
+                ? optionsTwo.find(
+                    (option) => option.value == formData?.districtId
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              setFormData((state) => ({
+                ...state,
+                districtId: selectedOption?.value,
+              }))
+            }
             placeholder={''}
             isClearable
           />
@@ -62,8 +173,20 @@ export default function EditForm() {
             className="form--select-container"
             classNamePrefix="form--select"
             instanceId="deliveryTime"
-            options={options}
-            onChange={''}
+            options={optionsThree}
+            value={
+              formData.deliveryTimeId
+                ? optionsThree.find(
+                    (option) => option.value == formData?.deliveryTimeId
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              setFormData((state) => ({
+                ...state,
+                deliveryTimeId: selectedOption?.value,
+              }))
+            }
             placeholder={''}
             isClearable
           />
@@ -72,16 +195,28 @@ export default function EditForm() {
         {/* delivery price */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Delivery Price</label>
-          <input className="form-control form--input" type="text" />
+          <input
+            name="price"
+            type="number"
+            step={0.01}
+            min={0}
+            required
+            className="form-control form--input"
+            value={formData.price}
+            onChange={handleInputChange}
+          />
         </div>
 
         {/* disable delivery in this area */}
         <div className="col-6 align-self-end mb-4">
           <div className="form-check">
             <input
+              name="isActive"
               className="form-check-input"
               type="checkbox"
               id="formCheck-2"
+              checked={formData.isActive == true}
+              onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-2">
               Stop delivery for this area
@@ -93,11 +228,11 @@ export default function EditForm() {
         <div className="col-12 text-center form--footer">
           <button
             className="btn btn--theme btn--submit rounded-1"
-            type="button">
+            type="submit">
             Save item
           </button>
         </div>
       </div>
     </form>
   );
-} // end functinon
+} // end function

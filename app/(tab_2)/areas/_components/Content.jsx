@@ -3,17 +3,33 @@ import ContentFilters from './ContentFilters';
 import ContentRows from './ContentRows';
 import ContentToggles from './ContentToggles';
 
-// ----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------
 
-export default function Content() {
-  // ------------------------States---------------------
-  // ------------------------Functions------------------
+// 1: fetch data
+export async function getContent() {
+  const response = await fetch(`http://127.0.0.1:8000/api/delivery`, {
+    cache: 'no-store',
+    method: 'GET',
+  });
+
+  return response.json();
+} // end function
+
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+
+export default async function Content() {
+  // ------------------------data---------------------
+  const { areas, states, districts, stopDelivery } = await getContent();
+
   // ------------------------Page-----------------------
+
   return (
     <>
-      <ContentToggles />
-      <ContentFilters totalRows={1} />
-      <ContentRows />
+      <ContentToggles stopDelivery={stopDelivery} totalRows={areas.length} />
+      {/* <ContentFilters totalRows={areas.length} states={states} districts={districts} /> */}
+      <ContentRows areas={areas} />
     </>
   );
 } // end function

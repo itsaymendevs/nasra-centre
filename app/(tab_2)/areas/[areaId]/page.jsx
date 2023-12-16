@@ -2,7 +2,7 @@ import Wrapper from '../../../_essentials/Wrapper';
 import Header from '../../../_essentials/Header';
 import Content from './_components/Content';
 
-export default function EditArea() {
+export default function EditArea({ params }) {
   return (
     <Wrapper>
       {/* main content */}
@@ -22,7 +22,7 @@ export default function EditArea() {
           {/* -------------------------------------- */}
 
           {/* filters / rows */}
-          <Content />
+          <Content areaId={params.areaId} />
         </section>
       </div>
       {/* end main content */}

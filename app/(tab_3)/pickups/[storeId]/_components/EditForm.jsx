@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
+import { store } from '@/slices/store';
 
-export default function NewForm() {
+// ----------------------------------------------------------------------------------------------------
+
+export default function EditForm({ pickup }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url / cookies
@@ -17,17 +20,17 @@ export default function NewForm() {
 
   // 1: formData state
   const initialState = {
-    title: '',
-    titleAr: '',
-    desc: '',
-    descAr: '',
-    receivingTimes: '',
-    receivingTimesAr: '',
-    latitude: '',
-    longitude: '',
-    isMainStore: false,
-    isActive: false,
-    image: '',
+    title: pickup.title,
+    titleAr: pickup.titleAr,
+    desc: pickup.desc,
+    descAr: pickup.descAr,
+    receivingTimes: pickup.receivingTimes,
+    receivingTimesAr: pickup.receivingTimesAr,
+    latitude: pickup.latitude,
+    longitude: pickup.longitude,
+    isMainStore: pickup.isMainStore == 1 ? true : false,
+    isActive: pickup.isActive == 1 ? false : true, //reversed
+    image: pickup.image,
   };
   const [formData, setFormData] = useState(initialState);
 
@@ -48,10 +51,9 @@ export default function NewForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
     // 4.1: insert new item
-    const response = await fetch(`${url}/api/pickup/store`, {
-      method: 'POST',
+    const response = await fetch(`${url}/api/pickup/${pickup.id}/update`, {
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
@@ -60,7 +62,7 @@ export default function NewForm() {
     });
 
     // 4.2: hot reload + dispatch
-    setFormData(initialState);
+    router.refresh();
   };
 
   // ---------------------------------- page ----------------------------------
@@ -220,4 +222,4 @@ export default function NewForm() {
       </div>
     </form>
   );
-} // end function
+} // end functinon

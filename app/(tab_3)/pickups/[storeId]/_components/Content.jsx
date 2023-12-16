@@ -4,9 +4,9 @@ import EditForm from './EditForm';
 // ------------------------------------------------------------------
 
 // 1: fetch data
-export async function getContent(areaId) {
+export async function getContent(storeId) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/delivery/${areaId}/edit`,
+    `http://127.0.0.1:8000/api/pickup/${storeId}/edit`,
     {
       cache: 'no-store',
       method: 'GET',
@@ -20,19 +20,14 @@ export async function getContent(areaId) {
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 
-export default async function Content({ areaId }) {
+export default async function Content({ storeId }) {
   // ------------------------data---------------------
-  const { area, states, districts, deliveryTimes } = await getContent(areaId);
+  const pickup = await getContent(storeId);
 
   // ------------------------Page-----------------------
   return (
     <>
-      <EditForm
-        area={area}
-        states={states}
-        districts={districts}
-        deliveryTimes={deliveryTimes}
-      />
+      <EditForm pickup={pickup} />
     </>
   );
 } // end function
