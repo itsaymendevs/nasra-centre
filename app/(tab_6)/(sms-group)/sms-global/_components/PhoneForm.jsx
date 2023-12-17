@@ -85,7 +85,7 @@ export default function PhoneForm({ phoneMessageCustomer }) {
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @verCode
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Verification Code
                 </label>
               </div>

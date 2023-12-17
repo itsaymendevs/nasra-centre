@@ -8,7 +8,6 @@ import {
   updateTypeFilters,
 } from '@/slices/FirstModalSlice';
 import { useDispatch, useSelector } from 'react-redux';
-// ----------------------------------------------------------------------------------------------------
 
 export default function ContentFilters({
   totalRows,

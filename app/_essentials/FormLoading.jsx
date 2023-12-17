@@ -10,16 +10,18 @@ export default function FormLoading() {
     <>
       {isLoading && (
         <div
-          className="d-flex align-items-center justify-content-center h-100 vw-100"
+          className="d-flex align-items-center justify-content-center vh-100 vw-100"
           style={{
-            zIndex: '5000 !important',
-            position: 'absolute',
+            position: 'fixed',
             top: '0px',
             letterSpacing: '2.5px',
             left: '0px',
+            bottom: '0px',
+            right: '0px',
             backgroundColor: '#8e8e8e82',
+            zIndex: '1500',
           }}>
-          <h3 className="fw-bold ">Loading ...</h3>
+          <h3 className="fw-bold">Loading ...</h3>
         </div>
       )}
     </>

@@ -24,6 +24,7 @@ import Script from 'next/script';
 import { Provider } from 'react-redux';
 import StoreProvider from '@/slices/StoreProvider';
 import { CookiesProvider } from 'next-client-cookies/server';
+import FormLoading from './_essentials/FormLoading';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -61,6 +62,8 @@ export default function RootLayout({ children }) {
       <body>
         {/* content */}
         <StoreProvider>
+          <FormLoading />
+
           <CookiesProvider>{children}</CookiesProvider>
 
           {/* portals */}

@@ -294,7 +294,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @orderNum
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Number
                 </label>
               </div>
@@ -302,7 +302,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userFN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User First-name
                 </label>
               </div>
@@ -310,7 +310,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userLN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User Last-name
                   <br />
                 </label>
@@ -319,7 +319,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @receiver
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Receiver
                   <br />
                 </label>
@@ -328,7 +328,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @pickupCode
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Pickup Code
                   <br />
                 </label>
@@ -496,7 +496,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @orderNum
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Number
                 </label>
               </div>
@@ -504,7 +504,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userFN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User First-name
                 </label>
               </div>
@@ -512,7 +512,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userLN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User Last-name
                   <br />
                 </label>
@@ -521,7 +521,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @receiver
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Receiver
                   <br />
                 </label>
@@ -530,7 +530,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @pickupCode
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Pickup Code
                   <br />
                 </label>
@@ -752,7 +752,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @orderNum
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Number
                 </label>
               </div>
@@ -760,7 +760,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userFN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User First-name
                 </label>
               </div>
@@ -768,7 +768,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userLN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User Last-name
                   <br />
                 </label>
@@ -777,7 +777,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @receiver
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Receiver
                   <br />
                 </label>
@@ -786,7 +786,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @pickupCode
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Pickup Code
                   <br />
                 </label>
@@ -1004,7 +1004,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @orderNum
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Number
                 </label>
               </div>
@@ -1012,7 +1012,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userFN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User First-name
                 </label>
               </div>
@@ -1020,7 +1020,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @userLN
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   User Last-name
                   <br />
                 </label>
@@ -1029,7 +1029,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @receiver
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Order Receiver
                   <br />
                 </label>
@@ -1038,7 +1038,7 @@ export default function PickupForm({
                 <label className="form-label form--label text-theme fs-12 mb-1">
                   @pickupCode
                 </label>
-                <label className="form-label form--label profile--label">
+                <label className="form-label form--label profile--label justify-content-center">
                   Pickup Code
                   <br />
                 </label>

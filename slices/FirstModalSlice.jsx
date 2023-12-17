@@ -4,6 +4,21 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   sortProductModal: false,
+  productFilters: {
+    search: '',
+    mainCategoryId: null,
+    subCategoryId: null,
+    typeId: null,
+  },
+  productHomeFilters: {
+    search: '',
+    filterType: 'generalTypes',
+    mainCategoryId: null,
+    subCategoryId: null,
+    typeId: null,
+    companyId: null,
+    productType: null,
+  },
 
   // !done
   companyFilters: { search: '' },
@@ -31,6 +46,7 @@ const initialState = {
   editTypeId: null,
   sortTypeModal: false,
 
+  // !done
   unitFilters: { search: '' },
   newUnitModal: false,
   editUnitModal: false,
@@ -43,6 +59,21 @@ const FirstModalSlice = createSlice({
   reducers: {
     toggleSortProductModal: (state, action) =>
       void (state.sortProductModal = action.payload),
+    updateProductFilters: (state, action) => {
+      state.productFilters.search = action.payload.search;
+      state.productFilters.mainCategoryId = action.payload.mainCategoryId;
+      state.productFilters.subCategoryId = action.payload.subCategoryId;
+      state.productFilters.typeId = action.payload.typeId;
+    },
+    updateProductHomeFilters: (state, action) => {
+      state.productHomeFilters.filterType = action.payload.filterType;
+      state.productHomeFilters.search = action.payload.search;
+      state.productHomeFilters.mainCategoryId = action.payload.mainCategoryId;
+      state.productHomeFilters.subCategoryId = action.payload.subCategoryId;
+      state.productHomeFilters.typeId = action.payload.typeId;
+      state.productHomeFilters.companyId = action.payload.companyId;
+      state.productHomeFilters.productType = action.payload.productType;
+    },
 
     // ! done
     updateCompanyFilters: (state, action) =>
@@ -93,6 +124,7 @@ const FirstModalSlice = createSlice({
     toggleSortTypeModal: (state, action) =>
       void (state.sortTypeModal = action.payload),
 
+    // !done
     updateUnitFilters: (state, action) =>
       void (state.unitFilters.search = action.payload),
     toggleNewUnitModal: (state, action) =>
@@ -106,6 +138,8 @@ const FirstModalSlice = createSlice({
 
 export const {
   toggleSortProductModal,
+  updateProductFilters,
+  updateProductHomeFilters,
 
   // !done
   updateCompanyFilters,

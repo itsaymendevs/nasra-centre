@@ -2,7 +2,6 @@ import React, { Suspense } from 'react';
 import SideBar from './Sidebar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import FormLoading from './FormLoading';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -24,7 +23,7 @@ export default function Wrapper({ children }) {
           backgroundImage: 'url("/assets/img/Covers/wave-haikei-1.svg")',
         }}>
         {/* sidebar / right column (children) */}
-        <FormLoading />
+
         <div className="row g-0 min-vh-100">
           <SideBar />
           {children}
