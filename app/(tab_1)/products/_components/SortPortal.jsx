@@ -84,11 +84,14 @@ export default function SortPortal({ mainCategories, subCategories, types }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
+    // 2.1: close modal
+    dispatch(toggleSortProductModal(false));
 
-    // 4.2: redirect
+    // 2.2: redirect
     if (formData.sortType == 'Category') {
       router.push(`/products/sort/${formData.typeId}`);
+    } else {
+      router.push(`/products/sort`);
     }
   };
 
