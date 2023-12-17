@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import { store } from '@/slices/store';
+import { useDispatch } from 'react-redux';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -11,6 +13,7 @@ export default function EditForm({ pickup }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url / cookies
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
@@ -52,6 +55,7 @@ export default function EditForm({ pickup }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/pickup/${pickup.id}/update`, {
       method: 'PATCH',
       headers: {
@@ -60,6 +64,7 @@ export default function EditForm({ pickup }) {
       },
       body: JSON.stringify(formData),
     });
+    dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
     router.refresh();

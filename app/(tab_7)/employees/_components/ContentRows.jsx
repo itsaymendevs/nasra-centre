@@ -8,6 +8,7 @@ import { toggleResetEmployeeModal } from '@/slices/FourthModalSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function ContentRows({ employees }) {
   // ::root
@@ -23,6 +24,7 @@ export default function ContentRows({ employees }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/employees/${id}/toggle-active`, {
       method: 'PATCH',
       headers: {
@@ -30,8 +32,7 @@ export default function ContentRows({ employees }) {
         Authorization: token,
       },
     });
-
-    console.log(await response.json());
+    dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
     router.refresh();

@@ -4,11 +4,14 @@ import Link from 'next/link';
 import React from 'react';
 import { useCookies } from 'next-client-cookies';
 import { useRouter } from 'next/navigation';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ContentRows({ areas }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
@@ -20,6 +23,7 @@ export default function ContentRows({ areas }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/delivery/${id}/toggle-active`, {
       method: 'PATCH',
       headers: {
@@ -27,6 +31,7 @@ export default function ContentRows({ areas }) {
         Authorization: token,
       },
     });
+    dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
     router.refresh();

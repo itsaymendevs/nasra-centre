@@ -2,11 +2,14 @@
 
 import React, { useState } from 'react';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function MediaForm({ media }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
@@ -44,6 +47,7 @@ export default function MediaForm({ media }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/help/media/update`, {
       method: 'PATCH',
       headers: {
@@ -52,6 +56,7 @@ export default function MediaForm({ media }) {
       },
       body: JSON.stringify(formData),
     });
+    dispatch(IsNotLoading());
   };
 
   // ---------------------------------- page ----------------------------------

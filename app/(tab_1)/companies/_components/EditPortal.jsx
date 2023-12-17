@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function EditPortal({ companies }) {
   // ---------------------------------- global ----------------------------------
@@ -58,6 +59,9 @@ export default function EditPortal({ companies }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
+      'Loading ..';
+
     const response = await fetch(`${url}/api/companies/update`, {
       method: 'PATCH',
       headers: {

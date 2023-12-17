@@ -3,11 +3,14 @@
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ToggleForm({ country }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
@@ -41,6 +44,7 @@ export default function ToggleForm({ country }) {
   useEffect(() => {
     const handleSubmit = async () => {
       // 1: update services
+      dispatch(IsLoading());
       const response = await fetch(
         `${url}/api/contact/${country.id}/update-service`,
         {
@@ -52,7 +56,8 @@ export default function ToggleForm({ country }) {
           body: JSON.stringify(formData),
         }
       );
-    };
+      dispatch(IsNotLoading());
+    }; // end function
 
     handleSubmit();
   }, [formData]);

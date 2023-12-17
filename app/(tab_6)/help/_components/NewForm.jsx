@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
+import { useDispatch } from 'react-redux';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function NewForm() {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const url = 'http://127.0.0.1:8000';
   const router = useRouter();
   const cookies = useCookies();
@@ -38,6 +41,7 @@ export default function NewForm() {
     event.preventDefault();
 
     // 4.1: insert new item
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/help/about/store`, {
       method: 'POST',
       headers: {
@@ -46,6 +50,7 @@ export default function NewForm() {
       },
       body: JSON.stringify(formData),
     });
+    dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);

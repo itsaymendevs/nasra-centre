@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
 import Sortable, { MultiDrag } from 'sortablejs';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ContentItems({ subCategories, mainCategoryId }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
@@ -37,6 +40,7 @@ export default function ContentItems({ subCategories, mainCategoryId }) {
     });
 
     // 3: update
+    dispatch(IsLoading());
     const response = await fetch(
       `${url}/api/sub-categories/${mainCategoryId}/sort/update`,
       {
@@ -48,6 +52,7 @@ export default function ContentItems({ subCategories, mainCategoryId }) {
         body: JSON.stringify({ sortedItems: sortedItems }),
       }
     );
+    dispatch(IsNotLoading());
 
     console.log(await response.json());
   };

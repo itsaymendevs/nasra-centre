@@ -98,6 +98,7 @@ export default function DeliveryForm({ deliveryMessages }) {
     } // end if
 
     // 3.2: update message
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/messages/update`, {
       method: 'PATCH',
       headers: {
@@ -107,7 +108,7 @@ export default function DeliveryForm({ deliveryMessages }) {
       body: JSON.stringify(formData),
     });
 
-    console.log(await response.json());
+    dispatch(IsNotLoading());
   };
 
   // 4: handle toggle submit

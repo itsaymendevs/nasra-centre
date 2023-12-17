@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function NewPortal({ mainCategories, subCategories }) {
   // ---------------------------------- global ----------------------------------
@@ -67,6 +68,9 @@ export default function NewPortal({ mainCategories, subCategories }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
+      'Loading ..';
+
     const response = await fetch(`${url}/api/inner-types/store`, {
       method: 'POST',
       headers: {

@@ -12,14 +12,14 @@ export default function FormLoading() {
         <div
           className="d-flex align-items-center justify-content-center h-100 vw-100"
           style={{
+            zIndex: '5000 !important',
             position: 'absolute',
             top: '0px',
             letterSpacing: '2.5px',
             left: '0px',
-            backgroundColor: '#0000003b',
-            zIndex: '200',
+            backgroundColor: '#8e8e8e82',
           }}>
-          <h1>Loading ...</h1>
+          <h3 className="fw-bold ">Loading ...</h3>
         </div>
       )}
     </>

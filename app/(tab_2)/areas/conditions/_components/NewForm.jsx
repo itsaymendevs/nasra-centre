@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
+import { useDispatch } from 'react-redux';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function NewForm() {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
@@ -40,6 +43,9 @@ export default function NewForm() {
     event.preventDefault();
 
     // 4.1: insert new item
+    document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
+      'Loading ..';
+
     const response = await fetch(`${url}/api/delivery/conditions/store`, {
       method: 'POST',
       headers: {

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 
 export default function ResetPortal({ employees }) {
   // ---------------------------------- global ----------------------------------
@@ -57,8 +58,10 @@ export default function ResetPortal({ employees }) {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
     // 4.1: insert new item
+    document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
+      'Loading ..';
+
     const response = await fetch(`${url}/api/employees/reset-password`, {
       method: 'PATCH',
       headers: {
@@ -67,8 +70,6 @@ export default function ResetPortal({ employees }) {
       },
       body: JSON.stringify(formData),
     });
-
-    console.log(await response.json());
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);

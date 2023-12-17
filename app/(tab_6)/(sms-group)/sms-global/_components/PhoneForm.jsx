@@ -4,11 +4,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function PhoneForm({ phoneMessageCustomer }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
@@ -40,6 +43,7 @@ export default function PhoneForm({ phoneMessageCustomer }) {
     event.preventDefault();
 
     // 4.1: insert new item
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/messages-global/update`, {
       method: 'PATCH',
       headers: {
@@ -48,6 +52,7 @@ export default function PhoneForm({ phoneMessageCustomer }) {
       },
       body: JSON.stringify(formData),
     });
+    dispatch(IsNotLoading());
   };
 
   // ---------------------------------- functions ----------------------------------

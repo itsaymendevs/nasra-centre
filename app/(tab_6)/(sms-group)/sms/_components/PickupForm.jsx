@@ -98,6 +98,7 @@ export default function PickupForm({ pickupMessages }) {
     } // end if
 
     // 3.2: update message
+    dispatch(IsLoading());
     const response = await fetch(`${url}/api/messages/update`, {
       method: 'PATCH',
       headers: {
@@ -106,6 +107,7 @@ export default function PickupForm({ pickupMessages }) {
       },
       body: JSON.stringify(formData),
     });
+    dispatch(IsNotLoading());
 
     console.log(await response.json());
   };

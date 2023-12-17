@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ContentToggles({ totalRows, stopDelivery }) {
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url
+  const dispatch = useDispatch();
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
@@ -37,6 +40,7 @@ export default function ContentToggles({ totalRows, stopDelivery }) {
   useEffect(() => {
     const handleSubmit = async () => {
       // 1: update services
+      dispatch(IsLoading());
       const response = await fetch(`${url}/api/delivery/toggle-delivery`, {
         method: 'PATCH',
         headers: {
@@ -45,7 +49,8 @@ export default function ContentToggles({ totalRows, stopDelivery }) {
         },
         body: JSON.stringify(formData),
       });
-    };
+      dispatch(IsNotLoading());
+    }; // end function
 
     handleSubmit();
   }, [formData]);
