@@ -1,14 +1,12 @@
 import React from 'react';
-import ContentRows from './ContentRows';
-import NewForm from './NewForm';
-import EditPortal from './EditPortal';
+import ContentItems from './ContentItems';
 
-// ------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
 
 // 1: fetch data
-export async function getContent() {
+export async function getContent(typeId) {
   const response = await fetch(
-    'http://127.0.0.1:8000/api/delivery/conditions',
+    `http://127.0.0.1:8000/api/products/${typeId}/sort`,
     {
       cache: 'no-store',
       method: 'GET',
@@ -22,19 +20,14 @@ export async function getContent() {
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 
-export default async function Content() {
+export default async function Content({ typeId }) {
   // ------------------------data---------------------
-  const conditions = await getContent();
+  const products = await getContent(typeId);
 
   // ------------------------Page-----------------------
-
   return (
     <>
-      <NewForm />
-      <ContentRows conditions={conditions} />
-
-      {/* portals */}
-      <EditPortal conditions={conditions} />
+      <ContentItems typeId={typeId} products={products} />
     </>
   );
 } // end function

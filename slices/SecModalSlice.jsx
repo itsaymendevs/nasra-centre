@@ -4,14 +4,17 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   editConditionModal: false,
+  editConditionId: null,
 };
 
 const SecModalSlice = createSlice({
   name: 'SecModalSlice',
   initialState,
   reducers: {
-    toggleEditConditionModal: (state, action) =>
-      void (state.editConditionModal = action.payload),
+    toggleEditConditionModal: (state, action) => {
+      state.editConditionModal = action.payload.status;
+      state.editConditionId = action.payload.id;
+    },
   },
 });
 

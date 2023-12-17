@@ -142,7 +142,14 @@ export default function EditPortal({ mainCategories, subCategories }) {
                         classNamePrefix="form--select"
                         instanceId="mainCategoryId"
                         name="mainCategoryId"
-                        value={mainCategorySelectedOptionState}
+                        value={
+                          formData.mainCategoryId
+                            ? options.find(
+                                (option) =>
+                                  option.value == formData?.mainCategoryId
+                              )
+                            : ''
+                        }
                         options={options}
                         required
                         onChange={(selectedOption) => {

@@ -112,8 +112,15 @@ export default function NewPortal({ mainCategories }) {
                         instanceId="mainCategoryId"
                         name="mainCategoryId"
                         required
-                        value={mainCategorySelectedOptionState}
                         options={options}
+                        value={
+                          formData.mainCategoryId
+                            ? options.find(
+                                (option) =>
+                                  option.value == formData?.mainCategoryId
+                              )
+                            : ''
+                        }
                         onChange={(selectedOption) => {
                           setMainCategorySelectedOptionState(selectedOption);
                           setFormData((state) => ({

@@ -1,15 +1,15 @@
-import Wrapper from '../../../_essentials/Wrapper';
-import Header from '../../../_essentials/Header';
+import Wrapper from '../../../../_essentials/Wrapper';
+import Header from '../../../../_essentials/Header';
 import Content from './_components/Content';
 
-export default function EditProduct({ params }) {
+export default function SortProductsByCategory({ params }) {
   return (
     <Wrapper>
       {/* main content */}
       <div className="col-9 content--col px-0" id="content--col">
         {/* header */}
         <Header
-          pageTitle={'Edit Product'}
+          pageTitle={'Sort Products - Category'}
           leftTitle={'Back'}
           leftIcon={'bi bi-arrow-up-left'}
           leftLink="/products"
@@ -21,8 +21,8 @@ export default function EditProduct({ params }) {
           {/* -------------------------------------- */}
           {/* -------------------------------------- */}
 
-          {/* filters / rows */}
-          <Content productId={params.productId} />
+          {/* rows */}
+          <Content typeId={params.typeId} />
         </section>
       </div>
       {/* end main content */}
