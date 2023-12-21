@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import axios from 'axios';
 
 export default function NewPortal() {
   // ---------------------------------- global ----------------------------------
@@ -15,6 +16,7 @@ export default function NewPortal() {
   const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
+  const defaultURL = '/assets/img/Placeholder/image.png';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -28,7 +30,7 @@ export default function NewPortal() {
   // 2: formData state
   const initialState = { id: '', name: '', nameAr: '', image: '' };
   const uploadInitialState = {
-    firstImage: '',
+    imagePreview: '',
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -48,11 +50,16 @@ export default function NewPortal() {
   const handleImageChange = (event) => {
     setUploadData((state) => ({
       ...state,
-      firstImage: URL.createObjectURL(event.target.files[0]),
+      imagePreview: URL.createObjectURL(event.target.files[0]),
+    }));
+
+    setFormData((state) => ({
+      ...state,
+      image: event.target.files[0],
     }));
   }; // end function
 
-  // 2: handle submit
+  // 4: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -60,13 +67,16 @@ export default function NewPortal() {
     document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
       'Loading ..';
 
-    const response = await fetch(`${url}/api/main-categories/store`, {
-      method: 'POST',
+    // 4.2: axios - send data
+    const requestForm = new FormData();
+
+    for (const [key, value] of Object.entries(formData))
+      requestForm.append(key, value);
+
+    await axios.post(`${url}/api/main-categories/store`, requestForm, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: token,
       },
-      body: JSON.stringify(formData),
     });
 
     // 4.2: hot reload + dispatch
@@ -84,6 +94,7 @@ export default function NewPortal() {
           {/* modal */}
           <form
             onSubmit={handleSubmit}
+            encType="multipart/form-data"
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -114,9 +125,9 @@ export default function NewPortal() {
                       <label className="img--holder" htmlFor="image--input">
                         <img
                           src={
-                            uploadData.firstImage
-                              ? uploadData.firstImage
-                              : '/assets/img/Placeholder/image.png'
+                            uploadData.imagePreview
+                              ? uploadData.imagePreview
+                              : defaultURL
                           }
                           loading="lazy"
                           id="image--input-holder"

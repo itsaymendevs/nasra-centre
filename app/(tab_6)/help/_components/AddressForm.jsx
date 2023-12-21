@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 import { useDispatch } from 'react-redux';
+import axios from 'axios';
 
 export default function AddressForm({ address }) {
   // ---------------------------------- global ----------------------------------
@@ -11,6 +12,8 @@ export default function AddressForm({ address }) {
   // 1: use dispatch + url
   const dispatch = useDispatch();
   const url = 'http://127.0.0.1:8000';
+  const imageURL = 'http://127.0.0.1:8000/storage/interAddress/';
+  const defaultURL = '/assets/img/Placeholder/image.png';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -20,10 +23,16 @@ export default function AddressForm({ address }) {
     address: address.address || '',
     latitude: address.latitude || '',
     longitude: address.longitude || '',
-    image: address.image || '',
+    image: address.image ? imageURL + address.image : '',
     isHidden: address.isHidden,
   };
+
+  const uploadInitialState = {
+    imagePreview: '',
+  };
+
   const [formData, setFormData] = useState(initialState);
+  const [uploadData, setUploadData] = useState(uploadInitialState);
 
   // ---------------------------------- functions ----------------------------------
 
@@ -38,20 +47,40 @@ export default function AddressForm({ address }) {
     }));
   }; // end function
 
+  // 1.2: handle image change
+  const handleImageChange = (event) => {
+    if (event.target.files.length !== 0) {
+      setUploadData((state) => ({
+        ...state,
+        imagePreview: URL.createObjectURL(event.target.files[0]),
+      }));
+
+      setFormData((state) => ({
+        ...state,
+        image: event.target.files[0],
+      }));
+    } // end if
+  }; // end function
+
   // 2: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     // 4.1: insert new item
     dispatch(IsLoading());
-    const response = await fetch(`${url}/api/help/address/update`, {
-      method: 'PATCH',
+
+    // 4.2: axios - send data
+    const requestForm = new FormData();
+
+    for (const [key, value] of Object.entries(formData))
+      requestForm.append(key, value);
+
+    await axios.post(`${url}/api/help/address/update`, requestForm, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: token,
       },
-      body: JSON.stringify(formData),
     });
+
     dispatch(IsNotLoading());
   };
 
@@ -75,9 +104,27 @@ export default function AddressForm({ address }) {
         {/* picture */}
         <div className="col-6 mb-5">
           <label className="form-label form--label">Picture</label>
-          <div className="img--holder for-store">
-            <img loading="lazy" src="/assets/img/Logo/logo.png" />
-          </div>
+          <label className="img--holder for-store" htmlFor="image--input">
+            <img
+              loading="lazy"
+              src={
+                uploadData.imagePreview
+                  ? uploadData.imagePreview
+                  : formData.image || defaultURL
+              }
+              id="image--input-holder"
+            />
+
+            <input
+              type="file"
+              name="image"
+              id="image--input"
+              accept="image/*"
+              required
+              className="d-none"
+              onChange={handleImageChange}
+            />
+          </label>
 
           {/* hide from app */}
           <div className="form-check mt-4">
@@ -86,7 +133,7 @@ export default function AddressForm({ address }) {
               name="isHidden"
               className="form-check-input"
               type="checkbox"
-              checked={formData.isHidden == true}
+              checked={formData.isHidden}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="isHiddenCheckbox">

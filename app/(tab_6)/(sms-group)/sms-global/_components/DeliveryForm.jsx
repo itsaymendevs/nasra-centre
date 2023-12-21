@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import { useDispatch } from 'react-redux';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
@@ -18,6 +18,7 @@ export default function DeliveryForm({
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
+  const initialSkip = useRef(false);
 
   // ---------------------------------- states ----------------------------------
 
@@ -250,7 +251,7 @@ export default function DeliveryForm({
     };
 
     // 4.2: recall function
-    updateToggle();
+    initialSkip.current ? updateToggle() : (initialSkip.current = true);
   }, [
     formDataSec.isActive,
     formDataThird.isActive,

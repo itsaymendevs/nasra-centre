@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import { useDispatch } from 'react-redux';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import axios from 'axios';
 
 export default function NewForm() {
   // ---------------------------------- global ----------------------------------
@@ -13,6 +14,8 @@ export default function NewForm() {
   const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
+  const imageURL = 'http://127.0.0.1:8000/storage/pickups/';
+  const defaultURL = '/assets/img/Placeholder/image.png';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -28,11 +31,17 @@ export default function NewForm() {
     receivingTimesAr: '',
     latitude: '',
     longitude: '',
-    isMainStore: false,
-    isActive: false,
+    isMainStore: 0,
+    isActive: 0,
     image: '',
   };
+
+  const uploadInitialState = {
+    imagePreview: '',
+  };
+
   const [formData, setFormData] = useState(initialState);
+  const [uploadData, setUploadData] = useState(uploadInitialState);
 
   // ---------------------------------- functions ----------------------------------
 
@@ -47,25 +56,45 @@ export default function NewForm() {
     }));
   }; // end function
 
+  // 1.2: handle image change
+  const handleImageChange = (event) => {
+    if (event.target.files.length !== 0) {
+      setUploadData((state) => ({
+        ...state,
+        imagePreview: URL.createObjectURL(event.target.files[0]),
+      }));
+
+      setFormData((state) => ({
+        ...state,
+        image: event.target.files[0],
+      }));
+    } // end if
+  }; // end function
+
   // 2: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
     // 4.1: insert new item
     dispatch(IsLoading());
-    const response = await fetch(`${url}/api/pickup/store`, {
-      method: 'POST',
+
+    // 4.2: axios - send data
+    const requestForm = new FormData();
+
+    for (const [key, value] of Object.entries(formData))
+      requestForm.append(key, value);
+
+    await axios.post(`${url}/api/pickup/store`, requestForm, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: token,
       },
-      body: JSON.stringify(formData),
     });
+
     dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);
+    setUploadData(uploadInitialState);
   };
 
   // ---------------------------------- page ----------------------------------
@@ -182,7 +211,7 @@ export default function NewForm() {
               className="form-check-input"
               type="checkbox"
               id="formCheck-1"
-              checked={formData.isMainStore == true}
+              checked={formData.isMainStore}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-1">
@@ -197,7 +226,7 @@ export default function NewForm() {
               className="form-check-input"
               type="checkbox"
               id="formCheck-2"
-              checked={formData.isActive == true}
+              checked={formData.isActive}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-2">
@@ -209,9 +238,24 @@ export default function NewForm() {
         {/* picture */}
         <div className="col-6 align-self-end mb-4 mt-4">
           <label className="form-label form--label">Store Picture</label>
-          <div className="img--holder for-store">
-            <img loading="lazy" />
-          </div>
+          <label className="img--holder for-store" htmlFor="image--input">
+            <img
+              loading="lazy"
+              src={
+                uploadData.imagePreview ? uploadData.imagePreview : defaultURL
+              }
+              id="image--input-holder"
+            />
+            <input
+              type="file"
+              name="image"
+              id="image--input"
+              accept="image/*"
+              required
+              className="d-none"
+              onChange={handleImageChange}
+            />
+          </label>
         </div>
 
         {/* submit */}

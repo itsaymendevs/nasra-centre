@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import axios from 'axios';
 
 export default function EditPortal({ mainCategories }) {
   // ---------------------------------- global ----------------------------------
@@ -15,7 +16,8 @@ export default function EditPortal({ mainCategories }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
-  const imageURL = 'http://127.0.0.1:8000/storage/mainCategories/megalobox.jpg';
+  const imageURL = 'http://127.0.0.1:8000/storage/mainCategories/';
+  const defaultURL = '/assets/img/Placeholder/image.png';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -35,7 +37,7 @@ export default function EditPortal({ mainCategories }) {
   };
 
   const uploadInitialState = {
-    firstImage: '',
+    imagePreview: '',
   };
 
   const [formData, setFormData] = useState(initialState);
@@ -56,7 +58,7 @@ export default function EditPortal({ mainCategories }) {
         id: mainCategory.id,
         name: mainCategory.name,
         nameAr: mainCategory.nameAr,
-        image: imageURL + mainCategory.image,
+        image: mainCategory.image ? imageURL + mainCategory.image : '',
       }));
     } // end if
   }, [editMainCategoryId]);
@@ -71,10 +73,17 @@ export default function EditPortal({ mainCategories }) {
 
   // 3.1: handle image change
   const handleImageChange = (event) => {
-    setUploadData((state) => ({
-      ...state,
-      firstImage: URL.createObjectURL(event.target.files[0]),
-    }));
+    if (event.target.files.length !== 0) {
+      setUploadData((state) => ({
+        ...state,
+        imagePreview: URL.createObjectURL(event.target.files[0]),
+      }));
+
+      setFormData((state) => ({
+        ...state,
+        image: event.target.files[0],
+      }));
+    } // end if
   }; // end function
 
   // 4: handle submit
@@ -85,13 +94,16 @@ export default function EditPortal({ mainCategories }) {
     document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
       'Loading ..';
 
-    const response = await fetch(`${url}/api/main-categories/update`, {
-      method: 'PATCH',
+    // 4.2: axios - send data
+    const requestForm = new FormData();
+
+    for (const [key, value] of Object.entries(formData))
+      requestForm.append(key, value);
+
+    await axios.post(`${url}/api/main-categories/update`, requestForm, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: token,
       },
-      body: JSON.stringify(formData),
     });
 
     // 4.2: hot reload + dispatch
@@ -109,6 +121,7 @@ export default function EditPortal({ mainCategories }) {
           {/* modal */}
           <form
             onSubmit={handleSubmit}
+            encType="multipart/form-data"
             className="modal fade show"
             role="dialog"
             tabIndex="-1"
@@ -143,9 +156,9 @@ export default function EditPortal({ mainCategories }) {
                       <label className="img--holder" htmlFor="image--input">
                         <img
                           src={
-                            uploadData.firstImage
-                              ? uploadData.firstImage
-                              : '/assets/img/Placeholder/image.png'
+                            uploadData.imagePreview
+                              ? uploadData.imagePreview
+                              : formData.image || defaultURL
                           }
                           loading="lazy"
                           id="image--input-holder"

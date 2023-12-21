@@ -21,7 +21,7 @@ export default function FormLoading() {
             backgroundColor: '#8e8e8e82',
             zIndex: '1500',
           }}>
-          <h3 className="fw-bold">Loading ...</h3>
+          <h3 className="fw-bold">Saving ...</h3>
         </div>
       )}
     </>

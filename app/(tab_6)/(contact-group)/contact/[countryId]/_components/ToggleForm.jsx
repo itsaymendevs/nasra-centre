@@ -77,7 +77,7 @@ export default function ToggleForm({ country }) {
               type="checkbox"
               id="formCheck-1"
               name="isServiceActive"
-              checked={formData.isServiceActive == true}
+              checked={formData.isServiceActive}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-1">

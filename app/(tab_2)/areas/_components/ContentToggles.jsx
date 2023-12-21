@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,7 @@ export default function ContentToggles({ totalRows, stopDelivery }) {
   const url = 'http://127.0.0.1:8000';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
+  const initialSkip = useRef(false);
 
   // ---------------------------------- states ----------------------------------
 
@@ -52,7 +53,7 @@ export default function ContentToggles({ totalRows, stopDelivery }) {
       dispatch(IsNotLoading());
     }; // end function
 
-    handleSubmit();
+    initialSkip.current ? handleSubmit() : (initialSkip.current = true);
   }, [formData]);
 
   // ---------------------------------- page ----------------------------------
@@ -67,7 +68,7 @@ export default function ContentToggles({ totalRows, stopDelivery }) {
               type="checkbox"
               id="formCheck-1"
               name="stopDelivery"
-              checked={formData.stopDelivery == true}
+              checked={formData.stopDelivery}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-1">

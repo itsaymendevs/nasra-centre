@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import Select from 'react-select';
-
-// ----------------------------------------------------------------------------------------------------
+import axios from 'axios';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
 
 export default function NewForm({
   units,
@@ -31,8 +32,11 @@ export default function NewForm({
   // ---------------------------------- global ----------------------------------
 
   // 1: use dispatch + url / cookies
+  const dispatch = useDispatch();
   const router = useRouter();
   const url = 'http://127.0.0.1:8000';
+  const imageURL = 'http://127.0.0.1:8000/storage/products/';
+  const defaultURL = '/assets/img/Placeholder/image.png';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -57,16 +61,31 @@ export default function NewForm({
     maxQuantityPerOrder: product.maxQuantityPerOrder,
     isHidden: product.isHidden || false,
     isMainPage: product.isMainPage || false,
-    image: product.image || '',
-    firstExtraImage: product.firstExtraImage || '',
-    secExtraImage: product.secExtraImage || '',
-    thirdExtraImage: product.thirdExtraImage || '',
+    image: product.image ? imageURL + product.image : '',
+    firstExtraImage: product.firstExtraImage
+      ? imageURL + product.firstExtraImage
+      : '',
+    secExtraImage: product.secExtraImage
+      ? imageURL + product.secExtraImage
+      : '',
+    thirdExtraImage: product.thirdExtraImage
+      ? imageURL + product.thirdExtraImage
+      : '',
     companyId: product.companyId,
     mainCategoryId: product.mainCategoryId,
     subCategoryId: product.subCategoryId,
     typeId: product.typeId,
   };
+
+  const uploadInitialState = {
+    image: '',
+    firstExtraImage: '',
+    secExtraImage: '',
+    thirdExtraImage: '',
+  };
+
   const [formData, setFormData] = useState(initialState);
+  const [uploadData, setUploadData] = useState(uploadInitialState);
 
   // ---------------------------------- options ----------------------------------
 
@@ -109,24 +128,45 @@ export default function NewForm({
           ? event.target.checked
           : event.target.value,
     }));
+  }; // end function
 
-    console.log(formData);
+  // 1.2: handle image change
+  const handleImageChange = (event) => {
+    if (event.target.files.length !== 0) {
+      setUploadData((state) => ({
+        ...state,
+        [event.target.name]: event.target.files[0]
+          ? URL.createObjectURL(event.target.files[0])
+          : '',
+      }));
+
+      setFormData((state) => ({
+        ...state,
+        [event.target.name]: event.target.files[0] ? event.target.files[0] : '',
+      }));
+    } // end if
   }; // end function
 
   // 2: handle submit
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
     // 4.1: insert new item
-    const response = await fetch(`${url}/api/products/${product.id}/update`, {
-      method: 'PATCH',
+    dispatch(IsLoading());
+
+    // 4.2: axios - send data
+    const requestForm = new FormData();
+
+    for (const [key, value] of Object.entries(formData))
+      requestForm.append(key, value);
+
+    await axios.post(`${url}/api/products/${product.id}/update`, requestForm, {
       headers: {
-        'Content-Type': 'application/json',
         Authorization: token,
       },
-      body: JSON.stringify(formData),
     });
+
+    dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
     router.refresh();
@@ -159,7 +199,7 @@ export default function NewForm({
               className="form-check-input"
               type="checkbox"
               id="formCheck-3"
-              checked={formData.isHidden == true}
+              checked={formData.isHidden}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-3">
@@ -172,7 +212,7 @@ export default function NewForm({
               className="form-check-input"
               type="checkbox"
               id="formCheck-2"
-              checked={formData.isMainPage == true}
+              checked={formData.isMainPage}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-2">
@@ -613,9 +653,25 @@ export default function NewForm({
         {/* main picture */}
         <div className="col-6 mb-4">
           <label className="form-label form--label">Main Picture</label>
-          <div className="img--holder">
-            <img loading="lazy" />
-          </div>
+          <label className="img--holder" htmlFor="image--input">
+            <img
+              loading="lazy"
+              src={
+                uploadData.image
+                  ? uploadData.image
+                  : formData.image || defaultURL
+              }
+              id="image--input-holder"
+            />
+            <input
+              name="image"
+              type="file"
+              id="image--input"
+              accept="image/*"
+              className="d-none"
+              onChange={handleImageChange}
+            />
+          </label>
         </div>
 
         {/* additional pictures (optionals) */}
@@ -625,19 +681,67 @@ export default function NewForm({
           </label>
           <div className="row g-0">
             <div className="col-6 mb-4">
-              <div className="img--holder">
-                <img loading="lazy" />
-              </div>
+              <label className="img--holder" htmlFor="image--input-2">
+                <img
+                  loading="lazy"
+                  src={
+                    uploadData.firstExtraImage
+                      ? uploadData.firstExtraImage
+                      : formData.firstExtraImage || defaultURL
+                  }
+                  id="image--input-holder"
+                />
+                <input
+                  name="firstExtraImage"
+                  type="file"
+                  id="image--input-2"
+                  accept="image/*"
+                  className="d-none"
+                  onChange={handleImageChange}
+                />
+              </label>
             </div>
             <div className="col-6 mb-4">
-              <div className="img--holder">
-                <img loading="lazy" />
-              </div>
+              <label className="img--holder" htmlFor="image--input-3">
+                <img
+                  loading="lazy"
+                  src={
+                    uploadData.secExtraImage
+                      ? uploadData.secExtraImage
+                      : formData.secExtraImage || defaultURL
+                  }
+                  id="image--input-holder"
+                />
+                <input
+                  name="secExtraImage"
+                  type="file"
+                  id="image--input-3"
+                  accept="image/*"
+                  className="d-none"
+                  onChange={handleImageChange}
+                />
+              </label>
             </div>
             <div className="col-6">
-              <div className="img--holder">
-                <img loading="lazy" />
-              </div>
+              <label className="img--holder" htmlFor="image--input-4">
+                <img
+                  loading="lazy"
+                  src={
+                    uploadData.thirdExtraImage
+                      ? uploadData.thirdExtraImage
+                      : formData.thirdExtraImage || defaultURL
+                  }
+                  id="image--input-holder"
+                />
+                <input
+                  name="thirdExtraImage"
+                  type="file"
+                  id="image--input-4"
+                  accept="image/*"
+                  className="d-none"
+                  onChange={handleImageChange}
+                />
+              </label>
             </div>
           </div>
         </div>

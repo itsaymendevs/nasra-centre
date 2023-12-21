@@ -32,7 +32,7 @@ export default function NewForm({ states, districts, deliveryTimes }) {
     districtId: null,
     deliveryTimeId: null,
     price: '',
-    isActive: false,
+    isActive: 0,
   };
   const [formData, setFormData] = useState(initialState);
 
@@ -221,7 +221,7 @@ export default function NewForm({ states, districts, deliveryTimes }) {
               className="form-check-input"
               type="checkbox"
               id="formCheck-2"
-              checked={formData.isActive == true}
+              checked={formData.isActive}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-2">

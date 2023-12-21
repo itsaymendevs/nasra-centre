@@ -32,7 +32,7 @@ export default function EditForm({ area, states, districts, deliveryTimes }) {
     districtId: area.districtId || null,
     deliveryTimeId: area.deliveryTimeId || null,
     price: area.price,
-    isActive: area.isActive == 1 ? false : true, //reversed,
+    isActive: area.isActive == 1 ? 0 : 1, //reversed,
   };
   const [formData, setFormData] = useState(initialState);
 
@@ -220,7 +220,7 @@ export default function EditForm({ area, states, districts, deliveryTimes }) {
               className="form-check-input"
               type="checkbox"
               id="formCheck-2"
-              checked={formData.isActive == true}
+              checked={formData.isActive}
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-2">
