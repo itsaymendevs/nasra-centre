@@ -2,7 +2,7 @@ import Wrapper from '../../../../../_essentials/Wrapper';
 import Header from '../../../../../_essentials/Header';
 import Content from './_components/Content';
 
-export default function CustomerReceiver() {
+export default function CustomerReceiver({ params }) {
   return (
     <Wrapper>
       {/* main content */}
@@ -12,7 +12,7 @@ export default function CustomerReceiver() {
           pageTitle={'Receiver Profile'}
           leftTitle={'Back'}
           leftIcon={'bi bi-arrow-up-left'}
-          leftLink="/customers/1"
+          leftLink={`/customers/${params.customerId}`}
         />
 
         {/* page content */}
@@ -22,7 +22,10 @@ export default function CustomerReceiver() {
           {/* -------------------------------------- */}
 
           {/* filters / rows */}
-          <Content />
+          <Content
+            customerId={params.customerId}
+            receiverId={params.receiverId}
+          />
         </section>
       </div>
       {/* end main content */}

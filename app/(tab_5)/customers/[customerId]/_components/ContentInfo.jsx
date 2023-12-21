@@ -281,7 +281,7 @@ export default function ContentInfo({ user, countries }) {
 
         {/* total orders */}
         <div className="col-2 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+          <label className="form-label form--label profile--label  scale--3">
             Total Orders
           </label>
           <h4 className="mt-2 mb-0 fw-bold">0</h4>
@@ -289,7 +289,7 @@ export default function ContentInfo({ user, countries }) {
 
         {/* completed */}
         <div className="col-2 offset-1 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Completed
           </label>
           <h4 className="mt-2 mb-0 fw-bold text-theme">0</h4>
@@ -297,7 +297,7 @@ export default function ContentInfo({ user, countries }) {
 
         {/* canceled */}
         <div className="col-2 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Canceled
           </label>
           <h4 className="mt-2 mb-0 fw-bold text-danger">0</h4>
@@ -305,7 +305,7 @@ export default function ContentInfo({ user, countries }) {
 
         {/* processing */}
         <div className="col-2 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Processing
           </label>
           <h4 className="mt-2 mb-0 fw-bold">0</h4>
@@ -313,7 +313,7 @@ export default function ContentInfo({ user, countries }) {
 
         {/* pending */}
         <div className="col-2 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Pending
           </label>
           <h4 className="mt-2 mb-0 fw-bold">0</h4>

@@ -1,15 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
-// -----------------------------------------------------------------------------
 
-export default function ContentRows() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
+export default function ContentRows({ receiver }) {
+  // ---------------------------------- options ----------------------------------
 
-  // --------------------------------------------
+  const options = [
+    { value: 'pending', label: 'Pending' },
+    { value: 'processing', label: 'Processing' },
+    { value: 'canceled', label: 'Canceled' },
+    { value: 'completed', label: 'Completed' },
+  ];
+
+  // ---------------------------------- states ----------------------------------
+
+  const filtersState = {
+    toSDG: 1,
+    status: null,
+  };
+  const [formFilters, setFormFilters] = useState(filtersState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event, toSDG) => {
+    setFormFilters((state) => ({
+      ...state,
+      toSDG: toSDG,
+    }));
+  }; // end function
+
+  // ---------------------------------- page ----------------------------------
+
   return (
     <>
       {/* filters */}
@@ -23,7 +47,12 @@ export default function ContentRows() {
               classNamePrefix="form--select"
               instanceId="status"
               options={options}
-              onChange={''}
+              onChange={(selectedOption) =>
+                setFormFilters((state) => ({
+                  ...state,
+                  status: selectedOption?.value || null,
+                }))
+              }
               placeholder={''}
               isClearable
             />
@@ -33,27 +62,50 @@ export default function ContentRows() {
           <div className="col-8 text-end mb-4 pb-3">
             {/* sd */}
             <button
-              className="btn btn--export btn--currency scale--3 px-4 active"
-              type="button">
-              <img className="me-2" src="/assets/img/Flags/sd.png" />
+              className={`btn btn--export btn--currency scale--3 px-4 ${
+                formFilters.toSDG === 1 && 'active'
+              }`}
+              type="button"
+              onClick={(event) => handleInputChange(event, 1)}>
+              <img className="me-2" src="/assets/img/Flags/SDN.png" />
               SDN
             </button>
 
-            {/* ire */}
-            <button
-              className="btn btn--export btn--currency scale--3 px-4 ms-2 d-none"
-              type="button">
-              <img className="me-2" src="/assets/img/Flags/euro.png" />
-              EUR
-            </button>
+            {/* euro - ire */}
+            {receiver.user.country.code == 'IRL' && (
+              <button
+                className={`btn btn--export btn--currency scale--3 px-4 ms-2 ${
+                  formFilters.toSDG !== 1 && 'active'
+                }`}
+                type="button"
+                onClick={(event) =>
+                  handleInputChange(
+                    event,
+                    parseFloat(receiver.user.country.toSDG)
+                  )
+                }>
+                <img className="me-2" src="/assets/img/Flags/EUR.png" />
+                EUR
+              </button>
+            )}
 
-            {/* uk */}
-            <button
-              className="btn btn--export btn--currency scale--3 px-4 ms-2"
-              type="button">
-              <img className="me-2" src="/assets/img/Flags/uk.png" />
-              GBP
-            </button>
+            {/* gbp - uk */}
+            {receiver.user.country.code == 'UK' && (
+              <button
+                className={`btn btn--export btn--currency scale--3 px-4 ms-2 ${
+                  formFilters.toSDG !== 1 && 'active'
+                }`}
+                type="button"
+                onClick={(event) =>
+                  handleInputChange(
+                    event,
+                    parseFloat(receiver.user.country.toSDG)
+                  )
+                }>
+                <img className="me-2" src="/assets/img/Flags/GBP.png" />
+                GBP
+              </button>
+            )}
           </div>
         </div>
       </div>

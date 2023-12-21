@@ -1,5 +1,12 @@
 #results--row {
   margin-bottom: 40px;
+  max-height: 525px;
+  overflow-y: scroll;
+}
+
+.results--row {
+  max-height: 525px;
+  overflow-y: scroll;
 }
 
 .results--header {
@@ -33,7 +40,8 @@
   border: none;
 }
 
-.results--dropdown:hover, .results--dropdown:focus {
+.results--dropdown:hover,
+.results--dropdown:focus {
   background-color: var(--bg-theme-dark);
   color: white;
 }
@@ -114,7 +122,9 @@
   border: 2px solid var(--color-black);
 }
 
-.btn--export:hover, .btn--export:focus, .btn--export.active {
+.btn--export:hover,
+.btn--export:focus,
+.btn--export.active {
   color: var(--color-black);
   border: 2px solid var(--color-black);
 }
@@ -124,7 +134,9 @@
   font-size: 14px;
 }
 
-.btn--export:hover svg, .btn--export:focus svg, .btn--export.active svg {
+.btn--export:hover svg,
+.btn--export:focus svg,
+.btn--export.active svg {
   fill: var(--color-black);
 }
 
@@ -136,7 +148,9 @@
   border-color: var(--bg-theme-dark);
 }
 
-.btn--currency:hover, .btn--currency:focus, .btn--currency.active {
+.btn--currency:hover,
+.btn--currency:focus,
+.btn--currency.active {
   background-color: var(--bg-theme-dark);
   color: white;
   border-color: var(--bg-theme-dark);
@@ -185,4 +199,3 @@
 }
 
 /* dropdown */
-

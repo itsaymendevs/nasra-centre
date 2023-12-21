@@ -23,14 +23,14 @@ export async function getMainCategories() {
 
 export default async function Content() {
   // ------------------------data---------------------
-  const mainCategories = await getMainCategories();
+  const { mainCategories, category } = await getMainCategories();
 
   // ------------------------Page-----------------------
   return (
     <>
       <ContentFilters totalRows={mainCategories.length} />
       <ContentRows mainCategories={mainCategories} />
-      <CoverForm />
+      <CoverForm category={category} />
 
       {/* portals */}
       <NewPortal />

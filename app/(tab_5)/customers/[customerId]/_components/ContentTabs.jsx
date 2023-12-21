@@ -8,10 +8,10 @@ export default function ContentTabs({ user, countries }) {
   // ---------------------------------- options ----------------------------------
 
   const options = [
-    { value: 'pending', label: 'pending' },
-    { value: 'processing', label: 'processing' },
-    { value: 'canceled', label: 'canceled' },
-    { value: 'completed', label: 'completed' },
+    { value: 'pending', label: 'Pending' },
+    { value: 'processing', label: 'Processing' },
+    { value: 'canceled', label: 'Canceled' },
+    { value: 'completed', label: 'Completed' },
   ];
 
   // ---------------------------------- states ----------------------------------
