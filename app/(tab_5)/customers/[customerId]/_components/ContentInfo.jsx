@@ -1,69 +1,109 @@
 'use client';
 
-import React from 'react';
-import Select from 'react-select';
-// ----------------------------------------------------------------------------------------------------
+import React, { useEffect, useRef, useState } from 'react';
+import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
+import Link from 'next/link';
 
-export default function ContentInfo() {
-  // ------------------------Page-----------------------
+export default function ContentInfo({ user, countries }) {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
+  const dispatch = useDispatch();
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+  const initialSkip = useRef(false);
+
+  // ---------------------------------- states ----------------------------------
+
+  // 2: formData state
+  const initialState = {
+    isActive: user.isActive == 1 ? 0 : 1,
+  };
+
+  const [formData, setFormData] = useState(initialState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    console.log(event.target.checked);
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]:
+        event.target.type == 'checkbox'
+          ? event.target.checked
+          : event.target.value,
+    }));
+  }; // end function
+
+  useEffect(() => {
+    const handleSubmit = async () => {
+      // 1: update services
+      dispatch(IsLoading());
+      const response = await fetch(
+        `${url}/api/users/${user.id}/toggle-active`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      dispatch(IsNotLoading());
+    }; // end function
+
+    initialSkip.current ? handleSubmit() : (initialSkip.current = true);
+  }, [formData]);
+
+  // ---------------------------------- page ----------------------------------
 
   return (
     <div id="information--row" className="mb-5">
       <div className="row g-0 align-items-start">
         {/* full name */}
-        <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            Yasir Ahmed Kamal
+        <div className="col-4 mb-4 ">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+            <span
+              className="fw-600 profile--span-title one-line"
+              style={{ lineHeight: 'initial' }}>
+              Customer
+            </span>
+            <Link
+              className="text-decoration-none text-primary"
+              href={`/customers/${user.id}`}>
+              {user.firstName + ' ' + user.lastName}
+            </Link>
           </label>
         </div>
 
         {/* phone / alternative */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
-              className="fw-600 profile--span-title"
+              className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
               Phone
             </span>
-            66 503421 / 66 553134
+            {user.phone.replace('249', '0')}
+            {user.phoneAlt && ` / ${user.phoneAlt.replace('249', '0')}`}
           </label>
         </div>
 
         {/* deactivate account */}
-        <div className="col-4 align-self-end mb-4">
+        <div className="col-4 mb-4 align-self-end">
           <div className="form-check mb-2">
             <input
               className="form-check-input"
               type="checkbox"
               id="formCheck-1"
+              name="isActive"
+              checked={formData.isActive}
+              onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-1">
               Deactivate Account
@@ -71,251 +111,169 @@ export default function ContentInfo() {
           </div>
         </div>
 
-        {/* email */}
-        <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            yasirkamal@outlook.com
-          </label>
-        </div>
+        {/* postcode - uk */}
+        {user.country.code == 'UK' && (
+          <div className="col-4 mb-4 ire--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Postcode
+              </span>
+              {user.postcode || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
         {/* eircode - ire */}
-        <div className="col-4 mb-4 ire--info d-none" s="">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">Eircode</span>D21 5501
+        {user.country.code == 'IRL' && (
+          <div className="col-4 mb-4 ire--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Eircode
+              </span>
+              {user.eircode || 'Unavailable'}
+            </label>
+          </div>
+        )}
+
+        {/* email */}
+        <div className="col-4 mb-4">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+            <span
+              className="fw-600 profile--span-title one-line"
+              style={{ lineHeight: 'initial' }}>
+              Email Address
+            </span>
+            {user.email}
           </label>
         </div>
 
         {/* country - state */}
         <div className="col-4 align-self-end mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            Sudan / Khartoum
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+            <span
+              className="fw-600 profile--span-title one-line"
+              style={{ lineHeight: 'initial' }}>
+              Country
+            </span>
+            {user.country.name} {user.state?.name && `/ ${user.state.name}`}
           </label>
         </div>
 
-        {/* county */}
-        <div className="col-4 align-self-end mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            Alriyad
-          </label>
-        </div>
+        {/* deliveryArea - region */}
+        {user.country.code == 'SD' && (
+          <div className="col-4 align-self-end mb-4">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Region
+              </span>
+              {user.delivery_area.name}
+            </label>
+          </div>
+        )}
 
         {/* address */}
-        <div className="col-12 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">Rough Location</span>
-            loerm ipsum yusa repos tentaion herakulaniya fentaniya osuymana hesu
-            desu kupartik uyal niesaan kailabia yestradustp mentaub subarp
-            fatniyan stweeb to kusative comperhensatniation funcatisant meusap
-          </label>
-        </div>
+        {user.country.code == 'SD' && (
+          <div className="col-12 mb-4">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Rough Location
+              </span>
+              {user.address}
+            </label>
+          </div>
+        )}
 
         {/* address fl - uk ire */}
-        <div className="col-6 mb-4 ire--info uk--info d-none">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">
-              Address First Line
-            </span>
-            loerm ipsum yusa repos tentaion herakulaniya fentaniya osuymana hesu
-            desu kupartik uyal niesaan kailabia yestradust
-          </label>
-        </div>
+        {user.country.code != 'SD' && (
+          <div className="col-6 mb-4 ire--info uk--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Address First Line
+              </span>
+              {user.firstAddressLine || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
         {/* address sl - uk ire */}
-        <div className="col-6 mb-4 ire--info uk--info d-none">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">
-              Address Second Line
-            </span>
-            loerm ipsum yusa repos tentaion herakulaniya fentaniya osuymana hesu
-            desu kupartik uyal niesaan kailabia yestradust
-          </label>
-        </div>
+        {user.country.code != 'SD' && (
+          <div className="col-6 mb-4 ire--info uk--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Address Second Line
+              </span>
+              {user.secAddressLine || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
-        {/* address tl - uk ire */}
-        <div className="col-6 mb-4 ire--info uk--info d-none">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">
-              Address Third Line
-            </span>
-            Not Available
-          </label>
-        </div>
+        {/* address tl - uk */}
+        {user.country.code == 'UK' && (
+          <div className="col-6 mb-4 uk--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Address Third Line
+              </span>
+              {user.thirdAddressLine || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
         {/* post town - ire */}
-        <div className="col-6 mb-4 ire--info d-none">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">Post Town</span>Dublin
-          </label>
-        </div>
+        {user.country.code == 'IRL' && (
+          <div className="col-6 mb-4 ire--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Post Town
+              </span>
+              {user.postTown || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
-        {/* county - uk ire */}
-        <div className="col-6 mb-4 ire--info uk--info d-none">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">County</span>Co.Dublin
-          </label>
-        </div>
+        {/* county - ire */}
+        {user.country.code == 'IRL' && (
+          <div className="col-6 mb-4 ire--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                County
+              </span>
+              {user.county || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
-        {/* mail code - uk ire */}
-        <div className="col-6 mb-4 ire--info uk--info d-none">
-          <label className="col-form-label form--label profile--label scale--3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="1em"
-              height="1em"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-              className="bi bi-chevron-double-right">
-              <path
-                fillRule="evenodd"
-                d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z"></path>
-              <path
-                fillRule="evenodd"
-                d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z"></path>
-            </svg>
-            <span className="fw-600 profile--span-title">Mail Code</span>5025
-            5PY
-          </label>
-        </div>
+        {/* Town City - uk */}
+        {user.country.code == 'UK' && (
+          <div className="col-6 mb-4 uk--info">
+            <label className="col-form-label form--label profile--label in-start scale--3 me-3">
+              <span
+                className="fw-600 profile--span-title one-line"
+                style={{ lineHeight: 'initial' }}>
+                Town City
+              </span>
+              {user.townCity || 'Unavailable'}
+            </label>
+          </div>
+        )}
 
         {/* -------------------------------- */}
 
@@ -326,7 +284,7 @@ export default function ContentInfo() {
           <label className="form-label form--label profile--label scale--3">
             Total Orders
           </label>
-          <h4 className="mt-2 mb-0 fw-bold">105</h4>
+          <h4 className="mt-2 mb-0 fw-bold">0</h4>
         </div>
 
         {/* completed */}
@@ -334,7 +292,7 @@ export default function ContentInfo() {
           <label className="form-label form--label profile--label scale--3">
             Completed
           </label>
-          <h4 className="mt-2 mb-0 fw-bold text-theme">101</h4>
+          <h4 className="mt-2 mb-0 fw-bold text-theme">0</h4>
         </div>
 
         {/* canceled */}
@@ -342,7 +300,7 @@ export default function ContentInfo() {
           <label className="form-label form--label profile--label scale--3">
             Canceled
           </label>
-          <h4 className="mt-2 mb-0 fw-bold text-danger">3</h4>
+          <h4 className="mt-2 mb-0 fw-bold text-danger">0</h4>
         </div>
 
         {/* processing */}
@@ -350,7 +308,7 @@ export default function ContentInfo() {
           <label className="form-label form--label profile--label scale--3">
             Processing
           </label>
-          <h4 className="mt-2 mb-0 fw-bold">1</h4>
+          <h4 className="mt-2 mb-0 fw-bold">0</h4>
         </div>
 
         {/* pending */}

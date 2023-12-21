@@ -2,7 +2,7 @@ import Wrapper from '../../../_essentials/Wrapper';
 import Header from '../../../_essentials/Header';
 import Content from './_components/Content';
 
-export default function Customers() {
+export default function Customers({ params }) {
   return (
     <Wrapper>
       {/* main content */}
@@ -22,7 +22,7 @@ export default function Customers() {
           {/* -------------------------------------- */}
 
           {/* filters / rows */}
-          <Content />
+          <Content customerId={params.customerId} />
         </section>
       </div>
       {/* end main content */}

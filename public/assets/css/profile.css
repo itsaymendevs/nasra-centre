@@ -4,6 +4,12 @@
   margin-bottom: 0px;
 }
 
+.profile--label.in-start {
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+}
+
 .profile--label svg {
   margin-right: 5px;
   font-size: 11px;
@@ -33,4 +39,3 @@
 .profile--span-title.one-line::after {
   content: none;
 }
-

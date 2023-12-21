@@ -1,16 +1,39 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import Select from 'react-select';
 
-// -----------------------------------------------------------------------------
+export default function ContentTabs({ user, countries }) {
+  // ---------------------------------- options ----------------------------------
 
-export default function ContentTabs() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [
+    { value: 'pending', label: 'pending' },
+    { value: 'processing', label: 'processing' },
+    { value: 'canceled', label: 'canceled' },
+    { value: 'completed', label: 'completed' },
+  ];
 
-  // --------------------------------------------
+  // ---------------------------------- states ----------------------------------
+
+  const filtersState = {
+    toSDG: 1,
+    status: null,
+  };
+  const [formFilters, setFormFilters] = useState(filtersState);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event, toSDG) => {
+    setFormFilters((state) => ({
+      ...state,
+      toSDG: toSDG,
+    }));
+  }; // end function
+
+  // ---------------------------------- page ----------------------------------
+
   return (
     <div className="tab--wrap">
       {/* nav tabs */}
@@ -38,15 +61,18 @@ export default function ContentTabs() {
         </li>
 
         {/* receivers */}
-        <li className="nav-item" role="presentation">
-          <a
-            className="nav-link"
-            role="tab"
-            data-bs-toggle="pill"
-            href="#receivers-tab">
-            Receivers
-          </a>
-        </li>
+
+        {user.country.code != 'SD' && (
+          <li className="nav-item" role="presentation">
+            <a
+              className="nav-link"
+              role="tab"
+              data-bs-toggle="pill"
+              href="#receivers-tab">
+              Receivers
+            </a>
+          </li>
+        )}
       </ul>
       {/* end tabs */}
 
@@ -69,38 +95,62 @@ export default function ContentTabs() {
                   classNamePrefix="form--select"
                   instanceId="status"
                   options={options}
-                  onChange={''}
+                  onChange={(selectedOption) =>
+                    setFormFilters((state) => ({
+                      ...state,
+                      status: selectedOption?.value || null,
+                    }))
+                  }
                   placeholder={''}
                   isClearable
                 />
               </div>
 
               {/* currency - uk ire */}
-              <div className="col-8 text-end mb-4 pb-3">
-                {/* sd */}
-                <button
-                  className="btn btn--export btn--currency scale--3 px-4 active"
-                  type="button">
-                  <img className="me-2" src="/assets/img/Flags/sd.png" />
-                  SDN
-                </button>
+              {user.country.code != 'SD' && (
+                <div className="col-8 text-end mb-4 pb-3">
+                  {/* sd */}
+                  <button
+                    className={`btn btn--export btn--currency scale--3 px-4 ${
+                      formFilters.toSDG === 1 && 'active'
+                    }`}
+                    type="button"
+                    onClick={(event) => handleInputChange(event, 1)}>
+                    <img className="me-2" src="/assets/img/Flags/SDN.png" />
+                    SDN
+                  </button>
 
-                {/* euro - ire */}
-                <button
-                  className="btn btn--export btn--currency scale--3 px-4 ms-2 d-none"
-                  type="button">
-                  <img className="me-2" src="/assets/img/Flags/euro.png" />
-                  EUR
-                </button>
+                  {/* euro - ire */}
+                  {user.country.code == 'IRL' && (
+                    <button
+                      className={`btn btn--export btn--currency scale--3 px-4 ms-2 ${
+                        formFilters.toSDG !== 1 && 'active'
+                      }`}
+                      type="button"
+                      onClick={(event) =>
+                        handleInputChange(event, parseFloat(user.country.toSDG))
+                      }>
+                      <img className="me-2" src="/assets/img/Flags/EUR.png" />
+                      EUR
+                    </button>
+                  )}
 
-                {/* gbp - uk */}
-                <button
-                  className="btn btn--export btn--currency scale--3 px-4 ms-2"
-                  type="button">
-                  <img className="me-2" src="/assets/img/Flags/uk.png" />
-                  GBP
-                </button>
-              </div>
+                  {/* gbp - uk */}
+                  {user.country.code == 'UK' && (
+                    <button
+                      className={`btn btn--export btn--currency scale--3 px-4 ms-2 ${
+                        formFilters.toSDG !== 1 && 'active'
+                      }`}
+                      type="button"
+                      onClick={(event) =>
+                        handleInputChange(event, parseFloat(user.country.toSDG))
+                      }>
+                      <img className="me-2" src="/assets/img/Flags/GBP.png" />
+                      GBP
+                    </button>
+                  )}
+                </div>
+              )}
               {/* end currency */}
             </div>
           </div>
@@ -149,7 +199,7 @@ export default function ContentTabs() {
             </div>
 
             {/* items */}
-            <div className="row g-0 align-items-center results--item">
+            <div className="row g-0 align-items-center results--item d-none">
               {/* serial */}
               <div className="col-2">
                 <label className="col-form-label form--label row--label">
@@ -256,58 +306,70 @@ export default function ContentTabs() {
             </div>
 
             {/* item */}
-            <div className="row g-0 align-items-center results--item">
-              {/* serial */}
-              <div className="col-2">
-                <label className="col-form-label form--label row--label">
-                  P-10503
-                </label>
-              </div>
+            {user.favorites?.map((favorite) => (
+              <div
+                className="row g-0 align-items-center results--item"
+                key={favorite.id}>
+                {/* serial */}
+                <div className="col-2">
+                  <label className="col-form-label form--label row--label">
+                    {favorite.product.serial}
+                  </label>
+                </div>
 
-              {/* product name */}
-              <div className="col-3">
-                <label className="col-form-label form--label row--label me-1">
-                  Quina Rice Saria
-                </label>
-              </div>
+                {/* product name */}
+                <div className="col-3">
+                  <label className="col-form-label form--label row--label me-1">
+                    {favorite.product.name}
+                  </label>
+                </div>
 
-              {/* sell / offer */}
-              <div className="col-3">
-                <label className="col-form-label form--label row--label">
-                  130 / -
-                </label>
-              </div>
+                {/* sell / offer */}
+                <div className="col-3">
+                  <label className="col-form-label form--label row--label">
+                    {favorite.product.sellPrice * parseFloat(formFilters.toSDG)}{' '}
+                    /{' '}
+                    {favorite.product.offerPrice
+                      ? favorite.product.offerPrice *
+                        parseFloat(formFilters.toSDG)
+                      : '-'}
+                  </label>
+                </div>
 
-              {/* quantity */}
-              <div className="col-2">
-                <label className="col-form-label form--label row--label">
-                  1300
-                </label>
-              </div>
+                {/* quantity */}
+                <div className="col-2">
+                  <label className="col-form-label form--label row--label">
+                    {favorite.product.quantity}
+                  </label>
+                </div>
 
-              {/* favs count */}
-              <div className="col-1">
-                <label className="col-form-label form--label row--label">
-                  3
-                </label>
-              </div>
+                {/* favs count */}
+                <div className="col-1">
+                  <label className="col-form-label form--label row--label">
+                    -
+                  </label>
+                </div>
 
-              {/* options */}
-              <div className="col-1">
-                <div className="dropstart d-flex justify-content-center">
-                  <button
-                    className="btn dropdown-toggle results--dropdown"
-                    aria-expanded="false"
-                    data-bs-toggle="dropdown"
-                    type="button"></button>
-                  <div className="dropdown-menu results--dropdown-menu">
-                    <Link className="dropdown-item" href="/products/1">
-                      Edit Product
-                    </Link>
+                {/* options */}
+                <div className="col-1">
+                  <div className="dropstart d-flex justify-content-center">
+                    <button
+                      className="btn dropdown-toggle results--dropdown"
+                      aria-expanded="false"
+                      data-bs-toggle="dropdown"
+                      type="button"></button>
+                    <div className="dropdown-menu results--dropdown-menu">
+                      <Link
+                        className="dropdown-item"
+                        href={`/products/${favorite.product.id}`}>
+                        Edit Product
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
+
             {/* end item */}
           </div>
           {/* end row */}
@@ -349,53 +411,57 @@ export default function ContentTabs() {
             </div>
 
             {/* items */}
-            <div className="row g-0 align-items-center results--item">
-              {/* receiver name */}
-              <div className="col-4">
-                <label className="col-form-label form--label row--label">
-                  Ahmed Samir Husam
-                </label>
-              </div>
+            {user.receivers?.map((receiver) => (
+              <div
+                className="row g-0 align-items-center results--item"
+                key={receiver.id}>
+                {/* receiver name */}
+                <div className="col-4">
+                  <label className="col-form-label form--label row--label">
+                    {receiver.name}
+                  </label>
+                </div>
 
-              {/* phone */}
-              <div className="col-3">
-                <label className="col-form-label form--label row--label me-1">
-                  +249 999590002
-                </label>
-              </div>
+                {/* phone */}
+                <div className="col-3">
+                  <label className="col-form-label form--label row--label me-1">
+                    {receiver.phone?.replace('249', '0')}
+                  </label>
+                </div>
 
-              {/* completed orders */}
-              <div className="col-2">
-                <label className="col-form-label form--label row--label">
-                  25
-                </label>
-              </div>
+                {/* completed orders */}
+                <div className="col-2">
+                  <label className="col-form-label form--label row--label">
+                    -
+                  </label>
+                </div>
 
-              {/* canceled orders */}
-              <div className="col-2">
-                <label className="col-form-label form--label row--label">
-                  2
-                </label>
-              </div>
+                {/* canceled orders */}
+                <div className="col-2">
+                  <label className="col-form-label form--label row--label">
+                    -
+                  </label>
+                </div>
 
-              {/* options */}
-              <div className="col-1">
-                <div className="dropstart d-flex justify-content-center">
-                  <button
-                    className="btn dropdown-toggle results--dropdown"
-                    aria-expanded="false"
-                    data-bs-toggle="dropdown"
-                    type="button"></button>
-                  <div className="dropdown-menu results--dropdown-menu">
-                    <Link
-                      className="dropdown-item"
-                      href="/customers/1/receivers/1">
-                      View Receiver
-                    </Link>
+                {/* options */}
+                <div className="col-1">
+                  <div className="dropstart d-flex justify-content-center">
+                    <button
+                      className="btn dropdown-toggle results--dropdown"
+                      aria-expanded="false"
+                      data-bs-toggle="dropdown"
+                      type="button"></button>
+                    <div className="dropdown-menu results--dropdown-menu">
+                      <Link
+                        className="dropdown-item"
+                        href={`/customers/${user.id}/receivers/${receiver.id}`}>
+                        View Receiver
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
             {/* end row */}
           </div>
         </div>

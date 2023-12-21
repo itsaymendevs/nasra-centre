@@ -13,7 +13,7 @@ export default function ContentInfo() {
       <div className="row g-0 align-items-start">
         {/* customer */}
         <div className="col-5 mb-4">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -33,7 +33,7 @@ export default function ContentInfo() {
           <button
             className="btn btn--export btn--currency scale--3 px-4 active"
             type="button">
-            <img className="me-2" src="/assets/img/Flags/sd.png" />
+            <img className="me-2" src="/assets/img/Flags/SDN.png" />
             SDN
           </button>
 
@@ -41,7 +41,7 @@ export default function ContentInfo() {
           <button
             className="btn btn--export btn--currency scale--3 px-4 ms-2 d-none"
             type="button">
-            <img className="me-2" src="/assets/img/Flags/euro.png" />
+            <img className="me-2" src="/assets/img/Flags/EUR.png" />
             EUR
           </button>
 
@@ -49,14 +49,14 @@ export default function ContentInfo() {
           <button
             className="btn btn--export btn--currency scale--3 px-4 ms-2"
             type="button">
-            <img className="me-2" src="/assets/img/Flags/uk.png" />
+            <img className="me-2" src="/assets/img/Flags/GBP.png" />
             GBP
           </button>
         </div>
 
         {/* receiver */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -72,7 +72,7 @@ export default function ContentInfo() {
 
         {/* order no. */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -84,7 +84,7 @@ export default function ContentInfo() {
 
         {/* datetime */}
         <div className="col-4 text-center mb-4">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -96,7 +96,7 @@ export default function ContentInfo() {
 
         {/* method / place or receiption */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -108,7 +108,7 @@ export default function ContentInfo() {
 
         {/* receipt */}
         <div className="col-2 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -120,7 +120,7 @@ export default function ContentInfo() {
 
         {/* delivery price */}
         <div className="col-2 mb-4 d-none">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -132,7 +132,7 @@ export default function ContentInfo() {
 
         {/* status */}
         <div className="col-2 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -144,7 +144,7 @@ export default function ContentInfo() {
 
         {/* status changer - employee  */}
         <div className="col-4 text-center mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -156,7 +156,7 @@ export default function ContentInfo() {
 
         {/* payment method */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3 me-3">
+          <label className="col-form-label form--label profile--label in-start scale--3 me-3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -168,7 +168,7 @@ export default function ContentInfo() {
 
         {/* bill no */}
         <div className="col-2 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -180,7 +180,7 @@ export default function ContentInfo() {
 
         {/* payment status */}
         <div className="col-2 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -192,7 +192,7 @@ export default function ContentInfo() {
 
         {/* payment doer (nullable cause e-payment) - employee */}
         <div className="col-4 text-center mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -204,7 +204,7 @@ export default function ContentInfo() {
 
         {/* refund payment method  */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -216,7 +216,7 @@ export default function ContentInfo() {
 
         {/* status of refund */}
         <div className="col-4 mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -228,7 +228,7 @@ export default function ContentInfo() {
 
         {/* refund doer (not nullable no e-refundable) - employee */}
         <div className="col-4 text-center mb-4">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <span
               className="fw-600 profile--span-title one-line"
               style={{ lineHeight: 'initial' }}>
@@ -240,7 +240,7 @@ export default function ContentInfo() {
 
         {/* eircode - hidden for some reason idk yet */}
         <div className="col-4 mb-4 ire--info d-none">
-          <label className="col-form-label form--label profile--label scale--3">
+          <label className="col-form-label form--label profile--label in-start scale--3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="1em"
@@ -264,16 +264,16 @@ export default function ContentInfo() {
         <div className="col-12 mb-4"></div>
 
         {/* total products */}
-        <div className="col-4 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+        <div className="col-3 text-center mb-4">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Total Products
           </label>
           <h4 className="mt-2 mb-0 fw-bold">112</h4>
         </div>
 
         {/* products price */}
-        <div className="col-3 offset-1 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+        <div className="col-5  text-center mb-4">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Products Price
           </label>
           <h4 className="mt-2 mb-0 fw-bold text-theme">24,500</h4>
@@ -281,7 +281,7 @@ export default function ContentInfo() {
 
         {/* total price */}
         <div className="col-3 text-center mb-4">
-          <label className="form-label form--label profile--label scale--3">
+          <label className="form-label form--label profile--label justify-content-center scale--3">
             Total Price
           </label>
           <h4 className="mt-2 mb-0 fw-bold text-theme">100,000</h4>
