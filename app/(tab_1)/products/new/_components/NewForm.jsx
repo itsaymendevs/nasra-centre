@@ -52,7 +52,7 @@ export default function NewForm({
     offerPrice: '',
     desc: '',
     descAr: '',
-    weightOption: 'byName',
+    weightOption: 'NAMEFULL',
     weight: '',
     unitId: null,
     units: '',
@@ -419,8 +419,8 @@ export default function NewForm({
                 className="form-check-input"
                 type="radio"
                 id="formCheck-6"
-                value="byName"
-                checked={formData.weightOption == 'byName'}
+                value="NAMEFULL"
+                checked={formData.weightOption == 'NAMEFULL'}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="formCheck-6">
@@ -435,8 +435,8 @@ export default function NewForm({
                 className="form-check-input"
                 type="radio"
                 id="formCheck-4"
-                value="fixedSize"
-                checked={formData.weightOption == 'fixedSize'}
+                value="FIXED"
+                checked={formData.weightOption == 'FIXED'}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="formCheck-4">
@@ -451,8 +451,8 @@ export default function NewForm({
                 className="form-check-input"
                 type="radio"
                 id="formCheck-5"
-                value="dynamicSize"
-                checked={formData.weightOption == 'dynamicSize'}
+                value="DYNAMIC"
+                checked={formData.weightOption == 'DYNAMIC'}
                 onChange={handleInputChange}
               />
               <label className="form-check-label" htmlFor="formCheck-5">
@@ -465,7 +465,7 @@ export default function NewForm({
 
         {/* ------- => continue */}
         {/* ------- => based on above */}
-        {formData.weightOption == 'dynamicSize' && (
+        {formData.weightOption == 'DYNAMIC' && (
           <div className="col-3 mb-4">
             <label className="form-label form--label">Size / Weight</label>
             <input
@@ -478,7 +478,7 @@ export default function NewForm({
             />
           </div>
         )}
-        {formData.weightOption == 'fixedSize' && (
+        {formData.weightOption == 'FIXED' && (
           <div className="col-3 mb-4">
             <label className="form-label form--label">Min. Size / Weight</label>
             <Select
@@ -506,8 +506,8 @@ export default function NewForm({
           </div>
         )}
 
-        {(formData.weightOption == 'fixedSize' ||
-          formData.weightOption == 'dynamicSize') && (
+        {(formData.weightOption == 'FIXED' ||
+          formData.weightOption == 'DYNAMIC') && (
           <div className="col-3 mb-4">
             <label className="form-label form--label">Measuring Unit</label>
             <Select
