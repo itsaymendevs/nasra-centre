@@ -2,35 +2,184 @@
 
 import React from 'react';
 import Select from 'react-select';
-// ----------------------------------------------------------------------------------------------------
+import { updatePreviousOrderFilters } from '@/slices/OrderSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-export default function ContentFilters({ totalRows }) {
+export default function ContentFilters({
+  totalRows,
+  countries,
+  states,
+  deliveryAreas,
+  stores,
+  employees,
+  productsTotalPrice,
+  deliveryTotalPrice,
+}) {
   // ::root
-  const options = [{ value: '1', label: 'option' }];
+  const options = [];
+  const optionsTwo = [];
+  const optionsThree = [];
+  const optionsStores = [];
+  const optionsEmployees = [];
 
-  // ------------------------Page-----------------------
+  const optionsOrderStatus = [
+    { value: 'CANCELED', label: 'Canceled' },
+    { value: 'COMPLETED', label: 'Completed' },
+  ];
+
+  const optionsSort = [
+    { value: 'NewestToOldest', label: 'Newest To Oldest' },
+    { value: 'OldestToNewest', label: 'Oldest To Newest' },
+  ];
+
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url / cookies
+  const dispatch = useDispatch();
+
+  const { previousOrderFilters } = useSelector((state) => state.OrderSlice);
+
+  // ---------------------------------- options ----------------------------------
+
+  employees.map((item) =>
+    optionsEmployees.push({ value: item.id, label: item.name })
+  );
+
+  stores.map((item) =>
+    optionsStores.push({ value: item.id, label: item.title })
+  );
+
+  countries.map((item) => options.push({ value: item.id, label: item.name }));
+
+  states.map((state) => {
+    // 2.1: if there is countryId
+    previousOrderFilters.countryId &&
+      (previousOrderFilters.countryId
+        ? state.countryId == previousOrderFilters.countryId &&
+          optionsTwo.push({ value: state.id, label: state.name })
+        : optionsTwo.push({ value: state.id, label: state.name }));
+  });
+
+  deliveryAreas.map((deliveryArea) => {
+    // 2.1: if there is stateId
+    previousOrderFilters.stateId &&
+      (previousOrderFilters.stateId
+        ? deliveryArea.stateId == previousOrderFilters.stateId &&
+          optionsThree.push({
+            value: deliveryArea.id,
+            label: deliveryArea.name,
+          })
+        : optionsThree.push({
+            value: deliveryArea.id,
+            label: deliveryArea.name,
+          }));
+  });
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    const receivingOption = event.target.value;
+
+    console.log(receivingOption);
+    if (receivingOption == 'BOTH') {
+      dispatch(
+        updatePreviousOrderFilters({
+          countryId: previousOrderFilters?.countryId,
+          stateId: null,
+          deliveryAreaId: null,
+          search: previousOrderFilters?.search,
+          receivingOption: receivingOption,
+          orderStatus: previousOrderFilters?.orderStatus,
+          sortType: previousOrderFilters?.sortType,
+          fromDate: previousOrderFilters?.fromDate,
+          untilDate: previousOrderFilters?.untilDate,
+          employeeId: previousOrderFilters?.employeeId,
+          storeId: null,
+        })
+      );
+    } else if (receivingOption == 'DELIVERY') {
+      dispatch(
+        updatePreviousOrderFilters({
+          countryId: previousOrderFilters?.countryId,
+          stateId: previousOrderFilters?.stateId,
+          deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+          search: previousOrderFilters?.search,
+          receivingOption: receivingOption,
+          orderStatus: previousOrderFilters?.orderStatus,
+          sortType: previousOrderFilters?.sortType,
+          fromDate: previousOrderFilters?.fromDate,
+          untilDate: previousOrderFilters?.untilDate,
+          employeeId: previousOrderFilters?.employeeId,
+          storeId: null,
+        })
+      );
+    } else if (receivingOption == 'PICKUP') {
+      dispatch(
+        updatePreviousOrderFilters({
+          countryId: previousOrderFilters?.countryId,
+          stateId: null,
+          deliveryAreaId: null,
+          search: previousOrderFilters?.search,
+          receivingOption: receivingOption,
+          orderStatus: previousOrderFilters?.orderStatus,
+          sortType: previousOrderFilters?.sortType,
+          fromDate: previousOrderFilters?.fromDate,
+          untilDate: previousOrderFilters?.untilDate,
+          employeeId: previousOrderFilters?.employeeId,
+          storeId: previousOrderFilters?.storeId,
+        })
+      );
+    }
+  }; // end function
+
+  // ---------------------------------- page ----------------------------------
 
   return (
     <div id="filters--wrap" className="mb-5">
       {/* radio buttons */}
       <div className="filters--radio-wrap">
         <div className="form-check">
-          <input className="form-check-input" type="radio" id="formCheck-3" />
           <label className="form-check-label" htmlFor="formCheck-3">
             All Orders
           </label>
+          <input
+            className="form-check-input"
+            type="radio"
+            id="formCheck-3"
+            name="receivingOption"
+            value="BOTH"
+            checked={previousOrderFilters.receivingOption == 'BOTH'}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="form-check">
-          <input className="form-check-input" type="radio" id="formCheck-1" />
           <label className="form-check-label" htmlFor="formCheck-1">
             Delivery Orders
           </label>
+          <input
+            className="form-check-input"
+            type="radio"
+            id="formCheck-1"
+            name="receivingOption"
+            value="DELIVERY"
+            checked={previousOrderFilters.receivingOption == 'DELIVERY'}
+            onChange={handleInputChange}
+          />
         </div>
         <div className="form-check">
-          <input className="form-check-input" type="radio" id="formCheck-2" />
           <label className="form-check-label" htmlFor="formCheck-2">
             Pickup Orders
           </label>
+          <input
+            className="form-check-input"
+            type="radio"
+            id="formCheck-2"
+            name="receivingOption"
+            value="PICKUP"
+            checked={previousOrderFilters.receivingOption == 'PICKUP'}
+            onChange={handleInputChange}
+          />
         </div>
       </div>
 
@@ -46,35 +195,152 @@ export default function ContentFilters({ totalRows }) {
             classNamePrefix="form--select"
             instanceId="country"
             options={options}
-            onChange={''}
+            value={
+              previousOrderFilters.countryId
+                ? options.find(
+                    (option) => option.value == previousOrderFilters?.countryId
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: selectedOption?.value,
+                  stateId: null,
+                  deliveryAreaId: null,
+                  search: previousOrderFilters?.search,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: previousOrderFilters?.orderStatus,
+                  sortType: previousOrderFilters?.sortType,
+                  fromDate: previousOrderFilters?.fromDate,
+                  untilDate: previousOrderFilters?.untilDate,
+                  employeeId: previousOrderFilters?.employeeId,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />
         </div>
-        <div className="col-4 mb-4">
-          <label className="form-label form--label">State</label>
-          <Select
-            className="form--select-container"
-            classNamePrefix="form--select"
-            instanceId="state"
-            options={options}
-            onChange={''}
-            placeholder={''}
-            isClearable
-          />
-        </div>
-        <div className="col-4 mb-4">
-          <label className="form-label form--label">County</label>
-          <Select
-            className="form--select-container"
-            classNamePrefix="form--select"
-            instanceId="county"
-            options={options}
-            onChange={''}
-            placeholder={''}
-            isClearable
-          />
-        </div>
+
+        {/* DELIVERY ONLY */}
+        {previousOrderFilters.receivingOption == 'DELIVERY' && (
+          <div className="col-4 mb-4">
+            <label className="form-label form--label">State</label>
+            <Select
+              className="form--select-container"
+              classNamePrefix="form--select"
+              instanceId="state"
+              options={optionsTwo}
+              value={
+                previousOrderFilters.stateId
+                  ? optionsTwo.find(
+                      (option) => option.value == previousOrderFilters?.stateId
+                    )
+                  : ''
+              }
+              onChange={(selectedOption) =>
+                dispatch(
+                  updatePreviousOrderFilters({
+                    countryId: previousOrderFilters?.countryId,
+                    stateId: selectedOption?.value,
+                    deliveryAreaId: null,
+                    search: previousOrderFilters?.search,
+                    receivingOption: previousOrderFilters?.receivingOption,
+                    orderStatus: previousOrderFilters?.orderStatus,
+                    sortType: previousOrderFilters?.sortType,
+                    fromDate: previousOrderFilters?.fromDate,
+                    untilDate: previousOrderFilters?.untilDate,
+                    employeeId: previousOrderFilters?.employeeId,
+                    storeId: null,
+                  })
+                )
+              }
+              placeholder={''}
+              isClearable
+            />
+          </div>
+        )}
+
+        {/* DELIVERY ONLY */}
+        {previousOrderFilters.receivingOption == 'DELIVERY' && (
+          <div className="col-4 mb-4">
+            <label className="form-label form--label">Region</label>
+            <Select
+              className="form--select-container"
+              classNamePrefix="form--select"
+              instanceId="county"
+              options={optionsThree}
+              value={
+                previousOrderFilters.deliveryAreaId
+                  ? optionsThree.find(
+                      (option) =>
+                        option.value == previousOrderFilters?.deliveryAreaId
+                    )
+                  : ''
+              }
+              onChange={(selectedOption) =>
+                dispatch(
+                  updatePreviousOrderFilters({
+                    countryId: previousOrderFilters?.countryId,
+                    stateId: previousOrderFilters?.stateId,
+                    deliveryAreaId: selectedOption?.value,
+                    search: previousOrderFilters?.search,
+                    receivingOption: previousOrderFilters?.receivingOption,
+                    orderStatus: previousOrderFilters?.orderStatus,
+                    sortType: previousOrderFilters?.sortType,
+                    fromDate: previousOrderFilters?.fromDate,
+                    untilDate: previousOrderFilters?.untilDate,
+                    employeeId: previousOrderFilters?.employeeId,
+                    storeId: null,
+                  })
+                )
+              }
+              placeholder={''}
+              isClearable
+            />
+          </div>
+        )}
+
+        {/* PICKUP ONLY */}
+        {previousOrderFilters.receivingOption == 'PICKUP' && (
+          <div className="col-4 mb-4">
+            <label className="form-label form--label">Store</label>
+            <Select
+              className="form--select-container"
+              classNamePrefix="form--select"
+              instanceId="pickupStoreId"
+              options={optionsStores}
+              value={
+                previousOrderFilters.storeId
+                  ? optionsStores.find(
+                      (option) => option.value == previousOrderFilters?.storeId
+                    )
+                  : ''
+              }
+              onChange={(selectedOption) =>
+                dispatch(
+                  updatePreviousOrderFilters({
+                    countryId: previousOrderFilters?.countryId,
+                    stateId: null,
+                    deliveryAreaId: null,
+                    search: previousOrderFilters?.search,
+                    receivingOption: previousOrderFilters?.receivingOption,
+                    orderStatus: previousOrderFilters?.orderStatus,
+                    sortType: previousOrderFilters?.sortType,
+                    fromDate: previousOrderFilters?.fromDate,
+                    untilDate: previousOrderFilters?.untilDate,
+                    employeeId: previousOrderFilters?.employeeId,
+                    storeId: selectedOption?.value,
+                  })
+                )
+              }
+              placeholder={''}
+              isClearable
+            />
+          </div>
+        )}
 
         {/* empty */}
         <div className="col-12"></div>
@@ -88,8 +354,32 @@ export default function ContentFilters({ totalRows }) {
             className="form--select-container"
             classNamePrefix="form--select"
             instanceId="status"
-            options={options}
-            onChange={''}
+            options={optionsOrderStatus}
+            value={
+              previousOrderFilters.orderStatus
+                ? optionsOrderStatus.find(
+                    (option) =>
+                      option.value == previousOrderFilters?.orderStatus
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: previousOrderFilters?.countryId,
+                  stateId: previousOrderFilters?.stateId,
+                  deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+                  search: previousOrderFilters?.search,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: selectedOption?.value,
+                  sortType: previousOrderFilters?.sortType,
+                  fromDate: previousOrderFilters?.fromDate,
+                  untilDate: previousOrderFilters?.untilDate,
+                  employeeId: previousOrderFilters?.employeeId,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />
@@ -102,8 +392,31 @@ export default function ContentFilters({ totalRows }) {
             className="form--select-container"
             classNamePrefix="form--select"
             instanceId="employee"
-            options={options}
-            onChange={''}
+            options={optionsEmployees}
+            value={
+              previousOrderFilters.employeeId
+                ? optionsEmployees.find(
+                    (option) => option.value == previousOrderFilters?.employeeId
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: previousOrderFilters?.countryId,
+                  stateId: previousOrderFilters?.stateId,
+                  deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+                  search: previousOrderFilters?.search,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: previousOrderFilters?.orderStatus,
+                  sortType: previousOrderFilters?.sortType,
+                  fromDate: previousOrderFilters?.fromDate,
+                  untilDate: previousOrderFilters?.untilDate,
+                  employeeId: selectedOption?.value,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />
@@ -115,9 +428,32 @@ export default function ContentFilters({ totalRows }) {
           <Select
             className="form--select-container"
             classNamePrefix="form--select"
-            instanceId="sorting"
-            options={options}
-            onChange={''}
+            instanceId="sort"
+            options={optionsSort}
+            value={
+              previousOrderFilters.sortType
+                ? optionsSort.find(
+                    (option) => option.value == previousOrderFilters?.sortType
+                  )
+                : ''
+            }
+            onChange={(selectedOption) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: previousOrderFilters?.countryId,
+                  stateId: previousOrderFilters?.stateId,
+                  deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+                  search: previousOrderFilters?.search,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: previousOrderFilters?.orderStatus,
+                  sortType: selectedOption?.value,
+                  fromDate: previousOrderFilters?.fromDate,
+                  untilDate: previousOrderFilters?.untilDate,
+                  employeeId: previousOrderFilters?.employeeId,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
             placeholder={''}
             isClearable
           />
@@ -161,17 +497,79 @@ export default function ContentFilters({ totalRows }) {
             type="search"
             className="form--input"
             placeholder="Order Serial .."
+            value={previousOrderFilters?.search || ''}
+            onChange={(event) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: previousOrderFilters?.countryId,
+                  stateId: previousOrderFilters?.stateId,
+                  deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+                  search: event.target.value,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: previousOrderFilters?.orderStatus,
+                  sortType: previousOrderFilters?.sortType,
+                  fromDate: previousOrderFilters?.fromDate,
+                  untilDate: previousOrderFilters?.untilDate,
+                  employeeId: previousOrderFilters?.employeeId,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
           />
         </div>
 
         {/* from date input */}
         <div className="col-4 mb-4">
-          <input className="form--input" type="date" />
+          <input
+            className="form--input"
+            type="date"
+            readOnly
+            value={previousOrderFilters?.fromDate || ''}
+            onChange={(event) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: previousOrderFilters?.countryId,
+                  stateId: previousOrderFilters?.stateId,
+                  deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+                  search: previousOrderFilters?.search,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: previousOrderFilters?.orderStatus,
+                  sortType: previousOrderFilters?.sortType,
+                  fromDate: event.target.value,
+                  untilDate: previousOrderFilters?.untilDate,
+                  employeeId: previousOrderFilters?.employeeId,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
+          />
         </div>
 
         {/* until date input */}
         <div className="col-4 mb-4">
-          <input className="form--input" type="date" />
+          <input
+            className="form--input"
+            type="date"
+            readOnly
+            value={previousOrderFilters?.untilDate || ''}
+            onChange={(event) =>
+              dispatch(
+                updatePreviousOrderFilters({
+                  countryId: previousOrderFilters?.countryId,
+                  stateId: previousOrderFilters?.stateId,
+                  deliveryAreaId: previousOrderFilters?.deliveryAreaId,
+                  search: previousOrderFilters?.search,
+                  receivingOption: previousOrderFilters?.receivingOption,
+                  orderStatus: previousOrderFilters?.orderStatus,
+                  sortType: previousOrderFilters?.sortType,
+                  fromDate: previousOrderFilters?.fromDate,
+                  untilDate: event.target.value,
+                  employeeId: previousOrderFilters?.employeeId,
+                  storeId: previousOrderFilters?.storeId,
+                })
+              )
+            }
+          />
         </div>
 
         {/* --------------------------- */}
@@ -198,7 +596,7 @@ export default function ContentFilters({ totalRows }) {
               style={{ lineHeight: 'initial' }}>
               Products Total
             </span>
-            29,500
+            {productsTotalPrice} SDG
           </label>
         </div>
 
@@ -224,7 +622,7 @@ export default function ContentFilters({ totalRows }) {
               style={{ lineHeight: 'initial' }}>
               Delivery Total
             </span>
-            10,000
+            {deliveryTotalPrice} SDG
           </label>
         </div>
 

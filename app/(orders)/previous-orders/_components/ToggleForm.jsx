@@ -1,7 +1,111 @@
-import Link from 'next/link';
-import React from 'react';
+'use client';
 
-export default function ToggleForm() {
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useDispatch } from 'react-redux';
+import Link from 'next/link';
+
+export default function ToggleForm({ countries, generalBlock }) {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const url = 'http://127.0.0.1:8000';
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+  const initialSkip = useRef(false);
+  const initialSkipTwo = useRef(false);
+
+  // ---------------------------------- states ----------------------------------
+  const SudanOrdering = countries.filter((item) => item.code == 'SD');
+  const UKOrdering = countries.filter((item) => item.code == 'UK');
+  const IRLOrdering = countries.filter((item) => item.code == 'IRL');
+
+  // 2: formData state
+  const initialState = {
+    orderingSD: SudanOrdering[0]['isOrderingActive'] == 0 ? true : false,
+    orderingUK: UKOrdering[0]['isOrderingActive'] == 0 ? true : false,
+    orderingIRL: IRLOrdering[0]['isOrderingActive'] == 0 ? true : false,
+    countryId: null,
+  };
+
+  const initialStateTwo = {
+    stopOrders: generalBlock.stopOrders,
+  };
+
+  const [formData, setFormData] = useState(initialState);
+  const [formDataTwo, setFormDataTwo] = useState(initialStateTwo);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 1: handle input change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]:
+        event.target.type == 'checkbox'
+          ? event.target.checked
+          : event.target.value,
+    }));
+  }; // end function
+
+  const handleInputChangeTwo = (event) => {
+    setFormDataTwo((state) => ({
+      ...state,
+      [event.target.name]:
+        event.target.type == 'checkbox'
+          ? event.target.checked
+          : event.target.value,
+    }));
+  }; // end function
+
+  useEffect(() => {
+    const handleSubmit = async () => {
+      // 1: update ordering
+      dispatch(IsLoading());
+      const response = await fetch(
+        `${url}/api/previousOrders/toggle-ordering`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+      dispatch(IsNotLoading());
+    }; // end function
+
+    initialSkip.current ? handleSubmit() : (initialSkip.current = true);
+  }, [formData]);
+
+  useEffect(() => {
+    const handleSubmit = async () => {
+      // 2: update global-ordering
+      dispatch(IsLoading());
+      const response = await fetch(
+        `${url}/api/previousOrders/toggle-global-ordering`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+          body: JSON.stringify(formDataTwo),
+        }
+      );
+      dispatch(IsNotLoading());
+    }; // end function
+
+    initialSkipTwo.current ? handleSubmit() : (initialSkipTwo.current = true);
+  }, [formDataTwo]);
+
+  // ---------------------------------- page ----------------------------------
+
   return (
     <div id="disable--wrap" className="mb-5">
       <div className="row g-0 align-items-end">
@@ -18,6 +122,9 @@ export default function ToggleForm() {
                 className="form-check-input"
                 type="checkbox"
                 id="formCheck-5"
+                name="orderingSD"
+                checked={formData.orderingSD}
+                onChange={handleInputChange}
               />
               <label className="form-check-label ms-1" htmlFor="formCheck-5">
                 Sudan
@@ -31,6 +138,9 @@ export default function ToggleForm() {
                 className="form-check-input"
                 type="checkbox"
                 id="formCheck-7"
+                name="orderingUK"
+                checked={formData.orderingUK}
+                onChange={handleInputChange}
               />
               <label className="form-check-label ms-1" htmlFor="formCheck-7">
                 United Kingdom
@@ -44,6 +154,9 @@ export default function ToggleForm() {
                 className="form-check-input"
                 type="checkbox"
                 id="formCheck-6"
+                name="orderingIRL"
+                checked={formData.orderingIRL}
+                onChange={handleInputChange}
               />
               <label className="form-check-label ms-1" htmlFor="formCheck-6">
                 Ireland
@@ -115,6 +228,9 @@ export default function ToggleForm() {
               className="form-check-input"
               type="checkbox"
               id="formCheck-4"
+              name="stopOrders"
+              checked={formDataTwo.stopOrders}
+              onChange={handleInputChangeTwo}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-4">
               Stop receiving orders globally

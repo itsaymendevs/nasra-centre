@@ -1,12 +1,13 @@
 import React from 'react';
-import ContentFilters from './ContentFilters';
 import ContentRows from './ContentRows';
+import NewForm from './NewForm';
+import EditPortal from './EditPortal';
 
 // ------------------------------------------------------------------
 
 // 1: fetch data
 export async function getContent() {
-  const response = await fetch(`http://127.0.0.1:8000/api/orders`, {
+  const response = await fetch('http://127.0.0.1:8000/api/payments', {
     cache: 'no-store',
     method: 'GET',
   });
@@ -20,21 +21,16 @@ export async function getContent() {
 
 export default async function Content() {
   // ------------------------data---------------------
-  const { orders, countries, states, deliveryAreas, stores } =
-    await getContent();
+  const payments = await getContent();
 
   // ------------------------Page-----------------------
   return (
     <>
-      <ContentFilters
-        totalRows={orders.length}
-        orders={orders}
-        countries={countries}
-        states={states}
-        deliveryAreas={deliveryAreas}
-        stores={stores}
-      />
-      <ContentRows orders={orders} />
+      <NewForm />
+      <ContentRows payments={payments} />
+
+      {/* portals */}
+      <EditPortal payments={payments} />
     </>
   );
 } // end function

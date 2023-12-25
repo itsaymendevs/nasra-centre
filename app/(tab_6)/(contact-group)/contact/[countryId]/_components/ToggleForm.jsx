@@ -29,8 +29,6 @@ export default function ToggleForm({ country }) {
 
   // ---------------------------------- functions ----------------------------------
 
-  // 1: handle submit
-
   // 1: handle input change
   const handleInputChange = (event) => {
     setFormData((state) => ({

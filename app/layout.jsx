@@ -1,22 +1,22 @@
 // :import stylings
-
-import '@/public/assets/bootstrap/css/bootstrap.min.css';
-import '@/public/assets/css/aos.min.css';
-import '@/public/assets/css/globals.css';
-import '@/public/assets/css/styles.css';
-import '@/public/assets/css/select2.css';
-import '@/public/assets/css/filters.css';
-import '@/public/assets/css/home.css';
-import '@/public/assets/css/login.css';
-import '@/public/assets/css/modal.css';
-import '@/public/assets/css/navbar.css';
-import '@/public/assets/css/orders.css';
-import '@/public/assets/css/profile.css';
-import '@/public/assets/css/scroll.css';
-import '@/public/assets/css/select2-custom.css';
-import '@/public/assets/css/sms.css';
-import '@/public/assets/css/sort.css';
-import '@/public/assets/css/react-select.css';
+// import './page.module.css';
+import './_assets/bootstrap/css/bootstrap.min.css';
+import './_assets/css/aos.min.css';
+import './_assets/css/globals.css';
+import './_assets/css/styles.css';
+import './_assets/css/select2.css';
+import './_assets/css/filters.css';
+import './_assets/css/home.css';
+import './_assets/css/login.css';
+import './_assets/css/modal.css';
+import './_assets/css/navbar.css';
+import './_assets/css/orders.css';
+import './_assets/css/profile.css';
+import './_assets/css/scroll.css';
+import './_assets/css/select2-custom.css';
+import './_assets/css/sms.css';
+import './_assets/css/sort.css';
+import './_assets/css/react-select.css';
 
 // ----------------------------------------------------------------------------------------------------
 
