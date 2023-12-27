@@ -6,7 +6,7 @@ import ContentItems from './ContentItems';
 // 1: fetch data
 export async function getTypes(mainCategoryId, subCategoryId) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/inner-types/${mainCategoryId}/${subCategoryId}/sort`,
+    `${process.env.domainURL}/api/inner-types/${mainCategoryId}/${subCategoryId}/sort`,
     {
       cache: 'no-store',
       method: 'GET',

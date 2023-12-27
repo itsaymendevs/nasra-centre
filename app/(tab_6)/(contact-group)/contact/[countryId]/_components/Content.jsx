@@ -12,7 +12,7 @@ import EditPortal from './EditPortal';
 // 1: fetch data
 export async function getContact(countryId) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/contact/${countryId}`,
+    `${process.env.domainURL}/api/contact/${countryId}`,
     {
       cache: 'no-store',
       method: 'GET',

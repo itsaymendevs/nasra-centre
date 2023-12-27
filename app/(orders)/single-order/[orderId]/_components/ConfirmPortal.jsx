@@ -6,19 +6,16 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function ConfirmPortal() {
-  // ::root
-  const options = [{ value: '1', label: 'option' }];
-
   // ---------------------------------- dispatch ----------------------------------
   const dispatch = useDispatch();
 
   // ---------------------------------- states ----------------------------------
-  const { confirmModal } = useSelector((state) => state.ConfirmModalSlice);
+  const { status, targetId } = useSelector((state) => state.ConfirmModalSlice);
 
   // ---------------------------------- page ----------------------------------
   return (
     <>
-      {confirmModal && (
+      {status && (
         <GlobalPortal>
           {/* modal */}
           <div
@@ -52,12 +49,18 @@ export default function ConfirmPortal() {
                         <button
                           className="btn border-0 rounded-1 mt-3 me-3"
                           type="button"
-                          onClick={() => dispatch(toggleConfirmModal(false))}>
+                          onClick={() =>
+                            dispatch(toggleConfirmModal({ status: false }))
+                          }>
                           Close
                         </button>
                         <button
                           className="btn btn--theme btn--outline-danger btn--sm px-4 rounded-1 fs-13 mt-3 text-capitalize"
-                          type="button">
+                          type="button"
+                          onClick={(event) => {
+                            document.getElementById(targetId).requestSubmit();
+                            dispatch(toggleConfirmModal({ status: false }));
+                          }}>
                           Confirm
                         </button>
                       </div>

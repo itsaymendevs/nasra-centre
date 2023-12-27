@@ -13,7 +13,7 @@ export default function ContentRows({ orders }) {
   // 1: use dispatch + url
   const dispatch = useDispatch();
   const router = useRouter();
-  const url = 'http://127.0.0.1:8000';
+  const url = process.env.domainURL;
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 
@@ -212,7 +212,7 @@ export default function ContentRows({ orders }) {
                       </div>
                       <div className="col-6 text-end mb-4">
                         <label className="col-form-label form--label text-theme fs-12">
-                          {order.orderDateTime}
+                          {order.orderStatusDateTime || ''}
                         </label>
                       </div>
 

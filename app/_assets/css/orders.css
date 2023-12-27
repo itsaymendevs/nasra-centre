@@ -75,3 +75,8 @@
 #processing-extras .nav-link.active {
   background-color: var(--color-black);
 }
+
+.bg-disabled {
+  background-color: #dedede !important;
+  border-color: #dedede !important;
+}

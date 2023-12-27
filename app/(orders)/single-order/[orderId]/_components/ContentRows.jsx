@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 
-export default function ContentRows({ totalRows }) {
+export default function ContentRows({ totalRows, order }) {
   return (
     <div id="results--row">
       {/* hr */}
@@ -50,27 +50,37 @@ export default function ContentRows({ totalRows }) {
       {/* ----------------------- */}
 
       {/* item */}
-      <div className="row g-0 align-items-center results--item">
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">
-            P-10503
-          </label>
+      {order.products.map((product) => (
+        <div
+          className="row g-0 align-items-center results--item"
+          key={product.id}>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">
+              {product.serial}
+            </label>
+          </div>
+          <div className="col-4">
+            <label className="col-form-label form--label row--label">
+              {product.name}
+            </label>
+          </div>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">
+              {product.orderProductQuantity}
+            </label>
+          </div>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">
+              {order.sellPrice}
+            </label>
+          </div>
+          <div className="col-2">
+            <label className="col-form-label form--label row--label">
+              {order.orderProductPrice}
+            </label>
+          </div>
         </div>
-        <div className="col-4">
-          <label className="col-form-label form--label row--label">
-            Watermellon
-          </label>
-        </div>
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">2</label>
-        </div>
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">10</label>
-        </div>
-        <div className="col-2">
-          <label className="col-form-label form--label row--label">20</label>
-        </div>
-      </div>
+      ))}
       {/* end item */}
     </div>
     // end outer wrapper

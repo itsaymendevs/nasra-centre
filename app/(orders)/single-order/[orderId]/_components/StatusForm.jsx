@@ -1,12 +1,141 @@
 'use client';
+
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 import { useDispatch } from 'react-redux';
+import { useCookies } from 'next-client-cookies';
+import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { useRouter } from 'next/navigation';
 
-export default function ToggleForm() {
-  // ::root
+export default function ToggleForm({ order, messages }) {
+  // ---------------------------------- global ----------------------------------
+
+  // 1: use dispatch + url
   const dispatch = useDispatch();
+  const router = useRouter();
+  const url = process.env.domainURL;
+  const cookies = useCookies();
+  const token = `Bearer ${cookies.get('token')}`;
+
+  // ---------------------------------- states ----------------------------------
+
+  // 1: formData state
+  const initialState = {
+    paymentId: order.paymentId || null,
+    invoiceNumber: order.invoiceNumber || '',
+  };
+
+  const initialStateCancellationNote = {
+    orderCancellationNote: order.orderCancellationNote || '',
+    refundInvoiceNumber: order.refundInvoiceNumber || '',
+  };
+
+  const initialStateNote = {
+    orderNote: order.orderNote || '',
+  };
+
+  const initialStateOTP = {
+    userOTP: messages[0] ? messages[0]['content'] : '',
+    receiverOTP: messages[1] ? messages[1]['content'] : '',
+  };
+
+  // initiate
+  const [formData, setFormData] = useState(initialState);
+  const [formDataNote, setFormDataNote] = useState(initialStateNote);
+  const [formDataCancellationNote, setFormDataCancellationNote] = useState(
+    initialStateCancellationNote
+  );
+  const [formDataOTP, setFormDataOTP] = useState(initialStateOTP);
+
+  // ---------------------------------- functions ----------------------------------
+
+  // 3: handle change
+  const handleInputChange = (event) => {
+    setFormData((state) => ({
+      ...state,
+      [event.target.name]: event.target.value,
+    }));
+  }; // end function
+
+  // 4: handle submit for OrderNote
+  const handleSubmitNote = async (event) => {
+    event.preventDefault();
+
+    dispatch(IsLoading());
+    const response = await fetch(`${url}/api/orders/${order.id}/update-note`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify(formDataNote),
+    });
+    dispatch(IsNotLoading());
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  };
+
+  // 5: handle submit for cancellingOrder
+  const handleSubmitCancelOrder = async (event) => {
+    event.preventDefault();
+
+    dispatch(IsLoading());
+    const response = await fetch(`${url}/api/orders/${order.id}/cancel-order`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify(formDataCancellationNote),
+    });
+    dispatch(IsNotLoading());
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  };
+
+  // 6: handle submit for processingOrder
+  const handleSubmitProcessOrder = async (event, action) => {
+    event.preventDefault();
+
+    dispatch(IsLoading());
+    const response = await fetch(
+      `${url}/api/orders/${order.id}/process-order`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+        body: JSON.stringify({ action: action }),
+      }
+    );
+    dispatch(IsNotLoading());
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  };
+
+  // 7: handle submit for OTP
+  const handleSubmitOTP = async (event, target) => {
+    event.preventDefault();
+
+    dispatch(IsLoading());
+    const response = await fetch(`${url}/api/orders/${order.id}/send-otp`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+      body: JSON.stringify({ ...formDataOTP, target: target }),
+    });
+    dispatch(IsNotLoading());
+
+    // 4.2: hot reload + dispatch
+    router.refresh();
+  };
 
   // --------------------------------- page ---------------------------------------
   return (
@@ -18,8 +147,18 @@ export default function ToggleForm() {
         <label
           className="form-label text-center hr--label mb-0"
           style={{ minWidth: '160px' }}>
-          <span className="d-block mb-1 fw-bold">Ahmed Omar</span>
-          <span className="d-block mb-1">12 Sep 2023 - 10:00 PM</span>
+          <span className="d-block mb-1 fw-bold">
+            {/* refund / regular order employee */}
+            {order.orderStatus != 'CANCELED'
+              ? order.orderEmployeeId && order.order_employee.name
+              : order.refundEmployeeId && order.refund_employee.name}
+          </span>
+          <span className="d-block mb-1">
+            {/* refund / regular order dateTime */}
+            {order.orderStatus != 'CANCELED'
+              ? order.orderStatusDateTime
+              : order.refundDateTime}
+          </span>
         </label>
       </div>
 
@@ -34,7 +173,11 @@ export default function ToggleForm() {
               {/* 1: processing */}
               <li className="nav-item" role="presentation">
                 <a
-                  className="nav-link active"
+                  className={`nav-link ${
+                    order.orderStatus != 'CANCELED'
+                      ? 'active'
+                      : 'disabled bg-disabled'
+                  }`}
                   role="tab"
                   data-bs-toggle="pill"
                   href="#processing-tab">
@@ -45,7 +188,11 @@ export default function ToggleForm() {
               {/* cancelling order */}
               <li className="nav-item" role="presentation">
                 <a
-                  className="nav-link"
+                  className={`nav-link ${
+                    order.orderStatus == 'CANCELED' && 'active'
+                  } ${
+                    order.orderStatus == 'COMPLETED' && 'disabled bg-disabled'
+                  }`}
                   role="tab"
                   data-bs-toggle="pill"
                   href="#cancelling-tab">
@@ -60,7 +207,9 @@ export default function ToggleForm() {
             <div className="tab-content">
               {/* 1: processing tab */}
               <div
-                className="tab-pane fade show active"
+                className={`tab-pane fade ${
+                  order.orderStatus != 'CANCELED' && 'show active'
+                }`}
                 role="tabpanel"
                 id="processing-tab">
                 <div className="row g-0">
@@ -72,8 +221,11 @@ export default function ToggleForm() {
                         role="tablist">
                         {/* 1.1: sms */}
                         <li className="nav-item" role="presentation">
+                          {/* disable in PENDING */}
                           <a
-                            className="nav-link btn--theme btn--sm rounded-1 fs-13 text-capitalize me-2 border-0"
+                            className={`nav-link btn--theme btn--sm rounded-1 fs-13 text-capitalize me-2 border-0 ${
+                              order.orderStatus == 'PENDING' && 'disabled'
+                            }`}
                             role="tab"
                             data-bs-toggle="tab"
                             href="#message-tab">
@@ -105,7 +257,7 @@ export default function ToggleForm() {
                               <label className="form-label form--label text-theme fs-12 mb-1">
                                 @orderNum
                               </label>
-                              <label className="form-label form--label profile--label">
+                              <label className="form-label form--label profile--label justify-content-center">
                                 Order Number
                               </label>
                             </div>
@@ -113,7 +265,7 @@ export default function ToggleForm() {
                               <label className="form-label form--label text-theme fs-12 mb-1">
                                 @userFN
                               </label>
-                              <label className="form-label form--label profile--label">
+                              <label className="form-label form--label profile--label justify-content-center">
                                 User First-name
                               </label>
                             </div>
@@ -121,64 +273,96 @@ export default function ToggleForm() {
                               <label className="form-label form--label text-theme fs-12 mb-1">
                                 @userLN
                               </label>
-                              <label className="form-label form--label profile--label">
+                              <label className="form-label form--label profile--label justify-content-center">
                                 User Last-name
                                 <br />
                               </label>
                             </div>
-                            <div className="col-4 text-center mb-4 d-none">
-                              <label className="form-label form--label text-theme fs-12 mb-1">
-                                @pickupCode
-                              </label>
-                              <label className="form-label form--label profile--label">
-                                Pickup Code
-                                <br />
-                              </label>
-                            </div>
-                            <div className="col-8 text-center mb-4 d-none"></div>
+                            {order.receivingOption == 'PICKUP' && (
+                              <>
+                                <div className="col-4 text-center mb-4">
+                                  <label className="form-label form--label text-theme fs-12 mb-1">
+                                    @pickupCode
+                                  </label>
+                                  <label className="form-label form--label profile--label justify-content-center">
+                                    Pickup Code
+                                    <br />
+                                  </label>
+                                </div>
+                                <div className="col-8 text-center mb-4"></div>
+                              </>
+                            )}
 
                             {/* customer message form */}
-                            <div className="col-6 mb-4">
+                            <div
+                              className={`${
+                                order.receiverId ? 'col-6' : 'offset-3 col-6'
+                              } mb-4`}>
                               <label className="form-label form--label with-counter">
                                 Customer Message
-                                <small className="tag--optional">0/140</small>
+                                <small className="tag--optional">
+                                  {formDataOTP.userOTP.length}/140
+                                </small>
                               </label>
-                              <textarea
-                                className="form--input form--textarea"
-                                defaultValue="Lorem ipsum dolor sit amet, consectetur
-                                adipisicing elit. Minus numquam dignissimos
-                                saepe ducimus, accusantium velit ab
-                                necessitatibus eius libero nisi"></textarea>
-                              <div className="text-center me-4 mt-2">
-                                <a
-                                  className="btn btn--theme btn--sm fs-12 rounded-1 px-5"
-                                  role="button"
-                                  href="#">
-                                  Send
-                                </a>
-                              </div>
+                              <form
+                                onSubmit={(event) =>
+                                  handleSubmitOTP(event, 'customer')
+                                }>
+                                <textarea
+                                  name="userOTP"
+                                  className="form--input form--textarea"
+                                  required
+                                  onChange={(event) =>
+                                    setFormDataOTP((state) => ({
+                                      ...state,
+                                      [event.target.name]: event.target.value,
+                                    }))
+                                  }
+                                  value={formDataOTP.userOTP}></textarea>
+                                <div className="text-center me-4 mt-2">
+                                  <button
+                                    className="btn btn--theme btn--sm fs-12 rounded-1 px-5"
+                                    type="submit">
+                                    Send
+                                  </button>
+                                </div>
+                              </form>
                             </div>
 
                             {/* receiver message form */}
-                            <div className="col-6 mb-4">
-                              <label className="form-label form--label with-counter">
-                                Receiver Message
-                                <small className="tag--optional">0/140</small>
-                              </label>
-                              <textarea
-                                className="form--input form--textarea"
-                                defaultValue="Lorem ipsum dolor sit amet consectetur,
-                                adipisicing elit. Sapiente dicta commodi odit
-                                voluptatibus enim, repellat aliquid illo!"></textarea>
-                              <div className="text-center me-4 mt-2">
-                                <a
-                                  className="btn btn--theme btn--sm fs-12 rounded-1 px-5"
-                                  role="button"
-                                  href="#">
-                                  Send
-                                </a>
+                            {order.receiverId && (
+                              <div className="col-6 mb-4">
+                                <label className="form-label form--label with-counter">
+                                  Receiver Message
+                                  <small className="tag--optional">
+                                    {formDataOTP.receiverOTP.length}/140
+                                  </small>
+                                </label>
+                                <form
+                                  onSubmit={(event) =>
+                                    handleSubmitOTP(event, 'receiver')
+                                  }>
+                                  <textarea
+                                    name="receiverOTP"
+                                    className="form--input form--textarea"
+                                    required
+                                    onChange={(event) =>
+                                      setFormDataOTP((state) => ({
+                                        ...state,
+                                        [event.target.name]: event.target.value,
+                                      }))
+                                    }
+                                    value={formDataOTP.receiverOTP}></textarea>
+                                  <div className="text-center me-4 mt-2">
+                                    <button
+                                      className="btn btn--theme btn--sm fs-12 rounded-1 px-5"
+                                      type="submit">
+                                      Send
+                                    </button>
+                                  </div>
+                                </form>
                               </div>
-                            </div>
+                            )}
                           </div>
                         </div>
                         {/* end 1.1 sms tab */}
@@ -190,23 +374,31 @@ export default function ToggleForm() {
                           className="tab-pane fade"
                           role="tabpanel"
                           id="note-tab">
-                          <div className="row g-0 px-4 py-4 bg-white rounded-1 shadow-sm">
+                          <form
+                            onSubmit={handleSubmitNote}
+                            className="row g-0 px-4 py-4 bg-white rounded-1 shadow-sm">
                             <div className="col-9">
                               <label className="form-label form--label">
                                 Note Content
                               </label>
-                              <textarea className="form--input form--textarea w-100"></textarea>
+                              <textarea
+                                name="orderNote"
+                                className="form--input form--textarea w-100"
+                                onChange={(event) =>
+                                  setFormDataNote({
+                                    [event.target.name]: event.target.value,
+                                  })
+                                }
+                                value={formDataNote.orderNote || ''}></textarea>
                             </div>
                             <div className="col-3 text-end align-self-end">
                               <button
                                 className="btn btn btn--outline-theme rounded-1 px-4 mb-1"
-                                type="button"
-                                data-bs-target="#confirm-modal"
-                                data-bs-toggle="modal">
+                                type="submit">
                                 Save
                               </button>
                             </div>
-                          </div>
+                          </form>
                         </div>
                         {/* end note tab */}
                       </div>
@@ -228,16 +420,32 @@ export default function ToggleForm() {
                     id="processing-buttons">
                     {/* previous -> step back */}
                     <button
-                      className="btn border-0 rounded-1 me-2"
+                      className={`btn border-0 rounded-1 me-2 ${
+                        (order.orderStatus == 'PENDING' ||
+                          order.orderStatus == 'COMPLETED' ||
+                          order.orderStatus == 'CANCELED') &&
+                        'disabled'
+                      }`}
                       type="button"
-                      data-bs-dismiss="modal">
+                      onClick={(event) =>
+                        handleSubmitProcessOrder(event, 'PREVIOUS')
+                      }>
                       Previous
                     </button>
 
                     {/* next -> step forward */}
                     <button
-                      className="btn btn--theme btn--sm px-4 rounded-1 fs-13 text-capitalize"
-                      type="button">
+                      className={`btn btn--theme btn--sm px-4 rounded-1 fs-13 text-capitalize ${
+                        (order.orderStatus == 'COMPLETED' ||
+                          order.orderStatus == 'CANCELED' ||
+                          (order.orderStatus == 'PROCESSING' &&
+                            order.isPaymentDone === 0)) &&
+                        'disabled'
+                      } `}
+                      type="button"
+                      onClick={(event) =>
+                        handleSubmitProcessOrder(event, 'NEXT')
+                      }>
                       Next Process
                     </button>
                   </div>
@@ -250,7 +458,9 @@ export default function ToggleForm() {
                     <div className="processing-steps rounded-1">
                       {/* pending */}
                       <button
-                        className="btn btn--sm px-4 rounded-1 fs-13 text-capitalize scale--3 active"
+                        className={`btn btn--sm px-4 rounded-1 fs-13 text-capitalize scale--3 ${
+                          order.orderStatus != 'CANCELED' && 'active'
+                        }`}
                         type="button">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -272,7 +482,11 @@ export default function ToggleForm() {
 
                       {/* processing */}
                       <button
-                        className="btn btn--sm px-4 rounded-1 fs-13 text-capitalize scale--3"
+                        className={`btn btn--sm px-4 rounded-1 fs-13 text-capitalize scale--3 ${
+                          (order.orderStatus == 'PROCESSING' ||
+                            order.orderStatus == 'COMPLETED') &&
+                          'active'
+                        }`}
                         type="button">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +508,9 @@ export default function ToggleForm() {
 
                       {/* delivered */}
                       <button
-                        className="btn btn--sm px-4 rounded-1 fs-13 text-capitalize scale--3"
+                        className={`btn btn--sm px-4 rounded-1 fs-13 text-capitalize scale--3 ${
+                          order.orderStatus == 'COMPLETED' && 'active'
+                        } `}
                         type="button">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -310,7 +526,7 @@ export default function ToggleForm() {
                           <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
                           <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"></path>
                         </svg>
-                        Delivered
+                        COMPLETED
                       </button>
                     </div>
                   </div>
@@ -324,25 +540,55 @@ export default function ToggleForm() {
               {/* ------------------------------------- */}
 
               {/* 2: cancelling tab + form */}
+              {/*  */}
               <div
-                className="tab-pane fade"
+                className={`tab-pane fade ${
+                  order.orderStatus == 'CANCELED' && 'show active'
+                }`}
                 role="tabpanel"
                 id="cancelling-tab">
-                <div className="row g-0">
+                <form
+                  id="handleSubmitCancelOrderForm"
+                  className="row g-0"
+                  onSubmit={handleSubmitCancelOrder}>
                   {/* refund bill input (only appear if payment is done) */}
-                  <div className="col-4 mb-4">
-                    <label className="form-label form--label">
-                      Refund Bill No.
-                    </label>
-                    <input type="text" className="form--input" />
-                  </div>
+                  {order.isPaymentDone == true && (
+                    <div className="col-4 mb-4">
+                      <label className="form-label form--label">
+                        Refund Bill No.
+                      </label>
+                      <input
+                        name="refundInvoiceNumber"
+                        type="text"
+                        required
+                        className="form--input"
+                        value={formDataCancellationNote.refundInvoiceNumber}
+                        onChange={(event) =>
+                          setFormDataCancellationNote((state) => ({
+                            ...state,
+                            [event.target.name]: event.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+                  )}
 
                   {/* cancellation note */}
                   <div className="col-9">
                     <label className="form-label form--label">
                       Note about cancellation
                     </label>
-                    <textarea className="form--input form--textarea w-100"></textarea>
+                    <textarea
+                      name="orderCancellationNote"
+                      className="form--input form--textarea w-100"
+                      required
+                      value={formDataCancellationNote.orderCancellationNote}
+                      onChange={(event) =>
+                        setFormDataCancellationNote((state) => ({
+                          ...state,
+                          [event.target.name]: event.target.value,
+                        }))
+                      }></textarea>
                   </div>
 
                   {/* submit button -> toggle modal for confirm */}
@@ -351,11 +597,23 @@ export default function ToggleForm() {
                       className="btn btn btn--outline-theme btn--outline-danger rounded-1 px-4 mb-1"
                       type="button"
                       href="#"
-                      onClick={() => dispatch(toggleConfirmModal(true))}>
-                      Confirm
+                      onClick={() => {
+                        formDataCancellationNote.orderCancellationNote &&
+                        (order.isPaymentDone
+                          ? formDataCancellationNote.refundInvoiceNumber
+                          : true)
+                          ? dispatch(
+                              toggleConfirmModal({
+                                status: true,
+                                targetId: 'handleSubmitCancelOrderForm',
+                              })
+                            )
+                          : null;
+                      }}>
+                      {order.orderStatus == 'CANCELED' ? 'Update' : 'Confirm'}
                     </Link>
                   </div>
-                </div>
+                </form>
               </div>
               {/* end tab 2: cancellation */}
             </div>

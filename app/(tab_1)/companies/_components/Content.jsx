@@ -8,7 +8,7 @@ import EditPortal from './EditPortal';
 
 // 1: fetch data
 export async function getCompanies() {
-  const response = await fetch('http://127.0.0.1:8000/api/companies', {
+  const response = await fetch(`${process.env.domainURL}/api/companies`, {
     cache: 'no-store',
     method: 'GET',
   });

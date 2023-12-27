@@ -3,15 +3,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  confirmModal: false,
+  status: false,
+  targetId: null,
 };
 
 const ConfirmModalSlice = createSlice({
   name: 'ConfirmModalSlice',
   initialState,
   reducers: {
-    toggleConfirmModal: (state, action) =>
-      void (state.confirmModal = action.payload),
+    toggleConfirmModal: (state, action) => {
+      state.status = action.payload.status;
+      state.targetId = action.payload.targetId;
+    },
   },
 });
 

@@ -9,7 +9,7 @@ import EditPortal from './EditPortal';
 
 // 1: fetch data
 export async function getHelpInfo() {
-  const response = await fetch('http://127.0.0.1:8000/api/help', {
+  const response = await fetch(`${process.env.domainURL}/api/help`, {
     cache: 'no-store',
     method: 'GET',
   });

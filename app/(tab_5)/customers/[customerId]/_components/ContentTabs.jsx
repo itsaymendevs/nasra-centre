@@ -327,10 +327,10 @@ export default function ContentTabs({ user, countries }) {
                 {/* sell / offer */}
                 <div className="col-3">
                   <label className="col-form-label form--label row--label">
-                    {favorite.product.sellPrice * parseFloat(formFilters.toSDG)}{' '}
+                    {favorite.product.sellPrice / parseFloat(formFilters.toSDG)}{' '}
                     /{' '}
                     {favorite.product.offerPrice
-                      ? favorite.product.offerPrice *
+                      ? favorite.product.offerPrice /
                         parseFloat(formFilters.toSDG)
                       : '-'}
                   </label>

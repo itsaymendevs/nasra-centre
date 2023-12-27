@@ -6,19 +6,38 @@ import AddressInfo from './AddressInfo';
 import ContentRows from './ContentRows';
 import ConfirmPortal from './ConfirmPortal';
 
-// ----------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------
 
-export default function Content() {
-  // ------------------------States---------------------
-  // ------------------------Functions------------------
+// 1: fetch data
+export async function getContent(orderId) {
+  const response = await fetch(
+    `${process.env.domainURL}/api/orders/${orderId}`,
+    {
+      cache: 'no-store',
+      method: 'GET',
+    }
+  );
+
+  return response.json();
+} // end function
+
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+
+export default async function Content({ orderId }) {
+  // ------------------------data---------------------
+  const { order, messages, payments } = await getContent(orderId);
+
+  console.log(messages);
   // ------------------------Page-----------------------
   return (
     <>
-      <PrintForm />
-      <StatusForm />
-      <PaymentForm />
-      <AddressInfo />
-      <ContentRows totalRows={1} />
+      <PrintForm order={order} />
+      <StatusForm order={order} messages={messages} />
+      <PaymentForm order={order} payments={payments} />
+      <AddressInfo order={order} />
+      <ContentRows totalRows={order.products.length} order={order} />
 
       {/* portals */}
       <ConfirmPortal />

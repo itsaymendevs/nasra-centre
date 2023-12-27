@@ -8,7 +8,7 @@ import ResetPortal from './ResetPortal';
 
 // 1: fetch data
 export async function getEmployees() {
-  const response = await fetch('http://127.0.0.1:8000/api/employees', {
+  const response = await fetch(`${process.env.domainURL}/api/employees`, {
     cache: 'no-store',
     method: 'GET',
   });

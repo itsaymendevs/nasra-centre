@@ -15,8 +15,8 @@ export default function EditPortal({ mainCategories }) {
   // 1: use dispatch + url
   const dispatch = useDispatch();
   const router = useRouter();
-  const url = 'http://127.0.0.1:8000';
-  const imageURL = 'http://127.0.0.1:8000/storage/mainCategories/';
+  const url = process.env.domainURL;
+  const imageURL = `${process.env.domainURL}/storage/mainCategories/`;
   const defaultURL = '/assets/img/Placeholder/image.png';
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;

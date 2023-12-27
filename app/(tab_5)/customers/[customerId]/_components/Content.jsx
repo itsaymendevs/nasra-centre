@@ -6,7 +6,7 @@ import ContentTabs from './ContentTabs';
 
 export async function getContent(customerId) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/users/${customerId}`,
+    `${process.env.domainURL}/api/users/${customerId}`,
     {
       cache: 'no-store',
       method: 'GET',

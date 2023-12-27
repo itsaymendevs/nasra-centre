@@ -6,7 +6,7 @@ import ContentToggles from './ContentToggles';
 
 // 1: fetch data
 export async function getContact() {
-  const response = await fetch(`http://127.0.0.1:8000/api/pickup`, {
+  const response = await fetch(`${process.env.domainURL}/api/pickup`, {
     cache: 'no-store',
     method: 'GET',
   });

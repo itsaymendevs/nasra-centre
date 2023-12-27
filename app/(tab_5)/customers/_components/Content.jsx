@@ -5,7 +5,7 @@ import ContentRows from './ContentRows';
 // ------------------------------------------------------------------
 
 export async function getContent() {
-  const response = await fetch('http://127.0.0.1:8000/api/users', {
+  const response = await fetch(`${process.env.domainURL}/api/users`, {
     cache: 'no-store',
     method: 'GET',
   });

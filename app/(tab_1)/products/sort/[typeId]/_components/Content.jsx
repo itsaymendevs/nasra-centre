@@ -6,7 +6,7 @@ import ContentItems from './ContentItems';
 // 1: fetch data
 export async function getContent(typeId) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/products/${typeId}/sort`,
+    `${process.env.domainURL}/api/products/${typeId}/sort`,
     {
       cache: 'no-store',
       method: 'GET',

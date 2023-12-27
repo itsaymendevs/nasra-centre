@@ -15,7 +15,7 @@ export default function ContentItems({ mainCategories }) {
 
   // 1: use dispatch + url
   const dispatch = useDispatch();
-  const url = 'http://127.0.0.1:8000';
+  const url = process.env.domainURL;
   const cookies = useCookies();
   const token = `Bearer ${cookies.get('token')}`;
 

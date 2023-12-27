@@ -13,7 +13,7 @@ export default function SortPortal({ mainCategories, subCategories }) {
   // 1: use dispatch + url
   const dispatch = useDispatch();
   const router = useRouter();
-  const url = 'http://127.0.0.1:8000';
+  const url = process.env.domainURL;
 
   // ---------------------------------- states ----------------------------------
 

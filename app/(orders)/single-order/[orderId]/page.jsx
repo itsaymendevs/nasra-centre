@@ -2,7 +2,7 @@ import Wrapper from '../../../_essentials/Wrapper';
 import Header from '../../../_essentials/Header';
 import Content from './_components/Content';
 
-export default function SingleOrder() {
+export default function SingleOrder({ params }) {
   return (
     <Wrapper>
       {/* main content */}
@@ -23,7 +23,7 @@ export default function SingleOrder() {
           {/* -------------------------------------- */}
 
           {/* filters / rows */}
-          <Content />
+          <Content orderId={params.orderId} />
         </section>
       </div>
       {/* end main content */}

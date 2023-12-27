@@ -7,7 +7,7 @@ import ToggleForm from './ToggleForm';
 
 // 1: fetch data
 export async function getContent() {
-  const response = await fetch(`http://127.0.0.1:8000/api/previousOrders`, {
+  const response = await fetch(`${process.env.domainURL}/api/previousOrders`, {
     cache: 'no-store',
     method: 'GET',
   });

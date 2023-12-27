@@ -6,7 +6,7 @@ import EditForm from './EditForm';
 // 1: fetch data
 export async function getContent(productId) {
   const response = await fetch(
-    `http://127.0.0.1:8000/api/products/${productId}/edit`,
+    `${process.env.domainURL}/api/products/${productId}/edit`,
     {
       cache: 'no-store',
       method: 'GET',

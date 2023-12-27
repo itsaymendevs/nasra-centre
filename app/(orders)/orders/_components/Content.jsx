@@ -6,7 +6,7 @@ import ContentRows from './ContentRows';
 
 // 1: fetch data
 export async function getContent() {
-  const response = await fetch(`http://127.0.0.1:8000/api/orders`, {
+  const response = await fetch(`${process.env.domainURL}/api/orders`, {
     cache: 'no-store',
     method: 'GET',
   });
