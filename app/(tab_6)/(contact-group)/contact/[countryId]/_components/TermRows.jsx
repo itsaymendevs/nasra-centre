@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { toggleEditConditionModal } from '@/slices/SixthModalSlice';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function TermRows({ terms }) {
   // ---------------------------------- dispatch ----------------------------
@@ -76,8 +77,19 @@ export default function TermRows({ terms }) {
                   }>
                   Edit Terms
                 </Link>
-                <Link className="dropdown-item" href="#">
-                  Remove Terms
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/contact/${item.countryId}/terms/${item.id}/delete`,
+                        targetName: 'Term',
+                      })
+                    )
+                  }>
+                  Remove Term
                 </Link>
               </div>
             </div>

@@ -70,14 +70,17 @@ export default function EditPortal({ conditions }) {
     document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
       'Loading ..';
 
+    console.log(formData);
     const response = await fetch(`${url}/api/pickup/conditions/update`, {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
       },
       body: JSON.stringify(formData),
     });
+
+    console.log(await response.json());
 
     // 4.2: hot reload + dispatch
     router.refresh();

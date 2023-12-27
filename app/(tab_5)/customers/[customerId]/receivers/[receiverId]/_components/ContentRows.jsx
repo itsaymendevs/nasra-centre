@@ -67,7 +67,7 @@ export default function ContentRows({ receiver }) {
               }`}
               type="button"
               onClick={(event) => handleInputChange(event, 1)}>
-              <img className="me-2" src="/assets/img/Flags/SDN.png" />
+              <img className="me-2" src="/assets/img/Flags/SDN.png" alt="" />
               SDN
             </button>
 
@@ -84,7 +84,7 @@ export default function ContentRows({ receiver }) {
                     parseFloat(receiver.user.country.toSDG)
                   )
                 }>
-                <img className="me-2" src="/assets/img/Flags/EUR.png" />
+                <img className="me-2" src="/assets/img/Flags/EUR.png" alt="" />
                 EUR
               </button>
             )}
@@ -102,8 +102,26 @@ export default function ContentRows({ receiver }) {
                     parseFloat(receiver.user.country.toSDG)
                   )
                 }>
-                <img className="me-2" src="/assets/img/Flags/GBP.png" />
+                <img className="me-2" src="/assets/img/Flags/GBP.png" alt="" />
                 GBP
+              </button>
+            )}
+
+            {/* egp - eg */}
+            {receiver.user.country.code == 'EG' && (
+              <button
+                className={`btn btn--export btn--currency scale--3 px-4 ms-2 ${
+                  formFilters.toSDG !== 1 && 'active'
+                }`}
+                type="button"
+                onClick={(event) =>
+                  handleInputChange(
+                    event,
+                    parseFloat(receiver.user.country.toSDG)
+                  )
+                }>
+                <img className="me-2" src="/assets/img/Flags/EGP.png" alt="" />
+                EGP
               </button>
             )}
           </div>

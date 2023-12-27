@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import { toggleEditConditionModal } from '@/slices/SecModalSlice';
 import { useDispatch } from 'react-redux';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ conditions }) {
   // ---------------------------------- dispatch ----------------------------
@@ -25,12 +26,12 @@ export default function ContentRows({ conditions }) {
         <div className="col-4">
           <label className="col-form-label form--label row--label">Title</label>
         </div>
-        <div className="col-5">
+        <div className="col-4">
           <label className="col-form-label form--label row--label">
             Content
           </label>
         </div>
-        <div className="col-1">
+        <div className="col-2">
           <label className="col-form-label form--label row--label"></label>
         </div>
       </div>
@@ -55,14 +56,14 @@ export default function ContentRows({ conditions }) {
               {condition.title}
             </label>
           </div>
-          <div className="col-5">
+          <div className="col-4">
             <label className="col-form-label form--label row--label">
               {condition.content}
             </label>
           </div>
 
           {/* action menu */}
-          <div className="col-1">
+          <div className="col-2">
             <div className="dropstart d-flex justify-content-center">
               <button
                 className="btn dropdown-toggle results--dropdown"
@@ -83,7 +84,18 @@ export default function ContentRows({ conditions }) {
                   }>
                   Edit Condition
                 </Link>
-                <Link className="dropdown-item" href="#">
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/delivery/conditions/${condition.id}/delete`,
+                        targetName: 'Condition',
+                      })
+                    )
+                  }>
                   Remove Condition
                 </Link>
               </div>

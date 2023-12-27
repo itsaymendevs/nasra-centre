@@ -97,6 +97,7 @@ export default function CoverForm({ category }) {
           <label className="form-label form--label">English Version</label>
           <label className="img--holder for-category" htmlFor="image--input">
             <img
+              alt=""
               loading="lazy"
               src={
                 uploadData.image
@@ -119,6 +120,7 @@ export default function CoverForm({ category }) {
           <label className="form-label form--label">Arabic Version</label>
           <label className="img--holder for-category" htmlFor="image--input-2">
             <img
+              alt=""
               loading="lazy"
               src={
                 uploadData.imageAr

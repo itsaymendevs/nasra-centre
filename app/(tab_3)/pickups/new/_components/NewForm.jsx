@@ -95,6 +95,7 @@ export default function NewForm() {
     // 4.2: hot reload + dispatch
     setFormData(initialState);
     setUploadData(uploadInitialState);
+    router.refresh();
   };
 
   // ---------------------------------- page ----------------------------------
@@ -240,6 +241,7 @@ export default function NewForm() {
           <label className="form-label form--label">Store Picture</label>
           <label className="img--holder for-store" htmlFor="image--input">
             <img
+              alt=""
               loading="lazy"
               src={
                 uploadData.imagePreview ? uploadData.imagePreview : defaultURL

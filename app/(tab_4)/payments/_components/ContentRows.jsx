@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ payments }) {
   // ::root
@@ -137,6 +138,20 @@ export default function ContentRows({ payments }) {
                   href="#"
                   onClick={(event) => handleToggleStatus(event, payment.id)}>
                   {payment.isActive ? 'Deactivate' : 'Activate'} Payment
+                </Link>
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/payments/${payment.id}/delete`,
+                        targetName: 'Payment',
+                      })
+                    )
+                  }>
+                  Remove Payment
                 </Link>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { toggleEditConditionModal } from '@/slices/ThirdModalSlice';
 import { useRouter } from 'next/navigation';
 import { useCookies } from 'next-client-cookies';
 import { useDispatch } from 'react-redux';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ conditions }) {
   // ---------------------------------- global ----------------------------------
@@ -103,7 +104,19 @@ export default function ContentRows({ conditions }) {
                   }>
                   Edit Condition
                 </Link>
-                <Link className="dropdown-item" href="#">
+
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/pickup/conditions/${condition.id}/delete`,
+                        targetName: 'Condition',
+                      })
+                    )
+                  }>
                   Remove Condition
                 </Link>
               </div>

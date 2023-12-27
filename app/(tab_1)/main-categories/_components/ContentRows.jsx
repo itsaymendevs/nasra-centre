@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import { toggleEditMainCategoryModal } from '@/slices/FirstModalSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ mainCategories }) {
   // ---------------------------------- dispatch ----------------------------
@@ -33,12 +34,12 @@ export default function ContentRows({ mainCategories }) {
         <div className="col-4">
           <label className="col-form-label form--label row--label">Name</label>
         </div>
-        <div className="col-5">
+        <div className="col-4">
           <label className="col-form-label form--label row--label">
             Name Ar
           </label>
         </div>
-        <div className="col-1">
+        <div className="col-2">
           <label className="col-form-label form--label row--label"></label>
         </div>
       </div>
@@ -61,14 +62,14 @@ export default function ContentRows({ mainCategories }) {
               {mainCategory.name}
             </label>
           </div>
-          <div className="col-5">
+          <div className="col-4">
             <label className="col-form-label form--label row--label">
               {mainCategory.nameAr}
             </label>
           </div>
-          <div className="col-1">
+          <div className="col-2 text-center">
             <button
-              className="btn btn--raw-icon edit scale--3"
+              className="btn btn--raw-icon edit scale--3 same--line"
               type="button"
               onClick={() =>
                 dispatch(
@@ -89,6 +90,30 @@ export default function ContentRows({ mainCategories }) {
                 <path
                   fillRule="evenodd"
                   d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+              </svg>
+            </button>
+
+            {/* delete */}
+            <button
+              className="btn btn--raw-icon edit scale--3 same--line"
+              type="button"
+              onClick={() =>
+                dispatch(
+                  toggleConfirmModal({
+                    status: true,
+                    targetURL: `${process.env.domainURL}/api/main-categories/${mainCategory.id}/delete`,
+                    targetName: 'Category',
+                  })
+                )
+              }>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                fill="currentColor"
+                className="bi bi-trash-fill trash--icon"
+                viewBox="0 0 16 16">
+                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
               </svg>
             </button>
           </div>

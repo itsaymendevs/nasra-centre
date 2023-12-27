@@ -6,6 +6,7 @@ import { useCookies } from 'next-client-cookies';
 import { useRouter } from 'next/navigation';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 import { useDispatch } from 'react-redux';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ pickups }) {
   // ---------------------------------- global ----------------------------------
@@ -105,6 +106,20 @@ export default function ContentRows({ pickups }) {
                   href="#"
                   onClick={(event) => handleToggleStatus(event, pickup.id)}>
                   {pickup.isActive ? 'Disable' : 'Enable'} Store
+                </Link>
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/pickup/${pickup.id}/delete`,
+                        targetName: 'Store',
+                      })
+                    )
+                  }>
+                  Remove Store
                 </Link>
               </div>
             </div>

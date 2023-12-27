@@ -44,7 +44,7 @@ export default function NewForm({
 
   // 1: formData state
   const initialState = {
-    serial: serial,
+    serial: 'Auto-Generated',
     name: '',
     nameAr: '',
     buyPrice: '',
@@ -163,6 +163,9 @@ export default function NewForm({
     dispatch(IsNotLoading());
 
     // 4.2: hot reload + dispatch
+    setFormData(initialState);
+    setUploadData(uploadInitialState);
+
     router.refresh();
   };
 
@@ -652,6 +655,7 @@ export default function NewForm({
               loading="lazy"
               src={uploadData.image ? uploadData.image : defaultURL}
               id="image--input-holder"
+              alt=""
             />
             <input
               name="image"
@@ -674,6 +678,7 @@ export default function NewForm({
             <div className="col-6 mb-4">
               <label className="img--holder" htmlFor="image--input-2">
                 <img
+                  alt=""
                   loading="lazy"
                   src={
                     uploadData.firstExtraImage
@@ -695,6 +700,7 @@ export default function NewForm({
             <div className="col-6 mb-4">
               <label className="img--holder" htmlFor="image--input-3">
                 <img
+                  alt=""
                   loading="lazy"
                   src={
                     uploadData.secExtraImage
@@ -716,6 +722,7 @@ export default function NewForm({
             <div className="col-6">
               <label className="img--holder" htmlFor="image--input-4">
                 <img
+                  alt=""
                   loading="lazy"
                   src={
                     uploadData.thirdExtraImage

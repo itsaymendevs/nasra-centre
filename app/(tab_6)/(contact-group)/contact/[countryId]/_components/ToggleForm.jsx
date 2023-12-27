@@ -91,6 +91,7 @@ export default function ToggleForm({ country }) {
           <div className="col-8">
             <div className="d-flex justify-content-end align-items-center">
               <img
+                alt=""
                 className="flag--icon"
                 src={`/assets/img/Flags/${country.currency}.png`}
               />
@@ -107,7 +108,11 @@ export default function ToggleForm({ country }) {
                 onKeyUp={handleInputChange}
               />
               <h6 className="mb-0 ms-3 me-2 fw-bold">SDG</h6>
-              <img className="flag--icon" src="/assets/img/Flags/SDN.png" />
+              <img
+                className="flag--icon"
+                src="/assets/img/Flags/SDN.png"
+                alt=""
+              />
             </div>
           </div>
         )}

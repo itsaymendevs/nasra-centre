@@ -655,6 +655,7 @@ export default function NewForm({
           <label className="form-label form--label">Main Picture</label>
           <label className="img--holder" htmlFor="image--input">
             <img
+              alt=""
               loading="lazy"
               src={
                 uploadData.image
@@ -683,6 +684,7 @@ export default function NewForm({
             <div className="col-6 mb-4">
               <label className="img--holder" htmlFor="image--input-2">
                 <img
+                  alt=""
                   loading="lazy"
                   src={
                     uploadData.firstExtraImage
@@ -704,6 +706,7 @@ export default function NewForm({
             <div className="col-6 mb-4">
               <label className="img--holder" htmlFor="image--input-3">
                 <img
+                  alt=""
                   loading="lazy"
                   src={
                     uploadData.secExtraImage
@@ -725,6 +728,7 @@ export default function NewForm({
             <div className="col-6">
               <label className="img--holder" htmlFor="image--input-4">
                 <img
+                  alt=""
                   loading="lazy"
                   src={
                     uploadData.thirdExtraImage

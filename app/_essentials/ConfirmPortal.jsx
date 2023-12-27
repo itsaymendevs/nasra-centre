@@ -3,7 +3,7 @@
 import GlobalPortal from '@/portals/GlobalPortal';
 import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from 'next-client-cookies';
 
@@ -15,7 +15,7 @@ export default function ConfirmPortal() {
   const token = `Bearer ${cookies.get('token')}`;
 
   // ---------------------------------- states ----------------------------------
-  const { status, targetId, targetURL, targetName } = useSelector(
+  const { status, targetId, targetURL, targetName, targetRemove } = useSelector(
     (state) => state.ConfirmModalSlice
   );
 
@@ -31,6 +31,10 @@ export default function ConfirmPortal() {
 
     router.refresh();
     dispatch(toggleConfirmModal({ status: false }));
+
+    // ::hide if target found
+    if (targetRemove)
+      document.getElementById(targetRemove).classList.add('d-none');
   }; // end function
 
   // ---------------------------------- page ----------------------------------

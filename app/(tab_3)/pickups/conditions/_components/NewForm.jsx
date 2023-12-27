@@ -43,8 +43,9 @@ export default function NewForm() {
     event.preventDefault();
 
     // 4.1: insert new item
-    document.querySelectorAll('.modal button[type="submit"]')[0].innerText =
-      'Loading ..';
+    document.querySelectorAll(
+      '.form--page button[type="submit"]'
+    )[0].innerText = 'Loading ..';
 
     const response = await fetch(`${url}/api/pickup/conditions/store`, {
       method: 'POST',
@@ -54,6 +55,10 @@ export default function NewForm() {
       },
       body: JSON.stringify(formData),
     });
+
+    document.querySelectorAll(
+      '.form--page button[type="submit"]'
+    )[0].innerText = 'Save Item';
 
     // 4.2: hot reload + dispatch
     setFormData(initialState);

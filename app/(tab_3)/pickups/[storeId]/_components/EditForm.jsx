@@ -242,6 +242,7 @@ export default function EditForm({ pickup }) {
           <label className="form-label form--label">Store Picture</label>
           <label className="img--holder for-store" htmlFor="image--input">
             <img
+              alt=""
               loading="lazy"
               src={
                 uploadData.imagePreview

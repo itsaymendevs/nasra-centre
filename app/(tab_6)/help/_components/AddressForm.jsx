@@ -106,6 +106,7 @@ export default function AddressForm({ address }) {
           <label className="form-label form--label">Picture</label>
           <label className="img--holder for-store" htmlFor="image--input">
             <img
+              alt=""
               loading="lazy"
               src={
                 uploadData.imagePreview

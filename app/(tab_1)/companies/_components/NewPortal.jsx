@@ -54,6 +54,8 @@ export default function NewPortal() {
       body: JSON.stringify(formData),
     });
 
+    console.log(await response.json());
+
     // 4.2: hot reload + dispatch
     setFormData(initialState);
     router.refresh();

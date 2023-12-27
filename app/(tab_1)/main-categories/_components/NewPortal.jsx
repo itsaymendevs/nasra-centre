@@ -124,6 +124,7 @@ export default function NewPortal() {
                       </label>
                       <label className="img--holder" htmlFor="image--input">
                         <img
+                          alt=""
                           src={
                             uploadData.imagePreview
                               ? uploadData.imagePreview

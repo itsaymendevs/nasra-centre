@@ -71,7 +71,7 @@ export default function EditPortal({ conditions }) {
       'Loading ..';
 
     const response = await fetch(`${url}/api/delivery/conditions/update`, {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,

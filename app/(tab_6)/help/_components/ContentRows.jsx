@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleEditParagraphModal } from '@/slices/SixthModalSlice';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ aboutParagraphs }) {
   // ---------------------------------- dispatch ----------------------------
@@ -74,7 +75,18 @@ export default function ContentRows({ aboutParagraphs }) {
                   }>
                   Edit Paragraph
                 </Link>
-                <Link className="dropdown-item" href="#">
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/help/about/${item.id}/delete`,
+                        targetName: 'Paragraph',
+                      })
+                    )
+                  }>
                   Remove Paragraph
                 </Link>
               </div>

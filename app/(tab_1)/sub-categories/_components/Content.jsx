@@ -17,23 +17,13 @@ export async function getSubCategories() {
   return response.json();
 } // end function
 
-export async function getMainCategories() {
-  const response = await fetch(`${process.env.domainURL}/api/main-categories`, {
-    cache: 'no-store',
-    method: 'GET',
-  });
-
-  return response.json();
-} // end function
-
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 
 export default async function Content() {
   /// ------------------------data---------------------
-  const mainCategories = await getMainCategories();
-  const subCategories = await getSubCategories();
+  const { subCategories, mainCategories } = await getSubCategories();
 
   // ------------------------Page-----------------------
   return (

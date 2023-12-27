@@ -7,6 +7,7 @@ const initialState = {
   targetId: null,
   targetURL: '',
   targetName: '',
+  targetRemove: null,
 };
 
 const ConfirmModalSlice = createSlice({
@@ -18,6 +19,7 @@ const ConfirmModalSlice = createSlice({
       state.targetId = action.payload.targetId;
       state.targetURL = action.payload.targetURL;
       state.targetName = action.payload.targetName;
+      state.targetRemove = action.payload.targetRemove;
     },
   },
 });

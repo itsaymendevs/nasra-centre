@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useCookies } from 'next-client-cookies';
 import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 
 export default function ContentRows({ products }) {
   // ---------------------------------- global ----------------------------------
@@ -153,7 +154,10 @@ export default function ContentRows({ products }) {
 
       {/* content rows */}
       {state.map((item) => (
-        <div className="row g-0 align-items-center results--item" key={item.id}>
+        <div
+          className="row g-0 align-items-center results--item"
+          id={`results--item-${item.id}`}
+          key={item.id}>
           <div className="col-2">
             <label className="col-form-label form--label row--label">
               {item.serial}
@@ -221,6 +225,21 @@ export default function ContentRows({ products }) {
                     handleToggleHome(event, item.id);
                   }}>
                   {item.isMainPage ? 'Remove From' : 'Display In'} Home
+                </Link>
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/products/${item.id}/delete`,
+                        targetName: 'Product',
+                        targetRemove: `results--item-${item.id}`,
+                      })
+                    )
+                  }>
+                  Remove Product
                 </Link>
               </div>
             </div>

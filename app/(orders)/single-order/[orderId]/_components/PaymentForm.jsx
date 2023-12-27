@@ -139,7 +139,7 @@ export default function PaymentForm({ order, payments }) {
               }`}
               type="button"
               onClick={(event) => handleFilterChange(event, 1)}>
-              <img className="me-2" src="/assets/img/Flags/SDN.png" />
+              <img className="me-2" src="/assets/img/Flags/SDN.png" alt="" />
               SDN
             </button>
 
@@ -153,7 +153,7 @@ export default function PaymentForm({ order, payments }) {
                 onClick={(event) =>
                   handleFilterChange(event, parseFloat(order.country.toSDG))
                 }>
-                <img className="me-2" src="/assets/img/Flags/EUR.png" />
+                <img className="me-2" src="/assets/img/Flags/EUR.png" alt="" />
                 EUR
               </button>
             )}
@@ -168,8 +168,23 @@ export default function PaymentForm({ order, payments }) {
                 onClick={(event) =>
                   handleFilterChange(event, parseFloat(order.country.toSDG))
                 }>
-                <img className="me-2" src="/assets/img/Flags/GBP.png" />
+                <img className="me-2" src="/assets/img/Flags/GBP.png" alt="" />
                 GBP
+              </button>
+            )}
+
+            {/* egp - eg */}
+            {order.country.code == 'EG' && (
+              <button
+                className={`btn btn--export btn--currency scale--3 px-4 ms-2 ${
+                  formFilters.toSDG !== 1 && 'active'
+                }`}
+                type="button"
+                onClick={(event) =>
+                  handleFilterChange(event, parseFloat(order.country.toSDG))
+                }>
+                <img className="me-2" src="/assets/img/Flags/EGP.png" alt="" />
+                EGP
               </button>
             )}
           </div>
