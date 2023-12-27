@@ -224,7 +224,7 @@ export default function EditForm({ area, states, districts, deliveryTimes }) {
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-2">
-              Stop delivery for this area
+              Stop delivery for this region
             </label>
           </div>
         </div>

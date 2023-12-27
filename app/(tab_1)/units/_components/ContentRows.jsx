@@ -1,5 +1,6 @@
 'use client';
 
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 import { toggleEditUnitModal } from '@/slices/FirstModalSlice';
 import Link from 'next/link';
 import React from 'react';
@@ -42,10 +43,10 @@ export default function ContentRows({ units }) {
             Name Ar
           </label>
         </div>
-        <div className="col-3">
+        <div className="col-2">
           <label className="col-form-label form--label row--label">Abbr</label>
         </div>
-        <div className="col-1">
+        <div className="col-2">
           <label className="col-form-label form--label row--label"></label>
         </div>
       </div>
@@ -76,14 +77,15 @@ export default function ContentRows({ units }) {
               {unit.nameAr}
             </label>
           </div>
-          <div className="col-3">
+          <div className="col-2">
             <label className="col-form-label form--label row--label">
               {unit.abbrAr}
             </label>
           </div>
-          <div className="col-1">
+          <div className="col-2 text-center">
+            {/* edit */}
             <button
-              className="btn btn--raw-icon edit scale--3"
+              className="btn btn--raw-icon edit scale--3 same--line"
               type="button"
               onClick={() =>
                 dispatch(toggleEditUnitModal({ status: true, id: unit.id }))
@@ -99,6 +101,30 @@ export default function ContentRows({ units }) {
                 <path
                   fillRule="evenodd"
                   d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+              </svg>
+            </button>
+
+            {/* delete */}
+            <button
+              className="btn btn--raw-icon edit scale--3 same--line"
+              type="button"
+              onClick={() =>
+                dispatch(
+                  toggleConfirmModal({
+                    status: true,
+                    targetURL: `${process.env.domainURL}/api/units/${unit.id}/delete`,
+                    targetName: 'Unit',
+                  })
+                )
+              }>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1em"
+                height="1em"
+                fill="currentColor"
+                className="bi bi-trash-fill trash--icon"
+                viewBox="0 0 16 16">
+                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
               </svg>
             </button>
           </div>

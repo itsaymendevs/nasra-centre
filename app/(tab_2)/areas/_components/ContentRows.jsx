@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useCookies } from 'next-client-cookies';
 import { useRouter } from 'next/navigation';
+import { toggleConfirmModal } from '@/slices/ConfirmModalSlice';
 import { IsLoading, IsNotLoading } from '@/slices/LoadingSlice';
 import { useDispatch } from 'react-redux';
 
@@ -108,14 +109,33 @@ export default function ContentRows({ areas }) {
                 data-bs-toggle="dropdown"
                 type="button"></button>
               <div className="dropdown-menu results--dropdown-menu">
+                {/* edit */}
                 <Link className="dropdown-item" href={`/areas/${item.id}`}>
-                  Edit Area
+                  Edit Region
                 </Link>
+
+                {/* toggle */}
                 <Link
                   className="dropdown-item"
                   href="#"
                   onClick={(event) => handleToggleStatus(event, item.id)}>
-                  {item.isActive ? 'Disable' : 'Enable'} Area
+                  {item.isActive ? 'Disable' : 'Enable'} Region
+                </Link>
+
+                {/* remove */}
+                <Link
+                  className="dropdown-item"
+                  href="#"
+                  onClick={() =>
+                    dispatch(
+                      toggleConfirmModal({
+                        status: true,
+                        targetURL: `${process.env.domainURL}/api/delivery/${item.id}/delete`,
+                        targetName: 'Region',
+                      })
+                    )
+                  }>
+                  Remove Region
                 </Link>
               </div>
             </div>

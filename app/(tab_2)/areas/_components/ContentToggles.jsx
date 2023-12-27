@@ -72,7 +72,7 @@ export default function ContentToggles({ totalRows, stopDelivery }) {
               onChange={handleInputChange}
             />
             <label className="form-check-label ms-1" htmlFor="formCheck-1">
-              Stop delivering for all areas
+              Stop delivering for all regions
               <br />
             </label>
           </div>

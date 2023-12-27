@@ -171,12 +171,28 @@ radio {
 
 /* btn icons */
 
+.trash--icon {
+  fill: var(--bs-danger) !important;
+}
+
 .btn--raw-icon {
   width: 100%;
   padding: 0px;
   height: 100%;
   font-size: 20px;
   border: none !important;
+}
+
+.btn--raw-icon.same--line {
+  width: auto;
+  margin-right: 10%;
+  border-left: 1px solid #44a08d !important;
+  border-radius: 0px !important;
+  padding-left: 10% !important;
+}
+
+.btn--raw-icon.same--line:last-of-type {
+  margin-right: 0px;
 }
 
 .btn--raw-icon.edit svg {

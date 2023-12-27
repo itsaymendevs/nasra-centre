@@ -5,6 +5,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   status: false,
   targetId: null,
+  targetURL: '',
+  targetName: '',
 };
 
 const ConfirmModalSlice = createSlice({
@@ -14,6 +16,8 @@ const ConfirmModalSlice = createSlice({
     toggleConfirmModal: (state, action) => {
       state.status = action.payload.status;
       state.targetId = action.payload.targetId;
+      state.targetURL = action.payload.targetURL;
+      state.targetName = action.payload.targetName;
     },
   },
 });

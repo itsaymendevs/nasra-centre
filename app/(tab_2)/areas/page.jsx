@@ -11,8 +11,8 @@ export default function Areas() {
       <div className="col-9 content--col px-0" id="content--col">
         {/* header */}
         <Header
-          pageTitle={'Delivery Areas'}
-          leftTitle={'New Area'}
+          pageTitle={'Delivery Regions'}
+          leftTitle={'New Region'}
           leftLink="/areas/new"
         />
 

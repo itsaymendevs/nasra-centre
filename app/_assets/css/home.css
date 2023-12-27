@@ -1,11 +1,8 @@
 #results--row {
   margin-bottom: 40px;
-  max-height: 525px;
-  overflow-y: scroll;
 }
 
 .results--row {
-  max-height: 525px;
   overflow-y: scroll;
 }
 

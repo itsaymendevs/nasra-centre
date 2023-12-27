@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import SideBar from './Sidebar';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import ConfirmPortal from '../_essentials/ConfirmPortal';
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -26,6 +27,7 @@ export default function Wrapper({ children }) {
 
         <div className="row g-0 min-vh-100">
           <SideBar />
+          <ConfirmPortal />
           {children}
         </div>
       </div>

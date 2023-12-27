@@ -9,7 +9,7 @@ export default function EditArea({ params }) {
       <div className="col-9 content--col px-0" id="content--col">
         {/* header */}
         <Header
-          pageTitle={'Edit Area'}
+          pageTitle={'Edit Region'}
           leftTitle={'Back'}
           leftIcon={'bi bi-arrow-up-left'}
           leftLink="/areas"
